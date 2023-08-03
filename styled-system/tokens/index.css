@@ -1,0 +1,79 @@
+@layer tokens {
+    :where(:root, :host) {
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 32px;
+  --spacing-6: 64px;
+  --fonts-body: Inter, sans-serif;
+  --colors-primary1: hsl(255, 65.0%, 99.4%);
+  --colors-primary2: hsl(252, 100%, 99.0%);
+  --colors-primary3: hsl(252, 96.9%, 97.4%);
+  --colors-primary4: hsl(252, 91.5%, 95.5%);
+  --colors-primary5: hsl(252, 85.1%, 93.0%);
+  --colors-primary6: hsl(252, 77.8%, 89.4%);
+  --colors-primary7: hsl(252, 71.0%, 83.7%);
+  --colors-primary8: hsl(252, 68.6%, 76.3%);
+  --colors-primary9: hsl(252, 56.0%, 57.5%);
+  --colors-primary10: hsl(251, 48.1%, 53.5%);
+  --colors-primary11: hsl(250, 43.0%, 48.0%);
+  --colors-primary12: hsl(254, 60.0%, 18.5%);
+  --colors-gray1: hsl(206, 30.0%, 98.8%);
+  --colors-gray2: hsl(210, 16.7%, 97.6%);
+  --colors-gray3: hsl(209, 13.3%, 95.3%);
+  --colors-gray4: hsl(209, 12.2%, 93.2%);
+  --colors-gray5: hsl(208, 11.7%, 91.1%);
+  --colors-gray6: hsl(208, 11.3%, 88.9%);
+  --colors-gray7: hsl(207, 11.1%, 85.9%);
+  --colors-gray8: hsl(205, 10.7%, 78.0%);
+  --colors-gray9: hsl(206, 6.0%, 56.1%);
+  --colors-gray10: hsl(206, 5.8%, 52.3%);
+  --colors-gray11: hsl(206, 6.0%, 43.5%);
+  --colors-gray12: hsl(206, 24.0%, 9.0%);
+  --breakpoints-2xl: 1536px;
+  --breakpoints-sm: 600px;
+  --breakpoints-md: 900px;
+  --breakpoints-lg: 1200px;
+  --breakpoints-xl: 1400px;
+  --breakpoints-bp300: 300px;
+  --breakpoints-bp400: 400px;
+  --breakpoints-bp500: 500px;
+  --breakpoints-bp600: 600px;
+  --breakpoints-bp700: 700px;
+  --breakpoints-bp800: 800px;
+  --breakpoints-bp900: 900px;
+  --breakpoints-bp1000: 1000px;
+  --breakpoints-bp1100: 1100px;
+  --breakpoints-bp1200: 1200px;
+  --breakpoints-bp1300: 1300px;
+  --breakpoints-bp1400: 1400px;
+  --breakpoints-bp1500: 1500px;
+  --sizes-breakpoint-2xl: 1536px;
+  --sizes-breakpoint-sm: 600px;
+  --sizes-breakpoint-md: 900px;
+  --sizes-breakpoint-lg: 1200px;
+  --sizes-breakpoint-xl: 1400px;
+  --sizes-breakpoint-bp300: 300px;
+  --sizes-breakpoint-bp400: 400px;
+  --sizes-breakpoint-bp500: 500px;
+  --sizes-breakpoint-bp600: 600px;
+  --sizes-breakpoint-bp700: 700px;
+  --sizes-breakpoint-bp800: 800px;
+  --sizes-breakpoint-bp900: 900px;
+  --sizes-breakpoint-bp1000: 1000px;
+  --sizes-breakpoint-bp1100: 1100px;
+  --sizes-breakpoint-bp1200: 1200px;
+  --sizes-breakpoint-bp1300: 1300px;
+  --sizes-breakpoint-bp1400: 1400px;
+  --sizes-breakpoint-bp1500: 1500px;
+  --colors-neutral-bg: white;
+  --colors-neutral-text: hsl(206, 24.0%, 9.0%)
+}
+
+:where(._dark, [data-theme="_dark"] [data-color-mode=_dark]) {
+  --colors-neutral-bg: hsl(206, 24.0%, 9.0%);
+  --colors-neutral-text: white
+}
+  }
+  
