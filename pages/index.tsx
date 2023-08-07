@@ -11,11 +11,11 @@ const Home: NextPage = () => {
       <Flex
         align="center"
         direction="column"
-        css={{ py: '6', px: '2', gap: '5', width: '100%', sm: { px: '6' } }}
+        css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
         <Text style="subtitle1" css={{ textAlign: 'center' }}>
-          MemSwap: A Decentralized “Intents-based” Protocol for Efficient and
-          Transparent Token Swaps Leveraging the Ethereum Mempool
+          A Decentralized “Intents-based” Protocol for Efficient and Transparent
+          Token Swaps Leveraging the Ethereum Mempool
         </Text>
         <Swap />
       </Flex>

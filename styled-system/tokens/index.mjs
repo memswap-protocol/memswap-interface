@@ -28,100 +28,52 @@ const tokens = {
     "variable": "var(--fonts-body)"
   },
   "colors.primary1": {
-    "value": "hsl(255, 65.0%, 99.4%)",
+    "value": "hsl(206, 100%, 99.2%)",
     "variable": "var(--colors-primary1)"
   },
   "colors.primary2": {
-    "value": "hsl(252, 100%, 99.0%)",
+    "value": "hsl(210, 100%, 98.0%)",
     "variable": "var(--colors-primary2)"
   },
   "colors.primary3": {
-    "value": "hsl(252, 96.9%, 97.4%)",
+    "value": "hsl(209, 100%, 96.5%)",
     "variable": "var(--colors-primary3)"
   },
   "colors.primary4": {
-    "value": "hsl(252, 91.5%, 95.5%)",
+    "value": "hsl(210, 98.8%, 94.0%)",
     "variable": "var(--colors-primary4)"
   },
   "colors.primary5": {
-    "value": "hsl(252, 85.1%, 93.0%)",
+    "value": "hsl(209, 95.0%, 90.1%)",
     "variable": "var(--colors-primary5)"
   },
   "colors.primary6": {
-    "value": "hsl(252, 77.8%, 89.4%)",
+    "value": "hsl(209, 81.2%, 84.5%)",
     "variable": "var(--colors-primary6)"
   },
   "colors.primary7": {
-    "value": "hsl(252, 71.0%, 83.7%)",
+    "value": "hsl(208, 77.5%, 76.9%)",
     "variable": "var(--colors-primary7)"
   },
   "colors.primary8": {
-    "value": "hsl(252, 68.6%, 76.3%)",
+    "value": "hsl(206, 81.9%, 65.3%)",
     "variable": "var(--colors-primary8)"
   },
   "colors.primary9": {
-    "value": "hsl(252, 56.0%, 57.5%)",
+    "value": "hsl(206, 100%, 50.0%)",
     "variable": "var(--colors-primary9)"
   },
   "colors.primary10": {
-    "value": "hsl(251, 48.1%, 53.5%)",
+    "value": "hsl(208, 100%, 47.3%)",
     "variable": "var(--colors-primary10)"
   },
   "colors.primary11": {
-    "value": "hsl(250, 43.0%, 48.0%)",
+    "value": "hsl(211, 100%, 43.2%)",
     "variable": "var(--colors-primary11)"
   },
   "colors.primary12": {
-    "value": "hsl(254, 60.0%, 18.5%)",
-    "variable": "var(--colors-primary12)"
-  },
-  "colors.secondary1": {
-    "value": "hsl(206, 100%, 99.2%)",
-    "variable": "var(--colors-secondary1)"
-  },
-  "colors.secondary2": {
-    "value": "hsl(210, 100%, 98.0%)",
-    "variable": "var(--colors-secondary2)"
-  },
-  "colors.secondary3": {
-    "value": "hsl(209, 100%, 96.5%)",
-    "variable": "var(--colors-secondary3)"
-  },
-  "colors.secondary4": {
-    "value": "hsl(210, 98.8%, 94.0%)",
-    "variable": "var(--colors-secondary4)"
-  },
-  "colors.secondary5": {
-    "value": "hsl(209, 95.0%, 90.1%)",
-    "variable": "var(--colors-secondary5)"
-  },
-  "colors.secondary6": {
-    "value": "hsl(209, 81.2%, 84.5%)",
-    "variable": "var(--colors-secondary6)"
-  },
-  "colors.secondary7": {
-    "value": "hsl(208, 77.5%, 76.9%)",
-    "variable": "var(--colors-secondary7)"
-  },
-  "colors.secondary8": {
-    "value": "hsl(206, 81.9%, 65.3%)",
-    "variable": "var(--colors-secondary8)"
-  },
-  "colors.secondary9": {
-    "value": "hsl(206, 100%, 50.0%)",
-    "variable": "var(--colors-secondary9)"
-  },
-  "colors.secondary10": {
-    "value": "hsl(208, 100%, 47.3%)",
-    "variable": "var(--colors-secondary10)"
-  },
-  "colors.secondary11": {
-    "value": "hsl(211, 100%, 43.2%)",
-    "variable": "var(--colors-secondary11)"
-  },
-  "colors.secondary12": {
     "value": "hsl(211, 100%, 15.0%)",
-    "variable": "var(--colors-secondary12)"
+    "variable": "var(--colors-primary12)"
   },
   "colors.gray1": {
     "value": "hsl(206, 30.0%, 98.8%)",

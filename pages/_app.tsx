@@ -12,7 +12,7 @@ const WALLET_CONNECT_PROJECT_ID =
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
-  [publicProvider()]
+  [publicProvider()] //@TODO: configure alchemy provider and api key
 )
 
 const { connectors } = getDefaultWallets({

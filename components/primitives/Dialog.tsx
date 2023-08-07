@@ -17,7 +17,7 @@ const Overlay = styled(DialogPrimitive.Overlay, {
 
 const Content = styled(DialogPrimitive.Content, {
   base: {
-    backgroundColor: 'gray11',
+    backgroundColor: 'primary12',
     borderRadius: 8,
     position: 'fixed',
     top: '12.5%',

@@ -5,11 +5,11 @@ import Image from 'next/image'
 import { useTokenList } from '../../hooks'
 
 type Props = {
-  currency?: Currency
-  setCurrency: Dispatch<SetStateAction<Currency | undefined>>
+  token?: Token
+  setToken: Dispatch<SetStateAction<Token | undefined>>
 }
 
-export type Currency = {
+export type Token = {
   chainId: number
   address: string
   name: string
@@ -18,7 +18,7 @@ export type Currency = {
   logoURI: string
 }
 
-export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
+export const SelectCurrency: FC<Props> = ({ token, setToken }) => {
   const [open, setOpen] = useState(false)
 
   const { tokens, loading, error } = useTokenList()
@@ -27,11 +27,11 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
     <Modal
       trigger={
         <Button color="primary" size="medium">
-          {currency ? (
+          {token ? (
             <>
               <Image
-                src={currency?.logoURI || ''}
-                alt={currency?.name}
+                src={token?.logoURI || ''}
+                alt={token?.name}
                 width={30}
                 height={30}
                 style={{
@@ -39,7 +39,7 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
                   borderRadius: '50%',
                 }}
               />{' '}
-              <Text ellipsify>{currency?.symbol}</Text>
+              <Text ellipsify>{token?.symbol}</Text>
             </>
           ) : (
             'Select Currency'
@@ -56,14 +56,14 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
         direction="column"
         css={{ width: '100%', height: '100%', gap: '2', overflow: 'hidden' }}
       >
-        <Text style="h6">Select a currency</Text>
+        <Text style="h6">Select a token</Text>
         <Flex
           direction="column"
           css={{ overflowY: 'scroll', maxHeight: '600px', gap: '1' }}
         >
           {/* @TODO: add loading indicator and error state */}
-          {tokens?.map((token, index) => {
-            const isSelected = token?.address === currency?.address
+          {tokens?.map((currentToken, index) => {
+            const isSelected = currentToken?.address === token?.address
             return (
               <Flex
                 key={index}
@@ -76,13 +76,13 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
                   _hover: { backgroundColor: 'gray8' },
                 }}
                 onClick={() => {
-                  setCurrency(token)
+                  setToken(currentToken)
                   setOpen(false)
                 }}
               >
                 <Image
-                  src={token?.logoURI || ''}
-                  alt={token?.name}
+                  src={currentToken?.logoURI || ''}
+                  alt={currentToken?.name}
                   width={30}
                   height={30}
                   style={{
@@ -91,7 +91,7 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
                   }}
                 />
                 <Text>
-                  {token?.name} ({token?.symbol})
+                  {currentToken?.name} ({currentToken?.symbol})
                 </Text>
               </Flex>
             )

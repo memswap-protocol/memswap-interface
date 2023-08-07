@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
-import { Currency, SelectCurrency } from './SelectCurrency'
+import { Token, SelectCurrency } from './SelectCurrency'
 import Input from '../primitives/Input'
 import {
   usePrepareContractWrite,
@@ -16,8 +16,8 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
 
 const Swap = () => {
-  const [tokenIn, setTokenIn] = useState<Currency>()
-  const [tokenOut, setTokenOut] = useState<Currency>()
+  const [tokenIn, setTokenIn] = useState<Token>()
+  const [tokenOut, setTokenOut] = useState<Token>()
 
   const [amountIn, setAmountIn] = useState('')
   const [amountOut, setAmountOut] = useState('')
@@ -98,7 +98,7 @@ const Swap = () => {
         maxWidth: 600,
       }}
     >
-      <Text style="h6" css={{ mb: '3' }}>
+      <Text style="h6" css={{ mb: '3', color: 'white' }}>
         Swap
       </Text>
       <Flex
@@ -114,6 +114,7 @@ const Swap = () => {
         <Input
           type="number"
           placeholder="0"
+          css={{ maxWidth: 100, sm: { maxWidth: 'none' } }}
           value={amountIn}
           onChange={(e) => {
             if (e.target.value) {
@@ -124,7 +125,7 @@ const Swap = () => {
           }}
         />
         <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectCurrency currency={tokenIn} setCurrency={setTokenIn} />
+          <SelectCurrency token={tokenIn} setToken={setTokenIn} />
           {fetchingTokenInBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
             <Text>Error</Text>
@@ -158,6 +159,7 @@ const Swap = () => {
         <Input
           type="number"
           placeholder="0"
+          css={{ maxWidth: 100, sm: { maxWidth: 'none' } }}
           value={amountOut}
           onChange={(e) => {
             if (e.target.value) {
@@ -168,7 +170,7 @@ const Swap = () => {
           }}
         />
         <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectCurrency currency={tokenOut} setCurrency={setTokenOut} />
+          <SelectCurrency token={tokenOut} setToken={setTokenOut} />
           {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
             <Text>Error</Text>
