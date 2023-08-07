@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Token } from '../components/swap/SelectCurrency'
+import { Token } from '../components/swap/SelectToken'
 
 function useTokenList() {
   const [tokens, setTokens] = useState<Token[] | undefined>()
