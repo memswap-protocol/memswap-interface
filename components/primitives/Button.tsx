@@ -12,6 +12,10 @@ const Button = styled('button', {
     display: 'inline-flex',
     alignItems: 'center',
     lineHeight: '20px',
+    '--focusColor': 'colors.gray12',
+    _focusVisible: {
+      boxShadow: '0 0 0 2px var(--focusColor)',
+    },
     _disabled: {
       backgroundColor: 'gray8',
       color: 'gray11',

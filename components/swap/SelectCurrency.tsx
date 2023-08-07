@@ -2,6 +2,7 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { Text, Button, Flex } from '../primitives'
 import { Modal } from '../common/Modal'
 import Image from 'next/image'
+import { useTokenList } from '../../hooks'
 
 type Props = {
   currency?: Currency
@@ -19,15 +20,8 @@ export type Currency = {
 
 export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
   const [open, setOpen] = useState(false)
-  const [tokens, setTokens] = useState<Currency[]>([])
 
-  // @TODO - make a hook and cache results
-  useEffect(() => {
-    fetch('https://www.gemini.com/uniswap/manifest.json')
-      .then((response) => response.json())
-      .then((data) => setTokens(data.tokens))
-      .catch((error) => console.error('Error:', error))
-  }, [])
+  const { tokens, loading, error } = useTokenList()
 
   return (
     <Modal
@@ -67,7 +61,7 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
           direction="column"
           css={{ overflowY: 'scroll', maxHeight: '600px', gap: '1' }}
         >
-          {tokens.map((token, index) => {
+          {tokens?.map((token, index) => {
             const isSelected = token?.address === currency?.address
             return (
               <Flex

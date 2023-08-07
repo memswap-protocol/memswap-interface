@@ -10,6 +10,7 @@ import { SystemStyleObject } from '../../styled-system/types'
 
 const StyledInput = styled('input', {
   base: {
+    all: 'unset',
     width: '100%',
     px: 16,
     py: 12,
@@ -18,6 +19,17 @@ const StyledInput = styled('input', {
     fontSize: 16,
     color: 'gray12',
     backgroundColor: 'gray3',
+    _placeholder: {
+      color: 'gray10',
+    },
+    '--focusColor': 'colors.primary11',
+    _focus: {
+      boxShadow: '0 0 0 2px var(--focusColor)',
+    },
+    _disabled: {
+      backgroundColor: 'gray2',
+      color: 'gray9',
+    },
     _spinButtons: {
       WebkitAppearance: 'none',
     },

@@ -7,6 +7,9 @@ import { mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { ThemeProvider } from 'next-themes'
 
+const WALLET_CONNECT_PROJECT_ID =
+  process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
   [publicProvider()]
@@ -14,7 +17,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: 'MemSwap Dapp',
-  projectId: 'YOUR_PROJECT_ID', // @TODO - configure wallet connect project id
+  projectId: WALLET_CONNECT_PROJECT_ID,
   chains,
 })
 
