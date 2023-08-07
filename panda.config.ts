@@ -1,21 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
-import {
-  crimson,
-  slate,
-  crimsonDark,
-  violetDark,
-  slateDark,
-  greenDark,
-  green,
-  violetDarkA,
-  whiteA,
-  redDark,
-  red,
-  blackA,
-  violet,
-  violetA,
-  indigo,
-} from '@radix-ui/colors'
+import { slate, violet, blue } from '@radix-ui/colors'
 
 export default defineConfig({
   // Whether to use css reset
@@ -67,6 +51,20 @@ export default defineConfig({
         primary10: { value: violet.violet10 },
         primary11: { value: violet.violet11 },
         primary12: { value: violet.violet12 },
+
+        // Secondary
+        secondary1: { value: blue.blue1 },
+        secondary2: { value: blue.blue2 },
+        secondary3: { value: blue.blue3 },
+        secondary4: { value: blue.blue4 },
+        secondary5: { value: blue.blue5 },
+        secondary6: { value: blue.blue6 },
+        secondary7: { value: blue.blue7 },
+        secondary8: { value: blue.blue8 },
+        secondary9: { value: blue.blue9 },
+        secondary10: { value: blue.blue10 },
+        secondary11: { value: blue.blue11 },
+        secondary12: { value: blue.blue12 },
 
         // Gray
         gray1: { value: slate.slate1 },

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { Currency } from '../components/swap/SelectCurrency'
 
 function useTokenList() {
-  const [tokens, setTokens] = useState<Currency[] | null>(null)
+  const [tokens, setTokens] = useState<Currency[] | undefined>()
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<Error | undefined>()
 
   useEffect(() => {
     async function fetchData() {

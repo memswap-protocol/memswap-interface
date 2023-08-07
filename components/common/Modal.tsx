@@ -37,7 +37,7 @@ export const Modal: FC<ComponentPropsWithoutRef<typeof DialogRoot> & Props> = ({
             zIndex: 9999,
           }}
         >
-          <Content css={{ padding: '5', sm: { maxWidth: 575 }, ...contentCss }}>
+          <Content css={{ padding: '5', ...contentCss }}>
             <DialogClose
               asChild
               style={{ position: 'absolute', right: 32, top: 32 }}

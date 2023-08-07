@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Text, Button, Flex } from '../primitives'
 import { Modal } from '../common/Modal'
 import Image from 'next/image'
@@ -61,6 +61,7 @@ export const SelectCurrency: FC<Props> = ({ currency, setCurrency }) => {
           direction="column"
           css={{ overflowY: 'scroll', maxHeight: '600px', gap: '1' }}
         >
+          {/* @TODO: add loading indicator and error state */}
           {tokens?.map((token, index) => {
             const isSelected = token?.address === currency?.address
             return (

@@ -17,6 +17,7 @@ const Button = styled('button', {
       boxShadow: '0 0 0 2px var(--focusColor)',
     },
     _disabled: {
+      cursor: 'not-allowed',
       backgroundColor: 'gray8',
       color: 'gray11',
       _hover: {
@@ -35,7 +36,7 @@ const Button = styled('button', {
         },
       },
       secondary: {
-        backgroundColor: 'secondary4',
+        backgroundColor: 'secondary8',
         color: 'primary12',
         '&:hover': {
           backgroundColor: 'secondary5',

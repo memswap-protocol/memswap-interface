@@ -19,6 +19,18 @@
   --colors-primary10: hsl(251, 48.1%, 53.5%);
   --colors-primary11: hsl(250, 43.0%, 48.0%);
   --colors-primary12: hsl(254, 60.0%, 18.5%);
+  --colors-secondary1: hsl(206, 100%, 99.2%);
+  --colors-secondary2: hsl(210, 100%, 98.0%);
+  --colors-secondary3: hsl(209, 100%, 96.5%);
+  --colors-secondary4: hsl(210, 98.8%, 94.0%);
+  --colors-secondary5: hsl(209, 95.0%, 90.1%);
+  --colors-secondary6: hsl(209, 81.2%, 84.5%);
+  --colors-secondary7: hsl(208, 77.5%, 76.9%);
+  --colors-secondary8: hsl(206, 81.9%, 65.3%);
+  --colors-secondary9: hsl(206, 100%, 50.0%);
+  --colors-secondary10: hsl(208, 100%, 47.3%);
+  --colors-secondary11: hsl(211, 100%, 43.2%);
+  --colors-secondary12: hsl(211, 100%, 15.0%);
   --colors-gray1: hsl(206, 30.0%, 98.8%);
   --colors-gray2: hsl(210, 16.7%, 97.6%);
   --colors-gray3: hsl(209, 13.3%, 95.3%);

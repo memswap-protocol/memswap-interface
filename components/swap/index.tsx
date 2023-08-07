@@ -1,14 +1,90 @@
-import { useState } from 'react'
-import { Flex, Text } from '../primitives'
+import { useCallback, useState } from 'react'
+import { Button, Flex, Text } from '../primitives'
 import { Currency, SelectCurrency } from './SelectCurrency'
 import Input from '../primitives/Input'
+import {
+  usePrepareContractWrite,
+  useContractWrite,
+  useBalance,
+  useAccount,
+} from 'wagmi'
+import MEMSWAP_ABI from '../../constants/memswapABI'
+import { Address, zeroAddress } from 'viem'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+
+const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
 
 const Swap = () => {
-  const [currencyFrom, setCurrencyFrom] = useState<Currency>()
-  const [currencyTo, setCurrencyTo] = useState<Currency>()
+  const [tokenIn, setTokenIn] = useState<Currency>()
+  const [tokenOut, setTokenOut] = useState<Currency>()
 
-  const [fromAmount, setFromAmount] = useState<number | undefined>()
-  const [toAmount, setToAmount] = useState<number | undefined>()
+  const [amountIn, setAmountIn] = useState('')
+  const [amountOut, setAmountOut] = useState('')
+
+  const { address } = useAccount()
+
+  const {
+    data: tokenInBalance,
+    isLoading: fetchingTokenInBalance,
+    isError: errorFetchingTokenInBalance,
+  } = useBalance({
+    address: tokenIn ? address : undefined,
+    watch: tokenIn ? true : false,
+    token:
+      tokenIn && tokenIn?.address !== zeroAddress
+        ? (tokenIn?.address as Address)
+        : undefined,
+  })
+
+  const {
+    data: tokenOutBalance,
+    isLoading: fetchingTokenOutBalance,
+    isError: errorFetchingTokenOutBalance,
+  } = useBalance({
+    address: tokenOut ? address : undefined,
+    watch: tokenOut ? true : false,
+    token:
+      tokenOut && tokenOut?.address !== zeroAddress
+        ? (tokenOut?.address as Address)
+        : undefined,
+  })
+
+  const { config, error } = usePrepareContractWrite({
+    address: MEMSWAP,
+    abi: MEMSWAP_ABI,
+    functionName: 'execute',
+    args: [], //@TODO: configure args
+    chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 1), //@TODO: configure multiple chains
+  })
+
+  const {
+    data,
+    write: executeSwap,
+    reset,
+    isLoading,
+    isSuccess,
+  } = useContractWrite({
+    ...config,
+    onError: (error) => {
+      console.log(error)
+    },
+    onSuccess: () => {
+      console.log('Successfully executed')
+    },
+  })
+
+  const switchTokens = useCallback(() => {
+    const currentTokenIn = tokenIn
+    const currentTokenOut = tokenOut
+    const currentAmountIn = amountIn
+    const currentAmountOut = amountOut
+
+    setTokenIn(currentTokenOut)
+    setTokenOut(currentTokenIn)
+    setAmountIn(currentAmountOut)
+    setAmountOut(currentAmountIn)
+  }, [tokenOut, tokenIn, amountOut, amountIn])
 
   return (
     <Flex
@@ -26,32 +102,95 @@ const Swap = () => {
         Swap
       </Text>
       <Flex
-        align="center"
+        align="start"
         justify="between"
-        css={{ backgroundColor: 'primary8', borderRadius: 8, p: '4' }}
+        css={{
+          position: 'relative',
+          backgroundColor: 'primary8',
+          borderRadius: 8,
+          p: '5',
+        }}
       >
         <Input
           type="number"
           placeholder="0"
-          value={fromAmount}
+          value={amountIn}
           onChange={(e) => {
             if (e.target.value) {
-              setFromAmount(Math.abs(Number(e.target.value)))
+              setAmountIn(e.target.value)
             } else {
-              setFromAmount(undefined)
+              setAmountIn('')
             }
           }}
         />
-        <SelectCurrency currency={currencyFrom} setCurrency={setCurrencyFrom} />
+        <Flex direction="column" align="start" css={{ gap: '2' }}>
+          <SelectCurrency currency={tokenIn} setCurrency={setTokenIn} />
+          {fetchingTokenInBalance ? <Text>Loading</Text> : null}
+          {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
+            <Text>Error</Text>
+          ) : null}
+          {tokenInBalance ? (
+            <Text>Balance: {tokenInBalance?.formatted}</Text>
+          ) : null}
+        </Flex>
+        <Button
+          size="xs"
+          css={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: -24,
+            margin: 'auto',
+            maxWidth: 'max-content',
+            height: 40,
+            width: 40,
+          }}
+          onClick={switchTokens}
+        >
+          <FontAwesomeIcon icon={faArrowDown} />
+        </Button>
       </Flex>
       <Flex
-        align="center"
+        align="start"
         justify="between"
-        css={{ backgroundColor: 'primary8', borderRadius: 8, p: '4' }}
+        css={{ backgroundColor: 'primary8', borderRadius: 8, p: '5' }}
       >
-        <Input type="number" placeholder="0" />
-        <SelectCurrency currency={currencyTo} setCurrency={setCurrencyTo} />
+        <Input
+          type="number"
+          placeholder="0"
+          value={amountOut}
+          onChange={(e) => {
+            if (e.target.value) {
+              setAmountOut(e.target.value)
+            } else {
+              setAmountOut('')
+            }
+          }}
+        />
+        <Flex direction="column" align="start" css={{ gap: '2' }}>
+          <SelectCurrency currency={tokenOut} setCurrency={setTokenOut} />
+          {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
+          {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
+            <Text>Error</Text>
+          ) : null}
+          {tokenOutBalance ? (
+            <Text>Balance: {tokenOutBalance?.formatted}</Text>
+          ) : null}
+        </Flex>
       </Flex>
+      <Button
+        color="secondary"
+        css={{ justifyContent: 'center' }}
+        disabled={
+          !address ||
+          !tokenIn ||
+          !tokenOut ||
+          !(tokenInBalance && tokenInBalance?.value > 0n)
+        }
+        onClick={executeSwap}
+      >
+        Swap
+      </Button>
     </Flex>
   )
 }

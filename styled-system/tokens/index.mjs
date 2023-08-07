@@ -75,6 +75,54 @@ const tokens = {
     "value": "hsl(254, 60.0%, 18.5%)",
     "variable": "var(--colors-primary12)"
   },
+  "colors.secondary1": {
+    "value": "hsl(206, 100%, 99.2%)",
+    "variable": "var(--colors-secondary1)"
+  },
+  "colors.secondary2": {
+    "value": "hsl(210, 100%, 98.0%)",
+    "variable": "var(--colors-secondary2)"
+  },
+  "colors.secondary3": {
+    "value": "hsl(209, 100%, 96.5%)",
+    "variable": "var(--colors-secondary3)"
+  },
+  "colors.secondary4": {
+    "value": "hsl(210, 98.8%, 94.0%)",
+    "variable": "var(--colors-secondary4)"
+  },
+  "colors.secondary5": {
+    "value": "hsl(209, 95.0%, 90.1%)",
+    "variable": "var(--colors-secondary5)"
+  },
+  "colors.secondary6": {
+    "value": "hsl(209, 81.2%, 84.5%)",
+    "variable": "var(--colors-secondary6)"
+  },
+  "colors.secondary7": {
+    "value": "hsl(208, 77.5%, 76.9%)",
+    "variable": "var(--colors-secondary7)"
+  },
+  "colors.secondary8": {
+    "value": "hsl(206, 81.9%, 65.3%)",
+    "variable": "var(--colors-secondary8)"
+  },
+  "colors.secondary9": {
+    "value": "hsl(206, 100%, 50.0%)",
+    "variable": "var(--colors-secondary9)"
+  },
+  "colors.secondary10": {
+    "value": "hsl(208, 100%, 47.3%)",
+    "variable": "var(--colors-secondary10)"
+  },
+  "colors.secondary11": {
+    "value": "hsl(211, 100%, 43.2%)",
+    "variable": "var(--colors-secondary11)"
+  },
+  "colors.secondary12": {
+    "value": "hsl(211, 100%, 15.0%)",
+    "variable": "var(--colors-secondary12)"
+  },
   "colors.gray1": {
     "value": "hsl(206, 30.0%, 98.8%)",
     "variable": "var(--colors-gray1)"
