@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Currency } from '../components/swap/SelectCurrency'
+import { Token } from '../components/swap/SelectCurrency'
 
 function useTokenList() {
-  const [tokens, setTokens] = useState<Currency[] | undefined>()
+  const [tokens, setTokens] = useState<Token[] | undefined>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | undefined>()
 
@@ -13,7 +13,7 @@ function useTokenList() {
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }
-        const data: { tokens: Currency[] } = await response.json()
+        const data: { tokens: Token[] } = await response.json()
         setTokens(data?.tokens)
       } catch (err: any) {
         setError(err)

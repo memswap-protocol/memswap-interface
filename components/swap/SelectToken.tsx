@@ -18,7 +18,7 @@ export type Token = {
   logoURI: string
 }
 
-export const SelectCurrency: FC<Props> = ({ token, setToken }) => {
+export const SelectToken: FC<Props> = ({ token, setToken }) => {
   const [open, setOpen] = useState(false)
 
   const { tokens, loading, error } = useTokenList()
@@ -42,7 +42,7 @@ export const SelectCurrency: FC<Props> = ({ token, setToken }) => {
               <Text ellipsify>{token?.symbol}</Text>
             </>
           ) : (
-            'Select Currency'
+            'Select Token'
           )}
         </Button>
       }

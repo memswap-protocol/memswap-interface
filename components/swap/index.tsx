@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
-import { Token, SelectCurrency } from './SelectCurrency'
+import { Token, SelectToken } from './SelectToken'
 import Input from '../primitives/Input'
 import {
   usePrepareContractWrite,
@@ -125,7 +125,7 @@ const Swap = () => {
           }}
         />
         <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectCurrency token={tokenIn} setToken={setTokenIn} />
+          <SelectToken token={tokenIn} setToken={setTokenIn} />
           {fetchingTokenInBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
             <Text>Error</Text>
@@ -170,7 +170,7 @@ const Swap = () => {
           }}
         />
         <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectCurrency token={tokenOut} setToken={setTokenOut} />
+          <SelectToken token={tokenOut} setToken={setTokenOut} />
           {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
             <Text>Error</Text>
