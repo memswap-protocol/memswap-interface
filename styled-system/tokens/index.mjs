@@ -28,51 +28,51 @@ const tokens = {
     "variable": "var(--fonts-body)"
   },
   "colors.primary1": {
-    "value": "hsl(206, 100%, 99.2%)",
+    "value": "hsl(255, 65.0%, 99.4%)",
     "variable": "var(--colors-primary1)"
   },
   "colors.primary2": {
-    "value": "hsl(210, 100%, 98.0%)",
+    "value": "hsl(252, 100%, 99.0%)",
     "variable": "var(--colors-primary2)"
   },
   "colors.primary3": {
-    "value": "hsl(209, 100%, 96.5%)",
+    "value": "hsl(252, 96.9%, 97.4%)",
     "variable": "var(--colors-primary3)"
   },
   "colors.primary4": {
-    "value": "hsl(210, 98.8%, 94.0%)",
+    "value": "hsl(252, 91.5%, 95.5%)",
     "variable": "var(--colors-primary4)"
   },
   "colors.primary5": {
-    "value": "hsl(209, 95.0%, 90.1%)",
+    "value": "hsl(252, 85.1%, 93.0%)",
     "variable": "var(--colors-primary5)"
   },
   "colors.primary6": {
-    "value": "hsl(209, 81.2%, 84.5%)",
+    "value": "hsl(252, 77.8%, 89.4%)",
     "variable": "var(--colors-primary6)"
   },
   "colors.primary7": {
-    "value": "hsl(208, 77.5%, 76.9%)",
+    "value": "hsl(252, 71.0%, 83.7%)",
     "variable": "var(--colors-primary7)"
   },
   "colors.primary8": {
-    "value": "hsl(206, 81.9%, 65.3%)",
+    "value": "hsl(252, 68.6%, 76.3%)",
     "variable": "var(--colors-primary8)"
   },
   "colors.primary9": {
-    "value": "hsl(206, 100%, 50.0%)",
+    "value": "hsl(252, 56.0%, 57.5%)",
     "variable": "var(--colors-primary9)"
   },
   "colors.primary10": {
-    "value": "hsl(208, 100%, 47.3%)",
+    "value": "hsl(251, 48.1%, 53.5%)",
     "variable": "var(--colors-primary10)"
   },
   "colors.primary11": {
-    "value": "hsl(211, 100%, 43.2%)",
+    "value": "hsl(250, 43.0%, 48.0%)",
     "variable": "var(--colors-primary11)"
   },
   "colors.primary12": {
-    "value": "hsl(211, 100%, 15.0%)",
+    "value": "hsl(254, 60.0%, 18.5%)",
     "variable": "var(--colors-primary12)"
   },
   "colors.gray1": {

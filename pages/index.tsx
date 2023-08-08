@@ -13,11 +13,10 @@ const Home: NextPage = () => {
         direction="column"
         css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
-        <Text style="subtitle1" css={{ textAlign: 'center' }}>
-          A Decentralized “Intents-based” Protocol for Efficient and Transparent
-          Token Swaps Leveraging the Ethereum Mempool
-        </Text>
         <Swap />
+        <Text style="h4" css={{ textAlign: 'center', maxWidth: 500 }}>
+          A permissionless, general, and transparent swap aggregator
+        </Text>
       </Flex>
     </Layout>
   )

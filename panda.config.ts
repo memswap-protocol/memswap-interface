@@ -39,18 +39,18 @@ export default defineConfig({
       },
       colors: {
         // Primary
-        primary1: { value: blue.blue1 },
-        primary2: { value: blue.blue2 },
-        primary3: { value: blue.blue3 },
-        primary4: { value: blue.blue4 },
-        primary5: { value: blue.blue5 },
-        primary6: { value: blue.blue6 },
-        primary7: { value: blue.blue7 },
-        primary8: { value: blue.blue8 },
-        primary9: { value: blue.blue9 },
-        primary10: { value: blue.blue10 },
-        primary11: { value: blue.blue11 },
-        primary12: { value: blue.blue12 },
+        primary1: { value: violet.violet1 },
+        primary2: { value: violet.violet2 },
+        primary3: { value: violet.violet3 },
+        primary4: { value: violet.violet4 },
+        primary5: { value: violet.violet5 },
+        primary6: { value: violet.violet6 },
+        primary7: { value: violet.violet7 },
+        primary8: { value: violet.violet8 },
+        primary9: { value: violet.violet9 },
+        primary10: { value: violet.violet10 },
+        primary11: { value: violet.violet11 },
+        primary12: { value: violet.violet12 },
 
         // Gray
         gray1: { value: slate.slate1 },
@@ -69,7 +69,7 @@ export default defineConfig({
     },
     semanticTokens: {
       colors: {
-        neutralBg: { value: { base: 'white', _dark: slate.slate12 } },
+        neutralBg: { value: { base: slate.slate1, _dark: slate.slate12 } },
         neutralText: { value: { base: slate.slate12, _dark: 'white' } },
       },
     },

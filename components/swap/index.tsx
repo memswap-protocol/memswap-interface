@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
-import { Token, SelectToken } from './SelectToken'
+import { Token, SelectTokenModal } from './SelectTokenModal'
 import Input from '../primitives/Input'
 import {
   usePrepareContractWrite,
@@ -12,6 +12,15 @@ import MEMSWAP_ABI from '../../constants/memswapABI'
 import { Address, zeroAddress } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { TradeType } from '@uniswap/sdk-core'
+import { Trade as V2TradeSDK } from '@uniswap/v2-sdk'
+import { Trade as V3TradeSDK } from '@uniswap/v3-sdk'
+import {
+  MixedRouteTrade,
+  MixedRouteSDK,
+  Trade as RouterTrade,
+} from '@uniswap/router-sdk'
+import { SwapRouter, RouterTradeType } from '@uniswap/universal-router-sdk'
 
 const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
 
@@ -23,6 +32,8 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
 
   const { address } = useAccount()
+
+  // SwapRouter.swapCallParameters({RouterTradeType.UniswapTrade, })
 
   const {
     data: tokenInBalance,
@@ -55,7 +66,7 @@ const Swap = () => {
     abi: MEMSWAP_ABI,
     functionName: 'execute',
     args: [], //@TODO: configure args
-    chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 1), //@TODO: configure multiple chains
+    chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 1),
   })
 
   const {
@@ -91,14 +102,15 @@ const Swap = () => {
       direction="column"
       css={{
         width: '100%',
-        backgroundColor: 'primary11',
+        backgroundColor: 'white',
+        boxShadow: '0px 0px 50px 0px #0000001F',
         borderRadius: 8,
         p: '4',
         gap: '1',
         maxWidth: 600,
       }}
     >
-      <Text style="h6" css={{ mb: '3', color: 'white' }}>
+      <Text style="h5" css={{ mb: '3' }}>
         Swap
       </Text>
       <Flex
@@ -106,7 +118,7 @@ const Swap = () => {
         justify="between"
         css={{
           position: 'relative',
-          backgroundColor: 'primary8',
+          backgroundColor: 'gray8',
           borderRadius: 8,
           p: '5',
         }}
@@ -124,8 +136,8 @@ const Swap = () => {
             }
           }}
         />
-        <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectToken token={tokenIn} setToken={setTokenIn} />
+        <Flex direction="column" align="end" css={{ gap: '2' }}>
+          <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
           {fetchingTokenInBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
             <Text>Error</Text>
@@ -136,6 +148,7 @@ const Swap = () => {
         </Flex>
         <Button
           size="xs"
+          color="gray4"
           css={{
             position: 'absolute',
             left: 0,
@@ -154,7 +167,7 @@ const Swap = () => {
       <Flex
         align="start"
         justify="between"
-        css={{ backgroundColor: 'primary8', borderRadius: 8, p: '5' }}
+        css={{ backgroundColor: 'gray8', borderRadius: 8, p: '5' }}
       >
         <Input
           type="number"
@@ -169,8 +182,8 @@ const Swap = () => {
             }
           }}
         />
-        <Flex direction="column" align="start" css={{ gap: '2' }}>
-          <SelectToken token={tokenOut} setToken={setTokenOut} />
+        <Flex direction="column" align="end" css={{ gap: '2' }}>
+          <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
           {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
           {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
             <Text>Error</Text>
@@ -181,7 +194,7 @@ const Swap = () => {
         </Flex>
       </Flex>
       <Button
-        color="secondary"
+        color="primary"
         css={{ justifyContent: 'center' }}
         disabled={
           !address ||
@@ -191,7 +204,7 @@ const Swap = () => {
         }
         onClick={executeSwap}
       >
-        Swap
+        SWAP
       </Button>
     </Flex>
   )

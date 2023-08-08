@@ -27,7 +27,7 @@ const Content = styled(DialogPrimitive.Content, {
     transform: 'translateX(-50%)',
     minWidth: '90vw',
     sm: {
-      minWidth: 'unset',
+      minWidth: '400px',
     },
     maxWidth: '90vw',
     maxHeight: '85vh',
