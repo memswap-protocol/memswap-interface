@@ -6,6 +6,8 @@ import { useBalance, useAccount } from 'wagmi'
 import { Address, zeroAddress } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { SwapButton } from './SwapButton'
+import { quote } from '../utils/quote'
 
 const Swap = () => {
   const [tokenIn, setTokenIn] = useState<Token>()
@@ -15,6 +17,8 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
 
   const { address } = useAccount()
+
+  // const priceQuote = quote({ ...tokenIn }, tokenOut, feeAmount, amountIn)
 
   const {
     data: tokenInBalance,
@@ -150,19 +154,12 @@ const Swap = () => {
           ) : null}
         </Flex>
       </Flex>
-      {/* <Button
-        color="primary"
-        css={{ justifyContent: 'center' }}
-        disabled={
-          !address ||
-          !tokenIn ||
-          !tokenOut ||
-          !(tokenInBalance && tokenInBalance?.value > 0n)
-        }
-        onClick={executeSwap}
-      >
-        SWAP
-      </Button> */}
+      <SwapButton
+        address={address}
+        tokenIn={tokenIn}
+        tokenOut={tokenOut}
+        tokenInBalance={tokenInBalance}
+      />
     </Flex>
   )
 }
