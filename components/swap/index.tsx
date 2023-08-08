@@ -2,27 +2,10 @@ import { useCallback, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
 import { Token, SelectTokenModal } from './SelectTokenModal'
 import Input from '../primitives/Input'
-import {
-  usePrepareContractWrite,
-  useContractWrite,
-  useBalance,
-  useAccount,
-} from 'wagmi'
-import MEMSWAP_ABI from '../../constants/memswapABI'
+import { useBalance, useAccount } from 'wagmi'
 import { Address, zeroAddress } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
-import { TradeType } from '@uniswap/sdk-core'
-import { Trade as V2TradeSDK } from '@uniswap/v2-sdk'
-import { Trade as V3TradeSDK } from '@uniswap/v3-sdk'
-import {
-  MixedRouteTrade,
-  MixedRouteSDK,
-  Trade as RouterTrade,
-} from '@uniswap/router-sdk'
-import { SwapRouter, RouterTradeType } from '@uniswap/universal-router-sdk'
-
-const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
 
 const Swap = () => {
   const [tokenIn, setTokenIn] = useState<Token>()
@@ -32,8 +15,6 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
 
   const { address } = useAccount()
-
-  // SwapRouter.swapCallParameters({RouterTradeType.UniswapTrade, })
 
   const {
     data: tokenInBalance,
@@ -59,30 +40,6 @@ const Swap = () => {
       tokenOut && tokenOut?.address !== zeroAddress
         ? (tokenOut?.address as Address)
         : undefined,
-  })
-
-  const { config, error } = usePrepareContractWrite({
-    address: MEMSWAP,
-    abi: MEMSWAP_ABI,
-    functionName: 'execute',
-    args: [], //@TODO: configure args
-    chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 1),
-  })
-
-  const {
-    data,
-    write: executeSwap,
-    reset,
-    isLoading,
-    isSuccess,
-  } = useContractWrite({
-    ...config,
-    onError: (error) => {
-      console.log(error)
-    },
-    onSuccess: () => {
-      console.log('Successfully executed')
-    },
   })
 
   const switchTokens = useCallback(() => {
@@ -193,7 +150,7 @@ const Swap = () => {
           ) : null}
         </Flex>
       </Flex>
-      <Button
+      {/* <Button
         color="primary"
         css={{ justifyContent: 'center' }}
         disabled={
@@ -205,7 +162,7 @@ const Swap = () => {
         onClick={executeSwap}
       >
         SWAP
-      </Button>
+      </Button> */}
     </Flex>
   )
 }

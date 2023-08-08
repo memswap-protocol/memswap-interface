@@ -16,7 +16,8 @@ export default defineConfig({
   exclude: [],
   conditions: {
     extend: {
-      dark: '._dark &, [data-theme="_dark"] & [data-color-mode=_dark] &',
+      // @TODO: If we want to support dark mode
+      // dark: '._dark &, [data-theme="_dark"] & [data-color-mode=_dark] &',
       light: '.light &',
       typeNumber: '&[type=number]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',

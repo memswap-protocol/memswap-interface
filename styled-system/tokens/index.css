@@ -71,7 +71,7 @@
   --colors-neutral-text: hsl(206, 24.0%, 9.0%)
 }
 
-:where(._dark, [data-theme="_dark"] [data-color-mode=_dark]) {
+.dark {
   --colors-neutral-bg: hsl(206, 24.0%, 9.0%);
   --colors-neutral-text: white
 }
