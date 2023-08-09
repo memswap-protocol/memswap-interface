@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
 
 const WALLET_CONNECT_PROJECT_ID =
@@ -12,7 +13,10 @@ const WALLET_CONNECT_PROJECT_ID =
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
-  [publicProvider()] //@TODO: configure alchemy provider and api key
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
+    publicProvider(),
+  ]
 )
 
 const { connectors } = getDefaultWallets({

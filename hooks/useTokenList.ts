@@ -15,6 +15,8 @@ function useTokenList() {
           throw new Error('Network response was not ok')
         }
         const data: { tokens: Token[] } = await response.json()
+
+        // @TODO: add other default tokens
         setTokens([
           {
             chainId: 1,

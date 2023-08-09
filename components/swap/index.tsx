@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
 import { Token, SelectTokenModal } from './SelectTokenModal'
+import { Token as UniswapToken } from '@uniswap/sdk-core'
 import Input from '../primitives/Input'
 import { useBalance, useAccount } from 'wagmi'
 import { Address, zeroAddress } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapButton } from './SwapButton'
-import { quote } from '../utils/quote'
+import useQuote from '../../hooks/useQuote'
 
 const Swap = () => {
   const [tokenIn, setTokenIn] = useState<Token>()
@@ -18,7 +19,32 @@ const Swap = () => {
 
   const { address } = useAccount()
 
-  // const priceQuote = quote({ ...tokenIn }, tokenOut, feeAmount, amountIn)
+  const test = useQuote(
+    new UniswapToken(
+      tokenIn?.chainId || 1,
+      (tokenIn?.address as Address) ||
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      tokenIn?.decimals || 16,
+      tokenIn?.symbol,
+      tokenIn?.name,
+      undefined
+    ),
+    new UniswapToken(
+      tokenOut?.chainId || 1,
+      (tokenOut?.address as Address) ||
+        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      tokenOut?.decimals || 16,
+      tokenOut?.symbol,
+      tokenOut?.name,
+      undefined
+    ),
+    100,
+    Number(amountIn)
+  )
+
+  console.log(test)
+
+  // console.log(executionPrice, midPrice, error)
 
   const {
     data: tokenInBalance,
