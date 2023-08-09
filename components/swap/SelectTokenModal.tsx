@@ -6,13 +6,16 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Text, Button, Flex, Input } from '../primitives'
+import { Text, Button, Flex, Input, Box } from '../primitives'
 import { Modal } from '../common/Modal'
 import { useTokenList } from '../../hooks'
 import Fuse from 'fuse.js'
 import { FixedSizeList } from 'react-window'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons'
 
 const fuseSearchOptions = {
   includeScore: true,
@@ -70,11 +73,12 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
         align="center"
         css={{
           cursor: 'pointer',
-          borderRadius: 4,
+          borderRadius: 16,
           p: '1',
+          px: '2',
           gap: '3',
-          backgroundColor: isSelected ? 'primary11' : 'transparent',
-          _hover: { backgroundColor: 'gray8' },
+          backgroundColor: isSelected ? 'gray5' : 'transparent',
+          _hover: { backgroundColor: 'gray3' },
         }}
         onClick={() => {
           setToken(currentToken)
@@ -91,9 +95,14 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
             borderRadius: '50%',
           }}
         />
-        <Text style="subtitle1" ellipsify>
-          {currentToken?.name} ({currentToken?.symbol})
-        </Text>
+        <Flex direction="column" css={{}}>
+          <Text style="h6" ellipsify>
+            {currentToken?.name}
+          </Text>
+          <Text style="subtitle2" color="subtle">
+            {currentToken?.symbol}
+          </Text>
+        </Flex>
       </Flex>
     )
   }
@@ -102,9 +111,14 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
     <Modal
       trigger={
         <Button
-          color="gray4"
+          color={token ? 'white' : 'black'}
           size="medium"
-          css={{ justifyContent: 'space-between' }}
+          corners="pill"
+          css={{
+            justifyContent: 'space-between',
+            flexShrink: 0,
+            width: 'max-content',
+          }}
         >
           {token ? (
             <>
@@ -134,19 +148,24 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
     >
       <Flex
         direction="column"
-        css={{ width: '100%', height: '100%', gap: '2' }}
+        css={{ width: '100%', height: '100%', gap: '3' }}
       >
-        <Text style="h6">Select a token</Text>
+        <Text style="h5">Select a token</Text>
         <Input
           placeholder="Search name or address"
+          icon={
+            <Box css={{ color: 'gray9' }}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Box>
+          }
           css={{ mb: '1' }}
           onChange={(e) => handleSearch(e)}
         />
         {/* @TODO: add loading indicator and error state */}
         <FixedSizeList
           itemCount={tokens?.length || 0}
-          height={300}
-          itemSize={38}
+          height={400}
+          itemSize={50}
           width={'100%'}
         >
           {TokenRow}

@@ -1,5 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
-import { slate, violet, blue } from '@radix-ui/colors'
+import { slate, blue, blackA, red } from '@radix-ui/colors'
 
 export default defineConfig({
   // Whether to use css reset
@@ -40,18 +40,18 @@ export default defineConfig({
       },
       colors: {
         // Primary
-        primary1: { value: violet.violet1 },
-        primary2: { value: violet.violet2 },
-        primary3: { value: violet.violet3 },
-        primary4: { value: violet.violet4 },
-        primary5: { value: violet.violet5 },
-        primary6: { value: violet.violet6 },
-        primary7: { value: violet.violet7 },
-        primary8: { value: violet.violet8 },
-        primary9: { value: violet.violet9 },
-        primary10: { value: violet.violet10 },
-        primary11: { value: violet.violet11 },
-        primary12: { value: violet.violet12 },
+        primary1: { value: blue.blue1 },
+        primary2: { value: blue.blue2 },
+        primary3: { value: blue.blue3 },
+        primary4: { value: blue.blue4 },
+        primary5: { value: blue.blue5 },
+        primary6: { value: blue.blue6 },
+        primary7: { value: blue.blue7 },
+        primary8: { value: blue.blue8 },
+        primary9: { value: blue.blue9 },
+        primary10: { value: blue.blue10 },
+        primary11: { value: blue.blue11 },
+        primary12: { value: blue.blue12 },
 
         // Gray
         gray1: { value: slate.slate1 },
@@ -66,6 +66,12 @@ export default defineConfig({
         gray10: { value: slate.slate10 },
         gray11: { value: slate.slate11 },
         gray12: { value: slate.slate12 },
+
+        // BlackA
+        blackA10: { value: blackA.blackA10 },
+
+        // Red
+        red11: { value: red.red11 },
       },
     },
     semanticTokens: {

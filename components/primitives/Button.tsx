@@ -60,6 +60,15 @@ const Button = styled('button', {
         backgroundColor: 'transparent',
         p: 0,
       },
+      white: {
+        '--borderColor': 'colors.gray6',
+        backgroundColor: 'white',
+        border: '1px solid var(--borderColor)',
+      },
+      black: {
+        backgroundColor: 'gray12',
+        color: 'white',
+      },
     },
     corners: {
       square: {

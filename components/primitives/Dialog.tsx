@@ -18,9 +18,7 @@ const Overlay = styled(DialogPrimitive.Overlay, {
 const Content = styled(DialogPrimitive.Content, {
   base: {
     backgroundColor: 'neutralBg',
-    '--borderColor': 'colors.neutralText',
-    border: '1px solid var(--borderColor)',
-    borderRadius: 8,
+    borderRadius: 16,
     position: 'fixed',
     top: '12.5%',
     left: '50%',
@@ -33,7 +31,6 @@ const Content = styled(DialogPrimitive.Content, {
     maxHeight: '85vh',
     overflowY: 'auto',
     _focus: { outline: 'none' },
-    zIndex: 5000,
   },
 })
 

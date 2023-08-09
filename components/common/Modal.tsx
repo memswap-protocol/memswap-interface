@@ -35,6 +35,7 @@ export const Modal: FC<ComponentPropsWithoutRef<typeof DialogRoot> & Props> = ({
             right: 0,
             bottom: 0,
             zIndex: 9999,
+            backgroundColor: 'blackA10',
           }}
         >
           <Content css={{ padding: '5', ...contentCss }}>

@@ -36,10 +36,9 @@ const StyledInput = styled('input', {
   },
 
   variants: {
-    color: {
-      error: {
-        // $$errorColor: '$colors$red7',
-        // boxShadow: '0 0 0 2px $$errorColor',
+    size: {
+      large: {
+        fontSize: 32,
       },
     },
   },
@@ -54,9 +53,9 @@ const Input = forwardRef<
 >(({ children, icon, containerCss, ...props }, forwardedRef) => (
   <Flex css={{ ...containerCss, position: 'relative' }}>
     {icon && (
-      <div style={{ position: 'absolute', top: 16, left: 16 }}>{icon}</div>
+      <div style={{ position: 'absolute', top: 12, left: 16 }}>{icon}</div>
     )}
-    <StyledInput css={{ pl: icon ? 48 : 16 }} ref={forwardedRef} {...props} />
+    <StyledInput paddingLeft={icon ? 42 : 16} ref={forwardedRef} {...props} />
   </Flex>
 ))
 

@@ -1,8 +1,9 @@
 import { FC } from 'react'
 import { Button } from '../primitives'
 import { Token } from './SelectTokenModal'
-import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import MEMSWAP_ABI from '../../constants/memswapABI'
+import { useAccount } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 type FetchBalanceResult = {
   decimals: number
@@ -16,6 +17,10 @@ type Props = {
   tokenIn?: Token
   tokenOut?: Token
   tokenInBalance?: FetchBalanceResult
+  amountIn: string
+  amountOut: string
+  isFetchingQuote: boolean
+  errorFetchingQuote: boolean
 }
 
 const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
@@ -26,6 +31,22 @@ export const SwapButton: FC<Props> = ({
   tokenOut,
   tokenInBalance,
 }) => {
+  const { isDisconnected } = useAccount()
+
+  const { openConnectModal } = useConnectModal()
+
+  if (isDisconnected) {
+    return (
+      <Button
+        color="primary"
+        css={{ justifyContent: 'center' }}
+        onClick={openConnectModal}
+      >
+        Connect Wallet
+      </Button>
+    )
+  }
+
   return (
     <Button
       color="primary"
@@ -38,7 +59,7 @@ export const SwapButton: FC<Props> = ({
       }
       onClick={() => {}}
     >
-      SWAP
+      Swap
     </Button>
   )
 }

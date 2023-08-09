@@ -14,10 +14,17 @@ const Layout: FC<Props> = ({ children }) => {
           background: 'neutralBg',
           height: '100%',
           minHeight: '100vh',
-          pt: 112,
+          pt: 20,
+          sm: { pt: 56 },
         }}
       >
-        <Box css={{ maxWidth: 1920, mx: 'auto' }}>
+        <Box
+          css={{
+            width: '100%',
+            maxWidth: 1920,
+            mx: 'auto',
+          }}
+        >
           <Navbar />
           <main>{children}</main>
         </Box>

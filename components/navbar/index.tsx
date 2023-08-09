@@ -1,6 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Flex } from '../primitives'
 import Image from 'next/image'
+import { ConnectWalletButton } from './ConnectWalletButton'
 
 const Navbar = () => {
   return (
@@ -8,25 +9,24 @@ const Navbar = () => {
       align="center"
       justify="between"
       css={{
-        position: 'fixed',
-        top: 10,
-        sm: {
-          top: 56,
-        },
-        left: 0,
-        right: 0,
-        margin: 'auto',
+        mx: '3',
+        boxSizing: 'border-box',
+        sm: { mx: 'auto' },
         width: '100%',
         maxWidth: 1200,
         backgroundColor: 'white',
         borderRadius: 100,
-        px: '5',
-        py: '2',
+        px: 24,
+        py: '3',
         boxShadow: '0px 0px 50px 0px #0000001F',
       }}
     >
       <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
-      <ConnectButton />
+      <ConnectWalletButton
+        css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
+      >
+        Connect
+      </ConnectWalletButton>
     </Flex>
   )
 }

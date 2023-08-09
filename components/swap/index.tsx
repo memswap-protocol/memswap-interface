@@ -1,14 +1,17 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
 import { Token, SelectTokenModal } from './SelectTokenModal'
-import { Token as UniswapToken } from '@uniswap/sdk-core'
 import Input from '../primitives/Input'
 import { useBalance, useAccount } from 'wagmi'
-import { Address, zeroAddress } from 'viem'
+import { Address, formatUnits, zeroAddress } from 'viem'
+import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapButton } from './SwapButton'
 import useQuote from '../../hooks/useQuote'
+import { FeeAmount } from '@uniswap/v3-sdk'
+import { formatNumber } from '../../utils/numbers'
+import { QuoteInfo } from './QuoteInfo'
 
 const Swap = () => {
   const [tokenIn, setTokenIn] = useState<Token>()
@@ -17,34 +20,19 @@ const Swap = () => {
   const [amountIn, setAmountIn] = useState('')
   const [amountOut, setAmountOut] = useState('')
 
+  const [debouncedAmountIn] = useDebounce(amountIn, 500)
+
   const { address } = useAccount()
 
-  const test = useQuote(
-    new UniswapToken(
-      tokenIn?.chainId || 1,
-      (tokenIn?.address as Address) ||
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      tokenIn?.decimals || 16,
-      tokenIn?.symbol,
-      tokenIn?.name,
-      undefined
-    ),
-    new UniswapToken(
-      tokenOut?.chainId || 1,
-      (tokenOut?.address as Address) ||
-        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      tokenOut?.decimals || 16,
-      tokenOut?.symbol,
-      tokenOut?.name,
-      undefined
-    ),
-    100,
-    Number(amountIn)
-  )
+  const {
+    quotedAmountOut,
+    isLoading: isFetchingQuote,
+    isError: errorFetchingQuote,
+  } = useQuote(Number(debouncedAmountIn), FeeAmount.LOWEST, tokenIn, tokenOut)
 
-  console.log(test)
-
-  // console.log(executionPrice, midPrice, error)
+  useEffect(() => {
+    setAmountOut(quotedAmountOut ?? '')
+  }, [quotedAmountOut])
 
   const {
     data: tokenInBalance,
@@ -75,13 +63,9 @@ const Swap = () => {
   const switchTokens = useCallback(() => {
     const currentTokenIn = tokenIn
     const currentTokenOut = tokenOut
-    const currentAmountIn = amountIn
-    const currentAmountOut = amountOut
 
     setTokenIn(currentTokenOut)
     setTokenOut(currentTokenIn)
-    setAmountIn(currentAmountOut)
-    setAmountOut(currentAmountIn)
   }, [tokenOut, tokenIn, amountOut, amountIn])
 
   return (
@@ -93,7 +77,7 @@ const Swap = () => {
         boxShadow: '0px 0px 50px 0px #0000001F',
         borderRadius: 8,
         p: '4',
-        gap: '1',
+        gap: '3',
         maxWidth: 600,
       }}
     >
@@ -101,41 +85,66 @@ const Swap = () => {
         Swap
       </Text>
       <Flex
-        align="start"
-        justify="between"
+        direction="column"
         css={{
           position: 'relative',
-          backgroundColor: 'gray8',
+          backgroundColor: 'gray2',
           borderRadius: 8,
           p: '5',
         }}
       >
-        <Input
-          type="number"
-          placeholder="0"
-          css={{ maxWidth: 100, sm: { maxWidth: 'none' } }}
-          value={amountIn}
-          onChange={(e) => {
-            if (e.target.value) {
-              setAmountIn(e.target.value)
-            } else {
-              setAmountIn('')
-            }
+        <Text style="subtitle2" color="subtle">
+          Pay
+        </Text>
+        <Flex
+          align="start"
+          justify="between"
+          css={{
+            gap: '4',
           }}
-        />
-        <Flex direction="column" align="end" css={{ gap: '2' }}>
-          <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
-          {fetchingTokenInBalance ? <Text>Loading</Text> : null}
-          {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
-            <Text>Error</Text>
-          ) : null}
-          {tokenInBalance ? (
-            <Text>Balance: {tokenInBalance?.formatted}</Text>
-          ) : null}
+        >
+          <Flex direction="column" css={{}}>
+            <Input
+              type="number"
+              placeholder="0"
+              size="large"
+              css={{
+                backgroundColor: 'transaparent',
+                borderRadius: 0,
+                p: 0,
+                _focus: { boxShadow: 'none' },
+              }}
+              value={amountIn}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setAmountIn(e.target.value)
+                } else {
+                  setAmountIn('')
+                }
+              }}
+            />
+          </Flex>
+          <Flex direction="column" align="end" css={{ gap: '2' }}>
+            <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
+            {fetchingTokenInBalance ? <Text>Loading</Text> : null}
+            {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
+              <Text>Error</Text>
+            ) : null}
+            {tokenInBalance ? (
+              <Text style="subtitle2" color="subtle" ellipsify>
+                Balance:{' '}
+                {formatNumber(
+                  formatUnits(tokenInBalance?.value, tokenInBalance?.decimals),
+                  8
+                )}
+              </Text>
+            ) : null}
+          </Flex>
         </Flex>
         <Button
           size="xs"
-          color="gray4"
+          color="white"
+          corners="circle"
           css={{
             position: 'absolute',
             left: 0,
@@ -145,46 +154,79 @@ const Swap = () => {
             maxWidth: 'max-content',
             height: 40,
             width: 40,
+            zIndex: 2,
+            color: 'gray9',
           }}
           onClick={switchTokens}
         >
-          <FontAwesomeIcon icon={faArrowDown} />
+          <FontAwesomeIcon icon={faChevronDown} />
         </Button>
       </Flex>
       <Flex
-        align="start"
-        justify="between"
-        css={{ backgroundColor: 'gray8', borderRadius: 8, p: '5' }}
+        direction="column"
+        css={{
+          position: 'relative',
+          backgroundColor: 'gray2',
+          borderRadius: 8,
+          p: '5',
+        }}
       >
-        <Input
-          type="number"
-          placeholder="0"
-          css={{ maxWidth: 100, sm: { maxWidth: 'none' } }}
-          value={amountOut}
-          onChange={(e) => {
-            if (e.target.value) {
-              setAmountOut(e.target.value)
-            } else {
-              setAmountOut('')
-            }
-          }}
-        />
-        <Flex direction="column" align="end" css={{ gap: '2' }}>
-          <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
-          {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
-          {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
-            <Text>Error</Text>
-          ) : null}
-          {tokenOutBalance ? (
-            <Text>Balance: {tokenOutBalance?.formatted}</Text>
-          ) : null}
+        <Text style="subtitle2" color="subtle">
+          Receive
+        </Text>
+        <Flex align="start" justify="between" css={{ gap: '4' }}>
+          <Input
+            type="number"
+            disabled={true}
+            placeholder="0"
+            size="large"
+            css={{
+              backgroundColor: 'transaparent',
+              p: 0,
+              borderRadius: 0,
+              _focus: { boxShadow: 'none' },
+            }}
+            value={formatNumber(amountOut, 8).replace(',', '')}
+            onChange={(e) => {
+              if (e.target.value) {
+                setAmountOut(e.target.value)
+              } else {
+                setAmountOut('')
+              }
+            }}
+          />
+          <Flex direction="column" align="end" css={{ gap: '2' }}>
+            <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
+            {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
+            {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
+              <Text>Error</Text>
+            ) : null}
+            {tokenOutBalance ? (
+              <Text style="subtitle2" color="subtle" ellipsify>
+                Balance: {tokenOutBalance?.formatted}
+              </Text>
+            ) : null}
+          </Flex>
         </Flex>
       </Flex>
+      <QuoteInfo
+        errorFetchingQuote={errorFetchingQuote}
+        isFetchingQuote={isFetchingQuote}
+        quotedAmountOut={quotedAmountOut}
+        tokenIn={tokenIn}
+        tokenOut={tokenOut}
+        amountIn={amountIn}
+        amountOut={amountOut}
+      />
       <SwapButton
         address={address}
         tokenIn={tokenIn}
         tokenOut={tokenOut}
+        amountIn={amountIn}
+        amountOut={amountOut}
         tokenInBalance={tokenInBalance}
+        isFetchingQuote={isFetchingQuote}
+        errorFetchingQuote={errorFetchingQuote}
       />
     </Flex>
   )
