@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
 import MEMSWAP_ABI from '../../constants/memswapABI'
-import { mainnet, useAccount } from 'wagmi'
+import { mainnet, useAccount, useNetwork } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import {
@@ -26,7 +26,6 @@ import {
   Address,
 } from 'viem'
 import { signTypedData, sendTransaction } from '@wagmi/core'
-import { CHAIN_ID } from '../../pages/_app'
 
 type FetchBalanceResult = {
   decimals: number
@@ -63,6 +62,7 @@ export const SwapModal: FC<Props> = ({
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
+  const { chain: activeChain } = useNetwork()
   const { address, isDisconnected } = useAccount()
   const { openConnectModal } = useConnectModal()
 
@@ -71,7 +71,9 @@ export const SwapModal: FC<Props> = ({
   const [error, setError] = useState<Error | undefined>()
 
   const viemChain =
-    Object.values(allChains).find((chain) => chain.id === CHAIN_ID) || mainnet
+    Object.values(allChains).find(
+      (chain) => chain.id === (activeChain?.id || 1)
+    ) || mainnet
 
   const publicClient = createPublicClient({
     chain: viemChain,
@@ -111,7 +113,7 @@ export const SwapModal: FC<Props> = ({
         domain: {
           name: 'Memswap',
           version: '1.0',
-          chainId: CHAIN_ID,
+          chainId: activeChain?.id || 1,
           verifyingContract: MEMSWAP,
         },
         types: {
@@ -225,7 +227,7 @@ export const SwapModal: FC<Props> = ({
 
       console.log(encodedAbiParameters)
 
-      const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
+      const endcodedData = encodedFunctionData + encodedAbiParameters
 
       console.log('encoded data: ', endcodedData)
 

@@ -8,8 +8,6 @@ import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
 
-export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 1
-
 const WALLET_CONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
 

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Token } from '../components/swap/SelectTokenModal'
 import { zeroAddress } from 'viem'
-import { CHAIN_ID } from '../pages/_app'
+import { useNetwork } from 'wagmi'
 
 function useTokenList() {
+  const { chain: activeChain } = useNetwork()
   const [tokens, setTokens] = useState<Token[] | undefined>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | undefined>()
@@ -17,9 +18,10 @@ function useTokenList() {
         }
         const data: { tokens: Token[] } = await response.json()
 
-        console.log('CHAIN_ID: ', CHAIN_ID)
         const filteredTokens =
-          data?.tokens?.filter((token) => token?.chainId === CHAIN_ID) || []
+          data?.tokens?.filter(
+            (token) => token?.chainId === (activeChain?.id || 1)
+          ) || []
 
         // @TODO: add other default tokens
         setTokens([
@@ -41,7 +43,7 @@ function useTokenList() {
       }
     }
     fetchData()
-  }, [])
+  }, [activeChain])
 
   return { tokens, loading, error }
 }

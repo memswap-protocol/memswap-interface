@@ -2,10 +2,9 @@ import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount, computePoolAddress } from '@uniswap/v3-sdk'
 import { Address, formatUnits, parseUnits } from 'viem'
-import { usePrepareContractWrite } from 'wagmi'
+import { useNetwork, usePrepareContractWrite } from 'wagmi'
 
 import { Token as UniswapToken } from '@uniswap/sdk-core'
-import { CHAIN_ID } from '../pages/_app'
 
 // @TODO: configure as env variables
 export const POOL_FACTORY_CONTRACT_ADDRESS =
@@ -19,6 +18,7 @@ const useQuote = (
   tokenIn?: Token,
   tokenOut?: Token
 ) => {
+  const { chain } = useNetwork()
   // const tokenA = new UniswapToken(
   //   tokenIn?.chainId || 1,
   //   (tokenIn?.address as Address) ||
@@ -56,7 +56,7 @@ const useQuote = (
   )
 
   const { data, config, isLoading, isError, error } = usePrepareContractWrite({
-    chainId: CHAIN_ID,
+    chainId: chain?.id || 1,
     address:
       tokenIn && tokenOut && amountIn ? QUOTER_CONTRACT_ADDRESS : undefined,
     abi: Quoter.abi,
