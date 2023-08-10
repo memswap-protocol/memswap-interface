@@ -3,16 +3,18 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
+import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
+
+export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 1
 
 const WALLET_CONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [mainnet, goerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
     publicProvider(),

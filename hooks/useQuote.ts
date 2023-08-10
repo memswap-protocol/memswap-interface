@@ -1,8 +1,11 @@
 import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import { FeeAmount } from '@uniswap/v3-sdk'
-import { formatUnits, parseUnits } from 'viem'
+import { FeeAmount, computePoolAddress } from '@uniswap/v3-sdk'
+import { Address, formatUnits, parseUnits } from 'viem'
 import { usePrepareContractWrite } from 'wagmi'
+
+import { Token as UniswapToken } from '@uniswap/sdk-core'
+import { CHAIN_ID } from '../pages/_app'
 
 // @TODO: configure as env variables
 export const POOL_FACTORY_CONTRACT_ADDRESS =
@@ -10,15 +13,49 @@ export const POOL_FACTORY_CONTRACT_ADDRESS =
 export const QUOTER_CONTRACT_ADDRESS =
   '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 
-const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 1
-
 const useQuote = (
   amountIn: number,
   feeAmount: FeeAmount,
   tokenIn?: Token,
   tokenOut?: Token
 ) => {
-  const { data, isLoading, isError, error } = usePrepareContractWrite({
+  // const tokenA = new UniswapToken(
+  //   tokenIn?.chainId || 1,
+  //   (tokenIn?.address as Address) ||
+  //     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  //   tokenIn?.decimals || 18,
+  //   tokenIn?.symbol,
+  //   tokenIn?.name,
+  //   undefined
+  // )
+  // const tokenB = new UniswapToken(
+  //   tokenOut?.chainId || 1,
+  //   (tokenOut?.address as Address) ||
+  //     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  //   tokenOut?.decimals || 18,
+  //   tokenOut?.symbol,
+  //   tokenOut?.name,
+  //   undefined
+  // )
+
+  // const currentPoolAddress = computePoolAddress({
+  //   factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
+  //   tokenA: tokenA,
+  //   tokenB: tokenB,
+  //   fee: feeAmount,
+  // })
+
+  // console.log(currentPoolAddress)
+
+  console.log(
+    tokenIn,
+    tokenOut,
+    feeAmount,
+    parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
+    0
+  )
+
+  const { data, config, isLoading, isError, error } = usePrepareContractWrite({
     chainId: CHAIN_ID,
     address:
       tokenIn && tokenOut && amountIn ? QUOTER_CONTRACT_ADDRESS : undefined,
@@ -32,6 +69,8 @@ const useQuote = (
       0,
     ],
   })
+
+  console.log(data, config)
 
   const quotedAmountOut = data?.result
     ? formatUnits(data?.result as bigint, tokenOut?.decimals || 18)

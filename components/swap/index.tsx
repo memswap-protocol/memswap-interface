@@ -7,7 +7,7 @@ import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { SwapButton } from './SwapButton'
+import { SwapModal } from './SwapModal'
 import useQuote from '../../hooks/useQuote'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatNumber } from '../../utils/numbers'
@@ -203,7 +203,14 @@ const Swap = () => {
             ) : null}
             {tokenOutBalance ? (
               <Text style="subtitle2" color="subtle" ellipsify>
-                Balance: {tokenOutBalance?.formatted}
+                Balance:{' '}
+                {formatNumber(
+                  formatUnits(
+                    tokenOutBalance?.value,
+                    tokenOutBalance?.decimals
+                  ),
+                  8
+                )}
               </Text>
             ) : null}
           </Flex>
@@ -218,8 +225,7 @@ const Swap = () => {
         amountIn={amountIn}
         amountOut={amountOut}
       />
-      <SwapButton
-        address={address}
+      <SwapModal
         tokenIn={tokenIn}
         tokenOut={tokenOut}
         amountIn={amountIn}

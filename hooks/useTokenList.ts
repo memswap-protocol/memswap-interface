@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Token } from '../components/swap/SelectTokenModal'
 import { zeroAddress } from 'viem'
-
-const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 1
+import { CHAIN_ID } from '../pages/_app'
 
 function useTokenList() {
   const [tokens, setTokens] = useState<Token[] | undefined>()
@@ -17,6 +16,8 @@ function useTokenList() {
           throw new Error('Network response was not ok')
         }
         const data: { tokens: Token[] } = await response.json()
+
+        console.log('CHAIN_ID: ', CHAIN_ID)
         const filteredTokens =
           data?.tokens?.filter((token) => token?.chainId === CHAIN_ID) || []
 
