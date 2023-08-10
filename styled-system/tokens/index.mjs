@@ -131,6 +131,10 @@ const tokens = {
     "value": "hsl(358, 65.0%, 48.7%)",
     "variable": "var(--colors-red11)"
   },
+  "colors.green11": {
+    "value": "hsl(153, 67.0%, 28.5%)",
+    "variable": "var(--colors-green11)"
+  },
   "breakpoints.2xl": {
     "value": "1536px",
     "variable": "var(--breakpoints-2xl)"
@@ -282,6 +286,10 @@ const tokens = {
   "colors.neutralText": {
     "value": "var(--colors-neutral-text)",
     "variable": "var(--colors-neutral-text)"
+  },
+  "colors.success": {
+    "value": "var(--colors-success)",
+    "variable": "var(--colors-success)"
   },
   "spacing.-1": {
     "value": "calc(var(--spacing-1) * -1)",

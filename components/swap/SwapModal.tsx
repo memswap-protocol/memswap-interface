@@ -1,11 +1,15 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
 import MEMSWAP_ABI from '../../constants/memswapABI'
 import { mainnet, useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
-import { faPenNib, faWallet } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircleCheck,
+  faPenNib,
+  faWallet,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as allChains from 'viem/chains'
 import {
@@ -32,6 +36,7 @@ type FetchBalanceResult = {
 }
 
 enum SwapStep {
+  Error,
   Signature,
   Approving,
   Complete,
@@ -63,6 +68,7 @@ export const SwapModal: FC<Props> = ({
 
   const [open, setOpen] = useState(false)
   const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Signature)
+  const [error, setError] = useState<Error | undefined>()
 
   const viemChain =
     Object.values(allChains).find((chain) => chain.id === CHAIN_ID) || mainnet
@@ -72,24 +78,13 @@ export const SwapModal: FC<Props> = ({
     transport: http(),
   })
 
-  console.log('--------------------')
-  console.log(
-    !address,
-    !tokenIn,
-    !tokenOut,
-    isFetchingQuote,
-    errorFetchingQuote,
-    !(tokenInBalance && tokenInBalance?.value > 0n)
-  )
-  console.log(
-    !address ||
-      !tokenIn ||
-      !tokenOut ||
-      !isFetchingQuote ||
-      !errorFetchingQuote ||
-      !(tokenInBalance && tokenInBalance?.value > 0n)
-  )
-  console.log('--------------------')
+  // Reset state on close
+  useEffect(() => {
+    if (!open) {
+      setSwapStep(SwapStep.Signature)
+      setError(undefined)
+    }
+  }, [open])
 
   // Execute Swap
   const swap = async () => {
@@ -97,7 +92,7 @@ export const SwapModal: FC<Props> = ({
       // Create Intent
       const intent: any = {
         maker: address,
-        filler: zeroAddress, // @TODO: is filler always zero address?
+        filler: zeroAddress,
         tokenIn: tokenIn?.address,
         tokenOut: tokenOut?.address,
         referrer: zeroAddress,
@@ -181,52 +176,56 @@ export const SwapModal: FC<Props> = ({
       setSwapStep(SwapStep.Approving)
 
       // Generate approval transaction
-      const data = parseAbiParameter([
-        'function approve(address spender, uint256 amount)',
-      ])
-
       const abiItem = parseAbiItem(
         'function approve(address spender, uint256 amount)'
       )
 
-      const endcodedData =
-        encodeFunctionData({
-          abi: [abiItem],
-          args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
-        }) +
-        encodeAbiParameters(
-          parseAbiParameters([
-            'address',
-            'address',
-            'address',
-            'address',
-            'address',
-            'uint32',
-            'uint32',
-            'uint32',
-            'uint128',
-            'uint128',
-            'uint128',
-            'uint128',
-            'bytes',
-          ]),
-          // @ts-ignore - @TODO: add types
-          [
-            intent.maker,
-            intent.filler,
-            intent.tokenIn,
-            intent.tokenOut,
-            intent.referrer,
-            intent.referrerFeeBps,
-            intent.referrerSurplusBps,
-            intent.deadline,
-            intent.amountIn,
-            intent.startAmountOut,
-            intent.expectedAmountOut,
-            intent.endAmountOut,
-            (intent as any).signature,
-          ]
-        ).slice(2)
+      console.log('abi item: ', abiItem)
+
+      const encodedFunctionData = encodeFunctionData({
+        abi: [abiItem],
+        args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
+      })
+
+      console.log(encodedFunctionData)
+
+      const encodedAbiParameters = encodeAbiParameters(
+        parseAbiParameters([
+          'address',
+          'address',
+          'address',
+          'address',
+          'address',
+          'uint32',
+          'uint32',
+          'uint32',
+          'uint128',
+          'uint128',
+          'uint128',
+          'uint128',
+          'bytes',
+        ]),
+        // @ts-ignore - @TODO: add types
+        [
+          intent.maker,
+          intent.filler,
+          intent.tokenIn,
+          intent.tokenOut,
+          intent.referrer,
+          intent.referrerFeeBps,
+          intent.referrerSurplusBps,
+          intent.deadline,
+          intent.amountIn,
+          intent.startAmountOut,
+          intent.expectedAmountOut,
+          intent.endAmountOut,
+          (intent as any).signature,
+        ]
+      )
+
+      console.log(encodedAbiParameters)
+
+      const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
 
       console.log('encoded data: ', endcodedData)
 
@@ -235,6 +234,9 @@ export const SwapModal: FC<Props> = ({
         .then((b) => b!.baseFeePerGas)
 
       const maxPriorityFeePerGas = parseUnits('1', 18)
+
+      console.log('currentBaseFee: ', currentBaseFee)
+      console.log('maxPriorityFeePerGas: ', maxPriorityFeePerGas)
 
       const { hash } = await sendTransaction({
         to: tokenIn?.address as Address,
@@ -246,7 +248,10 @@ export const SwapModal: FC<Props> = ({
       setSwapStep(SwapStep.Complete)
 
       console.log(hash)
-    } catch (e) {
+    } catch (e: any) {
+      const error = e as Error
+      setSwapStep(SwapStep.Error)
+      setError(error)
       console.log(e)
     }
   }
@@ -274,7 +279,25 @@ export const SwapModal: FC<Props> = ({
   )
 
   return (
-    <Modal trigger={trigger} open={open}>
+    <Modal trigger={trigger} open={open} onOpenChange={setOpen}>
+      {swapStep === SwapStep.Error ? (
+        <Flex
+          align="center"
+          direction="column"
+          css={{ width: '100%', gap: 24, pt: '5' }}
+        >
+          <Box css={{ color: 'gray9' }}>
+            <FontAwesomeIcon icon={faPenNib} />
+          </Box>
+          <Text style="h5">Oops, something went wrong.</Text>
+          <Text style="subtitle2" color="error">
+            {error?.message}
+          </Text>
+          <Button css={{ justifyContent: 'center', width: '100%' }}>
+            Close
+          </Button>
+        </Flex>
+      ) : null}
       {swapStep === SwapStep.Signature ? (
         <Flex
           align="center"
@@ -318,9 +341,9 @@ export const SwapModal: FC<Props> = ({
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
           <Box css={{ color: 'gray9' }}>
-            <FontAwesomeIcon icon={faPenNib} />
+            <FontAwesomeIcon icon={faCircleCheck} />
           </Box>
-          <Text style="h5">Sign Intent</Text>
+          <Text style="h5">Sucess</Text>
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
             onClick={() => {

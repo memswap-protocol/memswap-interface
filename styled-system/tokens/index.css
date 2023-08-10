@@ -33,6 +33,7 @@
   --colors-gray12: hsl(206, 24.0%, 9.0%);
   --colors-black-a10: hsla(0, 0%, 0%, 0.478);
   --colors-red11: hsl(358, 65.0%, 48.7%);
+  --colors-green11: hsl(153, 67.0%, 28.5%);
   --breakpoints-2xl: 1536px;
   --breakpoints-sm: 600px;
   --breakpoints-md: 900px;
@@ -70,12 +71,14 @@
   --sizes-breakpoint-bp1400: 1400px;
   --sizes-breakpoint-bp1500: 1500px;
   --colors-neutral-bg: hsl(206, 30.0%, 98.8%);
-  --colors-neutral-text: hsl(206, 24.0%, 9.0%)
+  --colors-neutral-text: hsl(206, 24.0%, 9.0%);
+  --colors-success: hsl(153, 67.0%, 28.5%)
 }
 
 .dark {
   --colors-neutral-bg: hsl(206, 24.0%, 9.0%);
-  --colors-neutral-text: white
+  --colors-neutral-text: white;
+  --colors-success: hsl(153, 67.0%, 28.5%)
 }
   }
   
