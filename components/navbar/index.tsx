@@ -1,4 +1,3 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Flex } from '../primitives'
 import Image from 'next/image'
 import { ConnectWalletButton } from './ConnectWalletButton'
@@ -9,10 +8,8 @@ const Navbar = () => {
       align="center"
       justify="between"
       css={{
-        mx: '3',
-        boxSizing: 'border-box',
-        sm: { mx: 'auto' },
-        width: '100%',
+        mx: '2',
+        lg: { mx: 'auto', width: '100%' },
         maxWidth: 1200,
         backgroundColor: 'white',
         borderRadius: 100,

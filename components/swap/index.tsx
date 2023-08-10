@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button, Flex, Text } from '../primitives'
 import { Token, SelectTokenModal } from './SelectTokenModal'
 import Input from '../primitives/Input'
-import { useBalance, useAccount } from 'wagmi'
+import { useBalance, useAccount, useNetwork } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -24,6 +24,7 @@ const Swap = () => {
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
 
   const { address } = useAccount()
+  const { chain } = useNetwork()
 
   const {
     quotedAmountOut,
@@ -40,6 +41,7 @@ const Swap = () => {
     isLoading: fetchingTokenInBalance,
     isError: errorFetchingTokenInBalance,
   } = useBalance({
+    chainId: chain?.id || 1,
     address: tokenIn ? address : undefined,
     watch: tokenIn ? true : false,
     token:
@@ -53,6 +55,7 @@ const Swap = () => {
     isLoading: fetchingTokenOutBalance,
     isError: errorFetchingTokenOutBalance,
   } = useBalance({
+    chainId: chain?.id || 1,
     address: tokenOut ? address : undefined,
     watch: tokenOut ? true : false,
     token:
