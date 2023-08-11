@@ -84,9 +84,8 @@ export const SwapModal: FC<Props> = ({
   // Reset state on close
   useEffect(() => {
     if (!open) {
-      if (swapStep)
-        // setSwapStep(SwapStep.Signature)
-        setError(undefined)
+      setSwapStep(SwapStep.Signature)
+      setError(undefined)
     }
   }, [open])
 
@@ -277,10 +276,13 @@ export const SwapModal: FC<Props> = ({
             !tokenOut ||
             isFetchingQuote ||
             errorFetchingQuote ||
+            Number(amountIn) === 0 ||
             !(
-              tokenInBalance?.value &&
               Number(
-                formatUnits(tokenInBalance?.value, tokenInBalance?.decimals)
+                formatUnits(
+                  tokenInBalance?.value || 0n,
+                  tokenInBalance?.decimals || 18
+                )
               ) >= Number(amountIn)
             )
       }
