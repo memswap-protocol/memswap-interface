@@ -1,12 +1,10 @@
 import type { NextPage } from 'next'
-import { Button, Flex, Text } from '../components/primitives'
+import { Flex, Text } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
 import Swap from '../components/swap'
-import { useToast } from '../hooks/useToast'
 
 const Home: NextPage = () => {
-  const { toast } = useToast()
   return (
     <Layout>
       <Head />

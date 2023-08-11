@@ -1,4 +1,4 @@
-import { ReactElement, forwardRef } from 'react'
+import { forwardRef } from 'react'
 import * as ToastPrimitive from '@radix-ui/react-toast'
 import { styled } from '../../styled-system/jsx'
 import { faX } from '@fortawesome/free-solid-svg-icons'
@@ -23,6 +23,19 @@ const ToastViewport = styled(ToastPrimitive.Viewport, {
     _groupHover: {
       opacity: 1,
     },
+  },
+})
+
+const Toast = styled(ToastPrimitive.Root, {
+  base: {
+    position: 'relative',
+    boxShadow: '0px 2px 16px rgba(0, 0, 0, 0.2)',
+    borderRadius: 8,
+    padding: 12,
+    display: 'flex',
+    gap: '$2',
+    alignItems: 'center',
+    backgroundColor: 'white',
     _data_state_open: {
       animation: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
     },
@@ -39,19 +52,6 @@ const ToastViewport = styled(ToastPrimitive.Viewport, {
     _data_swipe_end: {
       animation: `swipeOut 100ms ease-out`,
     },
-  },
-})
-
-const Toast = styled(ToastPrimitive.Root, {
-  base: {
-    position: 'relative',
-    boxShadow: '0px 2px 16px rgba(0, 0, 0, 0.2)',
-    borderRadius: 8,
-    padding: 12,
-    display: 'flex',
-    gap: '$2',
-    alignItems: 'center',
-    backgroundColor: 'white',
   },
 })
 
@@ -90,9 +90,16 @@ const ToastClose = styled(
     base: {
       color: 'gray9',
       position: 'absolute',
-      right: 4,
-      top: 4,
+      right: 2,
+      top: 0,
       opacity: 0,
+      p: '1',
+      borderRadius: 8,
+      cursor: 'pointer',
+      '--focusColor': 'colors.gray12',
+      _focusVisible: {
+        boxShadow: '0 0 0 2px var(--focusColor)',
+      },
       transition: 'opacity 150ms ease-in-out',
       _groupHover: {
         opacity: 1,

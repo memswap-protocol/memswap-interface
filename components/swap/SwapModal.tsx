@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
-import MEMSWAP_ABI from '../../constants/memswapABI'
 import { mainnet, useAccount, useNetwork } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
@@ -17,8 +16,6 @@ import {
   http,
   parseUnits,
   zeroAddress,
-  parseAbi,
-  parseAbiParameter,
   encodeFunctionData,
   parseAbiItem,
   encodeAbiParameters,
@@ -234,6 +231,10 @@ export const SwapModal: FC<Props> = ({
         maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
         maxPriorityFeePerGas: maxPriorityFeePerGas,
       })
+
+      // @TODO: add toast with etherscan link, reset tokenIn, tokenOut, amountIn
+
+      console.log(hash)
 
       setSwapStep(SwapStep.Complete)
     } catch (e: any) {
