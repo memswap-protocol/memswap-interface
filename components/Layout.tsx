@@ -1,6 +1,7 @@
 import { Box, Flex } from '../components/primitives'
 import { FC, ReactNode } from 'react'
 import Navbar from './navbar'
+import Toaster from './providers/ToastProvider'
 
 type Props = {
   children: ReactNode
@@ -28,6 +29,7 @@ const Layout: FC<Props> = ({ children }) => {
           }}
         >
           <Navbar />
+          <Toaster />
           <main>{children}</main>
         </Flex>
       </Box>

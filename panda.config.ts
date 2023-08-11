@@ -21,6 +21,11 @@ export default defineConfig({
       light: '.light &',
       typeNumber: '&[type=number]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',
+      data_state_open: '&[data-state="open"]',
+      data_state_closed: '&[data-state="closed"]',
+      data_swipe_move: '&[data-swipe="move"]',
+      data_swipe_cancel: '&[data-swipe="cancel"]',
+      data_swipe_end: '&[data-swipe="end"]',
     },
   },
 
@@ -103,6 +108,21 @@ export default defineConfig({
         bp1300: '1300px',
         bp1400: '1400px',
         bp1500: '1500px',
+      },
+    },
+    keyframes: {
+      // Toast animations
+      hide: {
+        '0%': { opacity: 1 },
+        '100%': { opacity: 0 },
+      },
+      slideIn: {
+        from: { transform: `translateX(calc(100% + 16px))` }, // Based on ToastViewport's padding
+        to: { transform: 'translateX(0)' },
+      },
+      swipeOut: {
+        from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
+        to: { transform: `translateX(calc(100% + 16px))` },
       },
     },
   },

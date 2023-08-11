@@ -91,6 +91,11 @@ export type Conditions = {
 	"_vertical": string
 	"_typeNumber": string
 	"_spinButtons": string
+	"_data_state_open": string
+	"_data_state_closed": string
+	"_data_swipe_move": string
+	"_data_swipe_cancel": string
+	"_data_swipe_end": string
 	"bp300": string
 	"bp300Only": string
 	"bp300Down": string

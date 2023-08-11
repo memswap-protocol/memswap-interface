@@ -12,7 +12,6 @@ import useQuote from '../../hooks/useQuote'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
-import { LoadingSpinner } from '../common/LoadingSpinner'
 
 const Swap = () => {
   const [tokenIn, setTokenIn] = useState<Token>()
@@ -70,7 +69,7 @@ const Swap = () => {
 
     setTokenIn(currentTokenOut)
     setTokenOut(currentTokenIn)
-  }, [tokenOut, tokenIn, amountOut, amountIn])
+  }, [tokenOut, tokenIn])
 
   return (
     <Flex

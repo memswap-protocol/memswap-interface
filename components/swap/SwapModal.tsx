@@ -24,6 +24,7 @@ import {
   encodeAbiParameters,
   parseAbiParameters,
   Address,
+  formatUnits,
 } from 'viem'
 import { signTypedData, sendTransaction } from '@wagmi/core'
 
@@ -83,8 +84,9 @@ export const SwapModal: FC<Props> = ({
   // Reset state on close
   useEffect(() => {
     if (!open) {
-      setSwapStep(SwapStep.Signature)
-      setError(undefined)
+      if (swapStep)
+        // setSwapStep(SwapStep.Signature)
+        setError(undefined)
     }
   }, [open])
 
@@ -189,7 +191,7 @@ export const SwapModal: FC<Props> = ({
         args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
       })
 
-      console.log(encodedFunctionData)
+      console.log('encodedFunctionData: ', encodedFunctionData)
 
       const encodedAbiParameters = encodeAbiParameters(
         parseAbiParameters([
@@ -225,9 +227,11 @@ export const SwapModal: FC<Props> = ({
         ]
       )
 
-      console.log(encodedAbiParameters)
+      console.log('tokenIn?.address: ', tokenIn?.address)
 
-      const endcodedData = encodedFunctionData + encodedAbiParameters
+      console.log('encodedAbiParameters: ', encodedAbiParameters)
+
+      const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
 
       console.log('encoded data: ', endcodedData)
 
@@ -273,7 +277,12 @@ export const SwapModal: FC<Props> = ({
             !tokenOut ||
             isFetchingQuote ||
             errorFetchingQuote ||
-            !(tokenInBalance && tokenInBalance?.value > 0n)
+            !(
+              tokenInBalance?.value &&
+              Number(
+                formatUnits(tokenInBalance?.value, tokenInBalance?.decimals)
+              ) >= Number(amountIn)
+            )
       }
     >
       {isDisconnected ? 'Connect Wallet' : 'Swap'}
