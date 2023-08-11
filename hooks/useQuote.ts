@@ -57,8 +57,7 @@ const useQuote = (
 
   const { data, config, isLoading, isError, error } = usePrepareContractWrite({
     chainId: chain?.id || 1,
-    address:
-      tokenIn && tokenOut && amountIn ? QUOTER_CONTRACT_ADDRESS : undefined,
+    address: QUOTER_CONTRACT_ADDRESS,
     abi: Quoter.abi,
     functionName: 'quoteExactInputSingle',
     args: [
@@ -68,6 +67,7 @@ const useQuote = (
       parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
       0,
     ],
+    enabled: Boolean(tokenIn && tokenOut && amountIn),
   })
 
   console.log(data, config)

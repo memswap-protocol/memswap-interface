@@ -24,6 +24,8 @@ import {
   formatUnits,
 } from 'viem'
 import { signTypedData, sendTransaction } from '@wagmi/core'
+import { useToast } from '../../hooks/useToast'
+import { LoadingSpinner } from '../common/LoadingSpinner'
 
 type FetchBalanceResult = {
   decimals: number
@@ -67,6 +69,8 @@ export const SwapModal: FC<Props> = ({
   const [open, setOpen] = useState(false)
   const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Signature)
   const [error, setError] = useState<Error | undefined>()
+
+  const { toast } = useToast()
 
   const viemChain =
     Object.values(allChains).find(
@@ -242,6 +246,9 @@ export const SwapModal: FC<Props> = ({
       setSwapStep(SwapStep.Error)
       setError(error)
       console.log(e)
+      toast({
+        title: 'Oops, something went wrong.',
+      })
     }
   }
 
@@ -250,7 +257,12 @@ export const SwapModal: FC<Props> = ({
       color="primary"
       css={{ justifyContent: 'center' }}
       onClick={() => {
-        isDisconnected ? openConnectModal?.() : swap()
+        if (isDisconnected) {
+          openConnectModal?.()
+        } else {
+          swap()
+        }
+        // isDisconnected ? openConnectModal?.() : swap()
       }}
       disabled={
         isDisconnected
@@ -276,7 +288,15 @@ export const SwapModal: FC<Props> = ({
   )
 
   return (
-    <Modal trigger={trigger} open={open} onOpenChange={setOpen}>
+    <Modal
+      trigger={trigger}
+      open={open}
+      onOpenChange={(open) => {
+        if (!isDisconnected) {
+          setOpen(open)
+        }
+      }}
+    >
       {swapStep === SwapStep.Error ? (
         <Flex
           align="center"
@@ -309,6 +329,7 @@ export const SwapModal: FC<Props> = ({
             disabled={true}
             css={{ justifyContent: 'center', width: '100%' }}
           >
+            <LoadingSpinner />
             Sign Intent
           </Button>
         </Flex>
@@ -327,6 +348,7 @@ export const SwapModal: FC<Props> = ({
             disabled={true}
             css={{ justifyContent: 'center', width: '100%' }}
           >
+            <LoadingSpinner />
             Waiting for Approval
           </Button>
         </Flex>
