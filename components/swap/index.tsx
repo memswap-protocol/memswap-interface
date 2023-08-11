@@ -120,7 +120,7 @@ const Swap = () => {
               value={amountIn}
               onChange={(e) => {
                 if (e.target.value) {
-                  setAmountIn(e.target.value)
+                  setAmountIn(Math.abs(Number(e.target.value)).toString())
                 } else {
                   setAmountIn('')
                 }

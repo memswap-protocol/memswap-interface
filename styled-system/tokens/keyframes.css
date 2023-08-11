@@ -1,4 +1,9 @@
 @layer tokens {
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg)
+        }
+    }
     @keyframes hide {
         0% {
             opacity: 1

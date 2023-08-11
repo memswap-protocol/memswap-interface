@@ -85,6 +85,7 @@ export const SwapModal: FC<Props> = ({
   // Reset state on close
   useEffect(() => {
     if (!open) {
+      // @TODO: only reset state if complete/error
       setSwapStep(SwapStep.Signature)
       setError(undefined)
     }
@@ -262,7 +263,6 @@ export const SwapModal: FC<Props> = ({
         } else {
           swap()
         }
-        // isDisconnected ? openConnectModal?.() : swap()
       }}
       disabled={
         isDisconnected
@@ -310,7 +310,10 @@ export const SwapModal: FC<Props> = ({
           <Text style="subtitle2" color="error">
             {error?.message}
           </Text>
-          <Button css={{ justifyContent: 'center', width: '100%' }}>
+          <Button
+            css={{ justifyContent: 'center', width: '100%' }}
+            onClick={() => setOpen(false)}
+          >
             Close
           </Button>
         </Flex>
@@ -362,12 +365,10 @@ export const SwapModal: FC<Props> = ({
           <Box css={{ color: 'gray9' }}>
             <FontAwesomeIcon icon={faCircleCheck} />
           </Box>
-          <Text style="h5">Sucess</Text>
+          <Text style="h5">Success</Text>
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
-            onClick={() => {
-              setOpen(false)
-            }}
+            onClick={() => setOpen(false)}
           >
             Done
           </Button>

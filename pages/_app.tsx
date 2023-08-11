@@ -3,7 +3,6 @@ import '@rainbow-me/rainbowkit/styles.css'
 import {
   connectorsForWallets,
   DisclaimerComponent,
-  getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import type { AppProps } from 'next/app'
@@ -12,13 +11,12 @@ import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
-import Toaster from '../components/providers/ToastProvider'
 import {
   coinbaseWallet,
-  injectedWallet,
   rainbowWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
+import { Flex } from '../components/primitives'
 
 const WALLET_CONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
@@ -51,7 +49,8 @@ const wagmiConfig = createConfig({
 
 const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
   <Text>
-    Metamask is currently not supported due to the technical limitation.
+    <span style={{ fontWeight: 700 }}>Metamask</span> is currently not supported
+    due to a technical limitation.
   </Text>
 )
 

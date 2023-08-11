@@ -76,6 +76,7 @@ export default defineConfig({
         blackA10: { value: blackA.blackA10 },
 
         // Red
+        red2: { value: red.red2 },
         red11: { value: red.red11 },
 
         // Green
@@ -111,6 +112,11 @@ export default defineConfig({
       },
     },
     keyframes: {
+      spin: {
+        '100%': {
+          transform: 'rotate(360deg)',
+        },
+      },
       // Toast animations
       hide: {
         '0%': { opacity: 1 },
