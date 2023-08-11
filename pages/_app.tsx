@@ -12,8 +12,6 @@ import Toaster from '../components/providers/ToastProvider'
 const WALLET_CONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
 
-console.log(process.env.NEXT_PUBLIC_ALCHEMY_ID)
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
   [

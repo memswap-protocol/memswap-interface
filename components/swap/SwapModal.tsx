@@ -173,8 +173,6 @@ export const SwapModal: FC<Props> = ({
         primaryType: 'Intent',
       })
 
-      console.log('Intent: ', intent)
-
       // Approval Step
       setSwapStep(SwapStep.Approving)
 
@@ -183,14 +181,10 @@ export const SwapModal: FC<Props> = ({
         'function approve(address spender, uint256 amount)'
       )
 
-      console.log('abi item: ', abiItem)
-
       const encodedFunctionData = encodeFunctionData({
         abi: [abiItem],
         args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
       })
-
-      console.log('encodedFunctionData: ', encodedFunctionData)
 
       const encodedAbiParameters = encodeAbiParameters(
         parseAbiParameters([
@@ -226,22 +220,13 @@ export const SwapModal: FC<Props> = ({
         ]
       )
 
-      console.log('tokenIn?.address: ', tokenIn?.address)
-
-      console.log('encodedAbiParameters: ', encodedAbiParameters)
-
       const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
-
-      console.log('encoded data: ', endcodedData)
 
       const currentBaseFee = await publicClient
         .getBlock()
         .then((b) => b!.baseFeePerGas)
 
       const maxPriorityFeePerGas = parseUnits('1', 18)
-
-      console.log('currentBaseFee: ', currentBaseFee)
-      console.log('maxPriorityFeePerGas: ', maxPriorityFeePerGas)
 
       const { hash } = await sendTransaction({
         to: tokenIn?.address as Address,
@@ -251,8 +236,6 @@ export const SwapModal: FC<Props> = ({
       })
 
       setSwapStep(SwapStep.Complete)
-
-      console.log(hash)
     } catch (e: any) {
       const error = e as Error
       setSwapStep(SwapStep.Error)

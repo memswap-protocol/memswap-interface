@@ -19,16 +19,6 @@ const Home: NextPage = () => {
         <Text style="h4" css={{ textAlign: 'center', maxWidth: 500 }}>
           A permissionless, general, and transparent swap aggregator
         </Text>
-
-        {/* @TODO: remove */}
-        <Button
-          onClick={() => {
-            toast({
-              title: 'Transaction completed',
-              description: 'The swap was successful.',
-            })
-          }}
-        ></Button>
       </Flex>
     </Layout>
   )

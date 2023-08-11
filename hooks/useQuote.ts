@@ -47,13 +47,13 @@ const useQuote = (
 
   // console.log(currentPoolAddress)
 
-  console.log(
-    tokenIn,
-    tokenOut,
-    feeAmount,
-    parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
-    0
-  )
+  // console.log(
+  //   tokenIn,
+  //   tokenOut,
+  //   feeAmount,
+  //   parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
+  //   0
+  // )
 
   const { data, config, isLoading, isError, error } = usePrepareContractWrite({
     chainId: chain?.id || 1,

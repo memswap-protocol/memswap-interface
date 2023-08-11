@@ -57,6 +57,7 @@ const Toast = styled(ToastPrimitive.Root, {
 
 const ToastTitle = styled(ToastPrimitive.Title, {
   base: {
+    color: 'gray12',
     fontSize: '14px',
     fontWeight: 500,
   },
@@ -64,7 +65,8 @@ const ToastTitle = styled(ToastPrimitive.Title, {
 
 const ToastDescription = styled(ToastPrimitive.Description, {
   base: {
-    fontSize: '12px',
+    color: 'gray11',
+    fontSize: '13px',
     fontWeight: 400,
   },
 })
