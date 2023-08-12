@@ -131,9 +131,17 @@ const tokens = {
     "value": "hsl(359, 100%, 98.6%)",
     "variable": "var(--colors-red2)"
   },
+  "colors.red10": {
+    "value": "hsl(358, 69.4%, 55.2%)",
+    "variable": "var(--colors-red10)"
+  },
   "colors.red11": {
     "value": "hsl(358, 65.0%, 48.7%)",
     "variable": "var(--colors-red11)"
+  },
+  "colors.green10": {
+    "value": "hsl(152, 57.5%, 37.6%)",
+    "variable": "var(--colors-green10)"
   },
   "colors.green11": {
     "value": "hsl(153, 67.0%, 28.5%)",

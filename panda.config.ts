@@ -77,9 +77,11 @@ export default defineConfig({
 
         // Red
         red2: { value: red.red2 },
+        red10: { value: red.red10 },
         red11: { value: red.red11 },
 
         // Green
+        green10: { value: green.green10 },
         green11: { value: green.green11 },
       },
     },

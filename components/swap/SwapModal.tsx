@@ -1,14 +1,10 @@
 import { FC, useEffect, useState } from 'react'
-import { Box, Button, Flex, Text } from '../primitives'
+import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
 import { mainnet, useAccount, useNetwork } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
-import {
-  faCircleCheck,
-  faPenNib,
-  faWallet,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as allChains from 'viem/chains'
 import {
@@ -26,6 +22,7 @@ import {
 import { signTypedData, sendTransaction } from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import { IntentInfo } from './IntentInfo'
 
 type FetchBalanceResult = {
   decimals: number
@@ -67,8 +64,9 @@ export const SwapModal: FC<Props> = ({
   const { openConnectModal } = useConnectModal()
 
   const [open, setOpen] = useState(false)
-  const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Signature)
+  const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Complete)
   const [error, setError] = useState<Error | undefined>()
+  const [hash, setHash] = useState<string | undefined>()
 
   const { toast } = useToast()
 
@@ -239,7 +237,13 @@ export const SwapModal: FC<Props> = ({
 
       // @TODO: add toast with etherscan link, reset tokenIn, tokenOut, amountIn
 
-      console.log(hash)
+      toast({
+        title: 'Transaction was successful.',
+      })
+
+      setHash(hash)
+
+      console.log('hash: ', hash)
 
       setSwapStep(SwapStep.Complete)
     } catch (e: any) {
@@ -296,6 +300,7 @@ export const SwapModal: FC<Props> = ({
           setOpen(open)
         }
       }}
+      contentCss={{ width: '100%' }}
     >
       {swapStep === SwapStep.Error ? (
         <Flex
@@ -303,13 +308,14 @@ export const SwapModal: FC<Props> = ({
           direction="column"
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
-          <Box css={{ color: 'gray9' }}>
-            <FontAwesomeIcon icon={faPenNib} />
-          </Box>
-          <Text style="h5">Oops, something went wrong.</Text>
-          <Text style="subtitle2" color="error">
-            {error?.message}
-          </Text>
+          <ErrorWell css={{ width: '100%' }} />
+          <Text style="h5">Sign your intent</Text>
+          <IntentInfo
+            tokenIn={tokenIn}
+            tokenOut={tokenOut}
+            amountIn={amountIn}
+            amountOut={amountOut}
+          />
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
             onClick={() => setOpen(false)}
@@ -324,10 +330,13 @@ export const SwapModal: FC<Props> = ({
           direction="column"
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
-          <Box css={{ color: 'gray9' }}>
-            <FontAwesomeIcon icon={faPenNib} />
-          </Box>
-          <Text style="h5">Sign Intent in your wallet</Text>
+          <Text style="h5">Sign your intent</Text>
+          <IntentInfo
+            tokenIn={tokenIn}
+            tokenOut={tokenOut}
+            amountIn={amountIn}
+            amountOut={amountOut}
+          />
           <Button
             disabled={true}
             css={{ justifyContent: 'center', width: '100%' }}
@@ -343,10 +352,13 @@ export const SwapModal: FC<Props> = ({
           direction="column"
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
-          <Box css={{ color: 'gray9' }}>
-            <FontAwesomeIcon icon={faWallet} />
-          </Box>
-          <Text style="h5">Confirm Swaps</Text>
+          <Text style="h5">Submit your intent</Text>
+          <IntentInfo
+            tokenIn={tokenIn}
+            tokenOut={tokenOut}
+            amountIn={amountIn}
+            amountOut={amountOut}
+          />
           <Button
             disabled={true}
             css={{ justifyContent: 'center', width: '100%' }}
@@ -362,10 +374,13 @@ export const SwapModal: FC<Props> = ({
           direction="column"
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
-          <Box css={{ color: 'gray9' }}>
-            <FontAwesomeIcon icon={faCircleCheck} />
+          <Box css={{ color: 'green10' }}>
+            <FontAwesomeIcon icon={faCircleCheck} size="2x" />
           </Box>
           <Text style="h5">Success</Text>
+          <Anchor href="">View on Etherscan</Anchor>
+          {/* @TODO: parse tx hash, add block explorer*/}
+          {/* {hash ? <Anchor href="">View on Etherscan</Anchor> : null} */}
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
             onClick={() => setOpen(false)}

@@ -13,7 +13,7 @@ const ErrorWell: FC<Props> = ({ message, css }) => {
   return (
     <Flex
       css={{
-        color: 'red11',
+        color: 'red10',
         p: '4',
         gap: '2',
         background: 'red2',
@@ -22,9 +22,7 @@ const ErrorWell: FC<Props> = ({ message, css }) => {
       align="center"
     >
       <FontAwesomeIcon icon={faCircleExclamation} width={16} height={16} />
-      <Text style="body2" color="error">
-        {message || 'Oops, something went wrong. Please try again.'}
-      </Text>
+      <Text style="body2">{message || 'Oops, something went wrong.'}</Text>
     </Flex>
   )
 }
