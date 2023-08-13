@@ -25,7 +25,7 @@ const WALLET_CONNECT_PROJECT_ID =
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
   [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
+    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
     publicProvider(),
   ]
 )

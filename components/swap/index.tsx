@@ -1,29 +1,37 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Flex, Text } from '../primitives'
-import { Token, SelectTokenModal } from './SelectTokenModal'
-import Input from '../primitives/Input'
-import { useBalance, useAccount, useNetwork } from 'wagmi'
+import {
+  useBalance,
+  useAccount,
+  useNetwork,
+  useWalletClient,
+  usePublicClient,
+} from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
+import { Button, Flex, Text, Input } from '../primitives'
+import { Token, SelectTokenModal } from './SelectTokenModal'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapModal } from './SwapModal'
-import useQuote from '../../hooks/useQuote'
+import { useQuote } from '../../hooks'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
+import { chainTokens } from '../../constants/chainTokens'
 
 const Swap = () => {
-  const [tokenIn, setTokenIn] = useState<Token>()
-  const [tokenOut, setTokenOut] = useState<Token>()
+  const { address } = useAccount()
+  const { chain } = useNetwork()
+
+  const [tokenIn, setTokenIn] = useState<Token | undefined>(
+    chainTokens[chain?.id || 1][0]
+  )
+  const [tokenOut, setTokenOut] = useState<Token | undefined>()
 
   const [amountIn, setAmountIn] = useState('')
   const [amountOut, setAmountOut] = useState('')
 
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
-
-  const { address } = useAccount()
-  const { chain } = useNetwork()
 
   const {
     quotedAmountOut,
@@ -35,11 +43,7 @@ const Swap = () => {
     setAmountOut(quotedAmountOut ?? '')
   }, [quotedAmountOut])
 
-  const {
-    data: tokenInBalance,
-    isLoading: fetchingTokenInBalance,
-    isError: errorFetchingTokenInBalance,
-  } = useBalance({
+  const { data: tokenInBalance } = useBalance({
     chainId: chain?.id || 1,
     address: tokenIn ? address : undefined,
     watch: tokenIn ? true : false,
@@ -49,11 +53,7 @@ const Swap = () => {
         : undefined,
   })
 
-  const {
-    data: tokenOutBalance,
-    isLoading: fetchingTokenOutBalance,
-    isError: errorFetchingTokenOutBalance,
-  } = useBalance({
+  const { data: tokenOutBalance } = useBalance({
     chainId: chain?.id || 1,
     address: tokenOut ? address : undefined,
     watch: tokenOut ? true : false,
@@ -129,10 +129,6 @@ const Swap = () => {
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
-            {fetchingTokenInBalance ? <Text>Loading</Text> : null}
-            {!fetchingTokenInBalance && errorFetchingTokenInBalance ? (
-              <Text>Error</Text>
-            ) : null}
             {tokenInBalance ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
@@ -179,7 +175,7 @@ const Swap = () => {
         </Text>
         <Flex align="start" justify="between" css={{ gap: '4' }}>
           <Input
-            type="number"
+            type="text"
             disabled={true}
             placeholder="0"
             size="large"
@@ -189,21 +185,19 @@ const Swap = () => {
               borderRadius: 0,
               _focus: { boxShadow: 'none' },
             }}
+            // value={amountOut.replace(',', '')}
             value={formatNumber(amountOut, 8).replace(',', '')}
-            onChange={(e) => {
-              if (e.target.value) {
-                setAmountOut(e.target.value)
-              } else {
-                setAmountOut('')
-              }
-            }}
+            // value={formatNumber(quotedAmountOut, 8).replace(',', '')}
+            // onChange={(e) => {
+            //   if (e.target.value) {
+            //     setAmountOut(e.target.value)
+            //   } else {
+            //     setAmountOut('')
+            //   }
+            // }}
           />
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
-            {fetchingTokenOutBalance ? <Text>Loading</Text> : null}
-            {!fetchingTokenOutBalance && errorFetchingTokenOutBalance ? (
-              <Text>Error</Text>
-            ) : null}
             {tokenOutBalance ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}

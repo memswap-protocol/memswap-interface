@@ -1,14 +1,18 @@
+import {
+  createPublicClient,
+  formatUnits,
+  http,
+  parseUnits,
+  zeroAddress,
+} from 'viem'
+import { useNetwork } from 'wagmi'
+import * as wagmiChains from 'wagmi/chains'
 import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import { FeeAmount, computePoolAddress } from '@uniswap/v3-sdk'
-import { Address, formatUnits, parseUnits } from 'viem'
-import { useNetwork, usePrepareContractWrite } from 'wagmi'
+import { FeeAmount } from '@uniswap/v3-sdk'
+import wrappedContracts from '../constants/wrappedContracts'
+import { useEffect, useState } from 'react'
 
-import { Token as UniswapToken } from '@uniswap/sdk-core'
-
-// @TODO: configure as env variables
-export const POOL_FACTORY_CONTRACT_ADDRESS =
-  '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 export const QUOTER_CONTRACT_ADDRESS =
   '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 
@@ -18,64 +22,69 @@ const useQuote = (
   tokenIn?: Token,
   tokenOut?: Token
 ) => {
-  const { chain } = useNetwork()
-  // Keeping now for testing purposes:
-  // const tokenA = new UniswapToken(
-  //   tokenIn?.chainId || 1,
-  //   (tokenIn?.address as Address) ||
-  //     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  //   tokenIn?.decimals || 18,
-  //   tokenIn?.symbol,
-  //   tokenIn?.name,
-  //   undefined
-  // )
-  // const tokenB = new UniswapToken(
-  //   tokenOut?.chainId || 1,
-  //   (tokenOut?.address as Address) ||
-  //     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  //   tokenOut?.decimals || 18,
-  //   tokenOut?.symbol,
-  //   tokenOut?.name,
-  //   undefined
-  // )
+  const { chain: activeChain } = useNetwork()
+  const [quotedAmountOut, setQuotedAmountOut] = useState<string | undefined>()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
 
-  // const currentPoolAddress = computePoolAddress({
-  //   factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-  //   tokenA: tokenA,
-  //   tokenB: tokenB,
-  //   fee: feeAmount,
-  // })
+  const wagmiChain =
+    Object.values(wagmiChains).find(
+      (chain) => chain.id === (activeChain?.id || 1)
+    ) || wagmiChains.mainnet
 
-  // console.log(currentPoolAddress)
-
-  // console.log(
-  //   tokenIn,
-  //   tokenOut,
-  //   feeAmount,
-  //   parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
-  //   0
-  // )
-
-  const { data, config, isLoading, isError, error } = usePrepareContractWrite({
-    chainId: chain?.id || 1,
-    address: QUOTER_CONTRACT_ADDRESS,
-    abi: Quoter.abi,
-    functionName: 'quoteExactInputSingle',
-    args: [
-      tokenIn?.address,
-      tokenOut?.address,
-      feeAmount, //@TODO - verify
-      parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
-      0,
-    ],
-    enabled: Boolean(tokenIn && tokenOut && amountIn),
+  const publicClient = createPublicClient({
+    chain: wagmiChain,
+    transport: http(),
   })
 
-  console.log(data, config)
+  const isEthToWethSwap =
+    (tokenIn?.address === zeroAddress ||
+      tokenIn?.address === wrappedContracts[activeChain?.id || 1]) &&
+    (tokenOut?.address === zeroAddress ||
+      tokenOut?.address === wrappedContracts[activeChain?.id || 1])
 
-  const quotedAmountOut = data?.result
-    ? formatUnits(data?.result as bigint, tokenOut?.decimals || 18)
-    : undefined
+  const getResolvedAddress = (address?: string) =>
+    address === zeroAddress ? wrappedContracts[activeChain?.id || 1] : address
+
+  useEffect(() => {
+    setIsError(false)
+    if (isEthToWethSwap) {
+      setQuotedAmountOut(amountIn ? amountIn.toString() : undefined)
+    } else if (tokenIn && tokenOut && amountIn && !isEthToWethSwap) {
+      const fetchQuote = async () => {
+        try {
+          setIsLoading(true)
+          const { result } = await publicClient.simulateContract({
+            address: QUOTER_CONTRACT_ADDRESS,
+            abi: Quoter.abi,
+            functionName: 'quoteExactInputSingle',
+            account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+            args: [
+              getResolvedAddress(tokenIn?.address),
+              getResolvedAddress(tokenOut?.address),
+              feeAmount,
+              parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
+              0,
+            ],
+          })
+
+          console.log(result)
+          setQuotedAmountOut(
+            result
+              ? formatUnits(result as bigint, tokenOut?.decimals || 18)
+              : undefined
+          )
+          setIsLoading(false)
+        } catch (e) {
+          console.log(e)
+          setQuotedAmountOut(undefined)
+          setIsError(true)
+          setIsLoading(false)
+        }
+      }
+      fetchQuote()
+    }
+  }, [amountIn, tokenIn, tokenOut])
 
   return { quotedAmountOut, isLoading, isError }
 }

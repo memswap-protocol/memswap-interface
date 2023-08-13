@@ -22,19 +22,17 @@ export const CurrencyPill: FC<Props> = ({ token }) => {
         border: '1px solid var(--borderColor)',
       }}
     >
-      <>
-        <img
-          src={token?.logoURI || ''}
-          alt={token?.name}
-          width={24}
-          height={24}
-          style={{
-            aspectRatio: '1/1',
-            borderRadius: '50%',
-          }}
-        />{' '}
-        <Text ellipsify>{token?.symbol}</Text>
-      </>
+      <img
+        src={token?.logoURI || ''}
+        alt={token?.name}
+        width={24}
+        height={24}
+        style={{
+          aspectRatio: '1/1',
+          borderRadius: '50%',
+        }}
+      />{' '}
+      <Text ellipsify>{token?.symbol}</Text>
     </Flex>
   )
 }

@@ -46,13 +46,13 @@ export const QuoteInfo: FC<Props> = ({
         </Flex>
       ) : null}
 
-      {errorFetchingQuote ? (
+      {!isFetchingQuote && errorFetchingQuote ? (
         <Text style="body1" color="error">
           There was an error fetching the quote
         </Text>
       ) : null}
 
-      {quotedAmountOut ? (
+      {!isFetchingQuote && !errorFetchingQuote && quotedAmountOut ? (
         <Flex align="center" justify="between" css={{ gap: '4' }}>
           <Text style="body1">Best Price</Text>
           <Text style="body1" color="subtle">
