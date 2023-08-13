@@ -3,6 +3,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import {
   connectorsForWallets,
   DisclaimerComponent,
+  getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import type { AppProps } from 'next/app'
@@ -29,16 +30,22 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 )
 
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Popular',
-    wallets: [
-      rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-      coinbaseWallet({ appName: 'MemSwap', chains }),
-      walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-    ],
-  },
-])
+const { connectors } = getDefaultWallets({
+  appName: 'MemSwap',
+  projectId: WALLET_CONNECT_PROJECT_ID,
+  chains,
+})
+
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: 'Popular',
+//     wallets: [
+//       rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
+//       coinbaseWallet({ appName: 'MemSwap', chains }),
+//       walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
+//     ],
+//   },
+// ])
 
 const wagmiConfig = createConfig({
   autoConnect: true,

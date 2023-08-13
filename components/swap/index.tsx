@@ -29,7 +29,7 @@ const Swap = () => {
     quotedAmountOut,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useQuote(Number(debouncedAmountIn), FeeAmount.LOWEST, tokenIn, tokenOut)
+  } = useQuote(Number(debouncedAmountIn), FeeAmount.MEDIUM, tokenIn, tokenOut)
 
   useEffect(() => {
     setAmountOut(quotedAmountOut ?? '')
