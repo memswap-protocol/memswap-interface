@@ -54,12 +54,13 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 })
 
-const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
-  <Text>
-    <span style={{ fontWeight: 700 }}>Metamask</span> is currently not supported
-    due to a technical limitation.
-  </Text>
-)
+// @TODO: remove?
+// const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
+//   <Text>
+//     <span style={{ fontWeight: 700 }}>Metamask</span> is currently not supported
+//     due to a technical limitation.
+//   </Text>
+// )
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -72,11 +73,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider
-          chains={chains}
-          modalSize="compact"
-          appInfo={{ disclaimer: Disclaimer }}
-        >
+        <RainbowKitProvider chains={chains} modalSize="compact">
           <Component {...pageProps} />
         </RainbowKitProvider>
       </WagmiConfig>

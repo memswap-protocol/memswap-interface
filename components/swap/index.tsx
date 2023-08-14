@@ -23,9 +23,7 @@ const Swap = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
 
-  const [tokenIn, setTokenIn] = useState<Token | undefined>(
-    chainTokens[chain?.id || 1][0]
-  )
+  const [tokenIn, setTokenIn] = useState<Token | undefined>(chainTokens[1][0])
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
 
   const [amountIn, setAmountIn] = useState('')
@@ -129,7 +127,7 @@ const Swap = () => {
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
-            {tokenInBalance ? (
+            {tokenInBalance !== undefined ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
                 {formatNumber(

@@ -54,11 +54,11 @@ const useQuote = (
       const fetchQuote = async () => {
         try {
           setIsLoading(true)
-          const { result } = await publicClient.simulateContract({
+          const { result, request } = await publicClient.simulateContract({
             address: QUOTER_CONTRACT_ADDRESS,
             abi: Quoter.abi,
             functionName: 'quoteExactInputSingle',
-            account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+            account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', //@TODO: update account
             args: [
               getResolvedAddress(tokenIn?.address),
               getResolvedAddress(tokenOut?.address),
@@ -68,7 +68,7 @@ const useQuote = (
             ],
           })
 
-          console.log(result)
+          console.log(result, request)
           setQuotedAmountOut(
             result
               ? formatUnits(result as bigint, tokenOut?.decimals || 18)

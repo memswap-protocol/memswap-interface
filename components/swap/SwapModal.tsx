@@ -48,7 +48,7 @@ type Props = {
   errorFetchingQuote: boolean
 }
 
-const MEMSWAP = '0x69f2888491ea07bb10936aa110a5e0481122efd3'
+const MEMSWAP = '0x90d4ecf99ad7e8ac74994c5181ca78b279ca9f8e'
 
 export const SwapModal: FC<Props> = ({
   tokenIn,
@@ -105,6 +105,7 @@ export const SwapModal: FC<Props> = ({
           .getBlock()
           .then((b) => Number(b!.timestamp) + 3600 * 24),
         amountIn: parseUnits(amountIn, tokenIn?.decimals || 18),
+        // @TODO: configure slippage settings
         startAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
         expectedAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
         endAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
@@ -173,6 +174,8 @@ export const SwapModal: FC<Props> = ({
         primaryType: 'Intent',
       })
 
+      console.log('Intent: ', intent)
+
       // Approval Step
       setSwapStep(SwapStep.Approving)
 
@@ -185,6 +188,8 @@ export const SwapModal: FC<Props> = ({
         abi: [abiItem],
         args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
       })
+
+      console.log('encodedFunctionData: ', encodedFunctionData)
 
       const encodedAbiParameters = encodeAbiParameters(
         parseAbiParameters([
@@ -220,6 +225,8 @@ export const SwapModal: FC<Props> = ({
         ]
       )
 
+      console.log('encodedAbiParameters: ', encodedAbiParameters)
+
       const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
 
       const currentBaseFee = await publicClient
@@ -229,7 +236,9 @@ export const SwapModal: FC<Props> = ({
       const maxPriorityFeePerGas = parseUnits('1', 18)
 
       const { hash } = await sendTransaction({
+        chainId: activeChain?.id,
         to: tokenIn?.address as Address,
+        account: address,
         data: endcodedData as Address,
         maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
         maxPriorityFeePerGas: maxPriorityFeePerGas,
@@ -250,7 +259,7 @@ export const SwapModal: FC<Props> = ({
       const error = e as Error
       setSwapStep(SwapStep.Error)
       setError(error)
-      console.log(e)
+      console.error(e)
       toast({
         title: 'Oops, something went wrong.',
       })
