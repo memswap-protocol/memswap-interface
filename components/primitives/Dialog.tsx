@@ -20,7 +20,7 @@ const Content = styled(DialogPrimitive.Content, {
     backgroundColor: 'neutralBg',
     borderRadius: 16,
     position: 'fixed',
-    top: '20%',
+    top: '12.5%',
     left: '50%',
     transform: 'translateX(-50%)',
     minWidth: '90vw',

@@ -387,7 +387,9 @@ export const SwapModal: FC<Props> = ({
             <FontAwesomeIcon icon={faCircleCheck} size="2x" />
           </Box>
           <Text style="h5">Success</Text>
-          <Anchor href="">View on Etherscan</Anchor>
+          <Anchor href="" target="_blank">
+            View on Etherscan
+          </Anchor>
           {/* @TODO: parse tx hash, add block explorer*/}
           {/* {hash ? <Anchor href="">View on Etherscan</Anchor> : null} */}
           <Button
