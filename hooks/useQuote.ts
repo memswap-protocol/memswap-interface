@@ -11,7 +11,7 @@ import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import wrappedContracts from '../constants/wrappedContracts'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export const QUOTER_CONTRACT_ADDRESS =
   '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
@@ -43,8 +43,14 @@ const useQuote = (
     (tokenOut?.address === zeroAddress ||
       tokenOut?.address === wrappedContracts[activeChain?.id || 1])
 
-  const getResolvedAddress = (address?: string) =>
-    address === zeroAddress ? wrappedContracts[activeChain?.id || 1] : address
+  const getResolvedAddress = useCallback(
+    (address?: string) => {
+      return address === zeroAddress
+        ? wrappedContracts[activeChain?.id || 1]
+        : address
+    },
+    [activeChain]
+  )
 
   useEffect(() => {
     setIsError(false)
@@ -83,8 +89,17 @@ const useQuote = (
         }
       }
       fetchQuote()
+    } else {
+      setQuotedAmountOut(undefined)
     }
-  }, [amountIn, tokenIn, tokenOut])
+  }, [
+    amountIn,
+    tokenIn,
+    tokenOut,
+    isEthToWethSwap,
+    feeAmount,
+    getResolvedAddress,
+  ])
 
   return { quotedAmountOut, isLoading, isError }
 }

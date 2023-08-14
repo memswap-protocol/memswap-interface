@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
-import { mainnet, useAccount, useNetwork } from 'wagmi'
+import { erc20ABI, mainnet, useAccount, useNetwork } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
@@ -19,10 +19,11 @@ import {
   Address,
   formatUnits,
 } from 'viem'
-import { signTypedData, sendTransaction } from '@wagmi/core'
+import { signTypedData, sendTransaction, readContract } from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
+import { useMounted } from '../../hooks'
 
 type FetchBalanceResult = {
   decimals: number
@@ -49,6 +50,7 @@ type Props = {
 }
 
 const MEMSWAP = '0x90d4ecf99ad7e8ac74994c5181ca78b279ca9f8e'
+const WETH2 = '0xe6ea2a148c13893a8eedd57c75043055a8924c5f'
 
 export const SwapModal: FC<Props> = ({
   tokenIn,
@@ -59,8 +61,9 @@ export const SwapModal: FC<Props> = ({
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
+  const isMounted = useMounted()
   const { chain: activeChain } = useNetwork()
-  const { address, isDisconnected } = useAccount()
+  const { address, isDisconnected, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
 
   const [open, setOpen] = useState(false)
@@ -80,10 +83,11 @@ export const SwapModal: FC<Props> = ({
     transport: http(),
   })
 
+  const isMetamaskWallet = connector?.id === 'metaMask'
+
   // Reset state on close
   useEffect(() => {
     if (!open) {
-      // @TODO: only reset state if complete/error
       setSwapStep(SwapStep.Signature)
       setError(undefined)
     }
@@ -91,12 +95,21 @@ export const SwapModal: FC<Props> = ({
 
   // Execute Swap
   const swap = async () => {
+    if (!address) {
+      throw Error('No wallet connected')
+    }
     try {
+      const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
+      const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
+
+      const processedTokenIn =
+        tokenIn?.address === zeroAddress ? WETH2 : (tokenIn?.address as Address)
+
       // Create Intent
       const intent: any = {
         maker: address,
         filler: zeroAddress,
-        tokenIn: tokenIn?.address,
+        tokenIn: processedTokenIn,
         tokenOut: tokenOut?.address,
         referrer: zeroAddress,
         referrerFeeBps: 0,
@@ -104,11 +117,11 @@ export const SwapModal: FC<Props> = ({
         deadline: await publicClient
           .getBlock()
           .then((b) => Number(b!.timestamp) + 3600 * 24),
-        amountIn: parseUnits(amountIn, tokenIn?.decimals || 18),
+        amountIn: parsedAmountIn,
         // @TODO: configure slippage settings
-        startAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
-        expectedAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
-        endAmountOut: parseUnits(amountOut, tokenOut?.decimals || 18),
+        startAmountOut: parsedAmountOut,
+        expectedAmountOut: parsedAmountOut,
+        endAmountOut: parsedAmountOut,
       }
 
       intent.signature = await signTypedData({
@@ -174,24 +187,23 @@ export const SwapModal: FC<Props> = ({
         primaryType: 'Intent',
       })
 
-      console.log('Intent: ', intent)
-
       // Approval Step
       setSwapStep(SwapStep.Approving)
 
-      // Generate approval transaction
-      const abiItem = parseAbiItem(
-        'function approve(address spender, uint256 amount)'
+      // Encode approval and intent
+      const approveMethod =
+        processedTokenIn === WETH2 ? 'depositAndApprove' : 'approve'
+
+      const approveAbiItem = parseAbiItem(
+        `function ${approveMethod}(address spender, uint256 amount)`
       )
 
-      const encodedFunctionData = encodeFunctionData({
-        abi: [abiItem],
-        args: [MEMSWAP, parseUnits(amountIn, tokenIn?.decimals || 18)],
+      const encodedApprovalData = encodeFunctionData({
+        abi: [approveAbiItem],
+        args: [MEMSWAP, parsedAmountIn],
       })
 
-      console.log('encodedFunctionData: ', encodedFunctionData)
-
-      const encodedAbiParameters = encodeAbiParameters(
+      const encodedIntentData = encodeAbiParameters(
         parseAbiParameters([
           'address',
           'address',
@@ -225,9 +237,18 @@ export const SwapModal: FC<Props> = ({
         ]
       )
 
-      console.log('encodedAbiParameters: ', encodedAbiParameters)
+      const combinedEndcodedData =
+        encodedApprovalData + encodedIntentData.slice(2)
 
-      const endcodedData = encodedFunctionData + encodedAbiParameters.slice(2)
+      // Fetch allowance amount
+      const allowanceAmount = await readContract({
+        address: processedTokenIn,
+        abi: erc20ABI,
+        functionName: 'allowance',
+        args: [address, processedTokenIn],
+      })
+
+      console.log('Allowance: ', allowanceAmount)
 
       const currentBaseFee = await publicClient
         .getBlock()
@@ -235,14 +256,54 @@ export const SwapModal: FC<Props> = ({
 
       const maxPriorityFeePerGas = parseUnits('1', 18)
 
-      const { hash } = await sendTransaction({
-        chainId: activeChain?.id,
-        to: tokenIn?.address as Address,
-        account: address,
-        data: endcodedData as Address,
-        maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas,
-      })
+      // Handle transactions
+
+      // If user already approved for amountIn
+      if (allowanceAmount >= parsedAmountIn) {
+        const { hash } = await sendTransaction({
+          chainId: activeChain?.id,
+          to: address,
+          account: address,
+          data: encodedIntentData,
+          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
+          maxPriorityFeePerGas: maxPriorityFeePerGas,
+        })
+      }
+      // if metamask wallet
+      else if (isMetamaskWallet) {
+        // For metamask, an extra tx is required due to custom approval handling
+        const { hash: approvalHash } = await sendTransaction({
+          chainId: activeChain?.id,
+          to: processedTokenIn,
+          account: address,
+          value: 0n,
+          data: encodedApprovalData,
+          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
+          maxPriorityFeePerGas: maxPriorityFeePerGas,
+        })
+
+        const { hash: intentHash } = await sendTransaction({
+          chainId: activeChain?.id,
+          to: address,
+          account: address,
+          value: 0n,
+          data: encodedIntentData,
+          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
+          maxPriorityFeePerGas: maxPriorityFeePerGas,
+        })
+      }
+      //
+      else {
+        const { hash } = await sendTransaction({
+          chainId: activeChain?.id,
+          to: processedTokenIn,
+          account: address,
+          value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
+          data: combinedEndcodedData as Address,
+          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
+          maxPriorityFeePerGas: maxPriorityFeePerGas,
+        })
+      }
 
       // @TODO: add toast with etherscan link, reset tokenIn, tokenOut, amountIn
 
@@ -250,9 +311,9 @@ export const SwapModal: FC<Props> = ({
         title: 'Transaction was successful.',
       })
 
-      setHash(hash)
+      // setHash(hash)
 
-      console.log('hash: ', hash)
+      // console.log('hash: ', hash)
 
       setSwapStep(SwapStep.Complete)
     } catch (e: any) {
@@ -299,6 +360,10 @@ export const SwapModal: FC<Props> = ({
       {isDisconnected ? 'Connect Wallet' : 'Swap'}
     </Button>
   )
+
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <Modal

@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  useBalance,
-  useAccount,
-  useNetwork,
-  useWalletClient,
-  usePublicClient,
-} from 'wagmi'
+import { useBalance, useAccount, useNetwork } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { Button, Flex, Text, Input } from '../primitives'
 import { Token, SelectTokenModal } from './SelectTokenModal'
@@ -13,17 +7,20 @@ import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapModal } from './SwapModal'
-import { useQuote } from '../../hooks'
+import { useMounted, useQuote } from '../../hooks'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
-import { chainTokens } from '../../constants/chainTokens'
+import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
 
 const Swap = () => {
+  const isMounted = useMounted()
   const { address } = useAccount()
   const { chain } = useNetwork()
 
-  const [tokenIn, setTokenIn] = useState<Token | undefined>(chainTokens[1][0])
+  const [tokenIn, setTokenIn] = useState<Token | undefined>(
+    chainDefaultTokens[1][0]
+  )
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
 
   const [amountIn, setAmountIn] = useState('')
@@ -117,8 +114,16 @@ const Swap = () => {
               }}
               value={amountIn}
               onChange={(e) => {
-                if (e.target.value) {
-                  setAmountIn(Math.abs(Number(e.target.value)).toString())
+                const inputValue = e.target.value
+                if (inputValue) {
+                  if (
+                    inputValue.endsWith('.0') ||
+                    inputValue.startsWith('0.')
+                  ) {
+                    setAmountIn(inputValue)
+                  } else {
+                    setAmountIn(Math.abs(Number(inputValue)).toString())
+                  }
                 } else {
                   setAmountIn('')
                 }
@@ -127,7 +132,7 @@ const Swap = () => {
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
-            {tokenInBalance !== undefined ? (
+            {tokenInBalance !== undefined && isMounted ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
                 {formatNumber(
@@ -183,20 +188,11 @@ const Swap = () => {
               borderRadius: 0,
               _focus: { boxShadow: 'none' },
             }}
-            // value={amountOut.replace(',', '')}
             value={formatNumber(amountOut, 8).replace(',', '')}
-            // value={formatNumber(quotedAmountOut, 8).replace(',', '')}
-            // onChange={(e) => {
-            //   if (e.target.value) {
-            //     setAmountOut(e.target.value)
-            //   } else {
-            //     setAmountOut('')
-            //   }
-            // }}
           />
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
-            {tokenOutBalance ? (
+            {tokenOutBalance !== undefined && isMounted ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
                 {formatNumber(

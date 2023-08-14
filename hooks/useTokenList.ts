@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Token } from '../components/swap/SelectTokenModal'
 import { useNetwork } from 'wagmi'
-import { chainTokens } from '../constants/chainTokens'
+import { chainDefaultTokens } from '../constants/chainDefaultTokens'
 
 function useTokenList() {
   const { chain: activeChain } = useNetwork()
   const [tokens, setTokens] = useState<Token[] | undefined>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | undefined>()
+
+  const defaultTokens = chainDefaultTokens[activeChain?.id || 1]
 
   useEffect(() => {
     async function fetchData() {
@@ -20,19 +22,23 @@ function useTokenList() {
 
         const filteredTokens =
           data?.tokens?.filter(
-            (token) => token?.chainId === (activeChain?.id || 1)
+            (token) =>
+              token?.chainId === (activeChain?.id || 1) &&
+              !defaultTokens.some(
+                (defaultToken) => defaultToken.address === token.address
+              )
           ) || []
 
-        setTokens([...chainTokens[activeChain?.id || 1], ...filteredTokens])
+        setTokens([...defaultTokens, ...filteredTokens])
       } catch (err: any) {
         setError(err)
-        setTokens(chainTokens[activeChain?.id || 1])
+        setTokens(defaultTokens)
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [activeChain])
+  }, [activeChain, defaultTokens])
 
   return { tokens, loading, error }
 }
