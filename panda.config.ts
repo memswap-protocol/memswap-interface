@@ -16,8 +16,6 @@ export default defineConfig({
   exclude: [],
   conditions: {
     extend: {
-      // @TODO: If we want to support dark mode
-      // dark: '._dark &, [data-theme="_dark"] & [data-color-mode=_dark] &',
       light: '.light &',
       typeNumber: '&[type=number]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',
@@ -87,9 +85,9 @@ export default defineConfig({
     },
     semanticTokens: {
       colors: {
-        neutralBg: { value: { base: slate.slate1, _dark: slate.slate12 } },
-        neutralText: { value: { base: slate.slate12, _dark: 'white' } },
-        success: { value: { base: green.green11, _dark: green.green11 } },
+        neutralBg: { value: { base: slate.slate1 } },
+        neutralText: { value: { base: slate.slate12 } },
+        success: { value: { base: green.green11 } },
       },
     },
     extend: {

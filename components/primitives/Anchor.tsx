@@ -10,6 +10,12 @@ const Anchor = styled('a', {
     },
   },
   variants: {
+    color: {
+      gray: {
+        color: 'gray12',
+        _hover: { color: 'gray11' },
+      },
+    },
     weight: {
       bold: { fontWeight: 700 },
       semi_bold: { fontWeight: 600 },

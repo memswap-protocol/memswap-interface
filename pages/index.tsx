@@ -19,12 +19,22 @@ const Home: NextPage = () => {
 
         {/* @TODO: add links */}
         <Flex align="center" direction="column" css={{ gap: 24 }}>
-          <Anchor href="" target="_blank" weight="bold">
+          <Anchor
+            href=""
+            target="_blank"
+            weight="bold"
+            css={{ display: 'block', md: { display: 'none' } }}
+          >
             <Flex align="center" css={{ gap: '2' }}>
               Docs <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </Flex>
           </Anchor>
-          <Anchor href="" target="_blank" weight="bold">
+          <Anchor
+            href=""
+            target="_blank"
+            weight="bold"
+            css={{ display: 'block', md: { display: 'none' } }}
+          >
             <Flex align="center" css={{ gap: '2' }}>
               Light Paper <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </Flex>

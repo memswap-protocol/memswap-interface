@@ -77,11 +77,5 @@
   --colors-neutral-text: hsl(206, 24.0%, 9.0%);
   --colors-success: hsl(153, 67.0%, 28.5%)
 }
-
-.dark {
-  --colors-neutral-bg: hsl(206, 24.0%, 9.0%);
-  --colors-neutral-text: white;
-  --colors-success: hsl(153, 67.0%, 28.5%)
-}
   }
   

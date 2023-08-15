@@ -14,6 +14,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
 import {
   coinbaseWallet,
+  metaMaskWallet,
   rainbowWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
@@ -30,22 +31,23 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 )
 
-const { connectors } = getDefaultWallets({
-  appName: 'MemSwap',
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  chains,
-})
+// const { connectors } = getDefaultWallets({
+//   appName: 'MemSwap',
+//   projectId: WALLET_CONNECT_PROJECT_ID,
+//   chains,
+// })
 
-// const connectors = connectorsForWallets([
-//   {
-//     groupName: 'Popular',
-//     wallets: [
-//       rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-//       coinbaseWallet({ appName: 'MemSwap', chains }),
-//       walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-//     ],
-//   },
-// ])
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Popular',
+    wallets: [
+      rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
+      coinbaseWallet({ appName: 'MemSwap', chains }),
+      walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
+      metaMaskWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+    ],
+  },
+])
 
 const wagmiConfig = createConfig({
   autoConnect: true,
@@ -54,26 +56,31 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 })
 
-// @TODO: remove?
-// const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
-//   <Text>
-//     <span style={{ fontWeight: 700 }}>Metamask</span> is currently not supported
-//     due to a technical limitation.
-//   </Text>
-// )
+const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
+  <Text>
+    When doing ERC-20 swaps with{' '}
+    <span style={{ fontWeight: 700 }}>Metamask</span>, an extra tx is required
+    due to custom approval handling. You can use a different wallet to avoid
+    this.
+  </Text>
+)
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="_dark"
+      defaultTheme="_light"
       value={{
         dark: '_dark',
         light: 'light',
       }}
     >
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider chains={chains} modalSize="compact">
+        <RainbowKitProvider
+          chains={chains}
+          modalSize="compact"
+          appInfo={{ disclaimer: Disclaimer }}
+        >
           <Component {...pageProps} />
         </RainbowKitProvider>
       </WagmiConfig>

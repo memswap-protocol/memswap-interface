@@ -1,7 +1,9 @@
-import { Flex } from '../primitives'
+import { Anchor, Flex, Box } from '../primitives'
 import Image from 'next/image'
 import { ConnectWalletButton } from './ConnectWalletButton'
 import Link from 'next/link'
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Navbar = () => {
   return (
@@ -23,9 +25,38 @@ const Navbar = () => {
         py: '3',
       }}
     >
-      <Link href="/">
-        <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
-      </Link>
+      <Flex align="center" css={{ gap: '5' }}>
+        <Link href="/">
+          <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
+        </Link>
+        {/* @TODO: add links */}
+        <Anchor
+          href=""
+          target="_blank"
+          color="gray"
+          css={{ display: 'none', md: { display: 'block' } }}
+        >
+          <Flex align="center" css={{ gap: '2' }}>
+            Docs
+            <Box css={{ color: 'gray11' }}>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+        <Anchor
+          href=""
+          target="_blank"
+          color="gray"
+          css={{ display: 'none', md: { display: 'block' } }}
+        >
+          <Flex align="center" css={{ gap: '2' }}>
+            Light Paper
+            <Box css={{ color: 'gray11' }}>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+      </Flex>
       <ConnectWalletButton
         css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
       >
