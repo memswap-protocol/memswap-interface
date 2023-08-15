@@ -174,3 +174,5 @@ const MEMSWAP_ABI = [
   },
   { stateMutability: 'payable', type: 'receive' },
 ]
+
+export { MEMSWAP_ABI }

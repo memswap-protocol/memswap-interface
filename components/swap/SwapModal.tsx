@@ -25,11 +25,13 @@ import {
   sendTransaction,
   readContract,
   waitForTransaction,
+  watchContractEvent,
 } from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
 import { useMounted } from '../../hooks'
+import { MEMSWAP_ABI } from '../../constants/memswapABI'
 
 type FetchBalanceResult = {
   decimals: number
@@ -283,7 +285,8 @@ export const SwapModal: FC<Props> = ({
         setSwapStep(SwapStep.MetamaskApproving)
         console.log('Metamask wallet flow')
 
-        // For metamask, an extra tx is required due to custom approval handling
+        // For metamask, an extra tx is required because the extension strips away any appended calldata
+        // https://github.com/MetaMask/metamask-extension/issues/20439
         const { hash: approvalHash } = await sendTransaction({
           chainId: activeChain?.id,
           to: processedTokenIn,
@@ -349,6 +352,24 @@ export const SwapModal: FC<Props> = ({
           },
         })
       }
+
+      console.log('Listening for event ')
+      // Listen for IntentFulfilled Event
+      const unwatch = watchContractEvent(
+        {
+          address: MEMSWAP,
+          abi: MEMSWAP_ABI,
+          eventName: 'IntentFulfilled',
+        },
+        (log) => {
+          console.log(log)
+          if (false) {
+            unwatch?.()
+          }
+        }
+      )
+
+      // @TODO: reset state
 
       setSwapStep(SwapStep.Complete)
       toast({
@@ -426,7 +447,7 @@ export const SwapModal: FC<Props> = ({
           css={{ width: '100%', gap: 24, pt: '5' }}
         >
           <ErrorWell css={{ width: '100%' }} />
-          <Text style="h5">Sign your intent</Text>
+          <Text style="h5">Submit your intent</Text>
           <IntentInfo
             tokenIn={tokenIn}
             tokenOut={tokenOut}
