@@ -88,7 +88,10 @@ const Swap = () => {
           position: 'relative',
           backgroundColor: 'gray2',
           borderRadius: 8,
-          p: '5',
+          px: '3',
+          pt: '3',
+          pb: '5',
+          sm: { p: '5' },
         }}
       >
         <Text style="subtitle2" color="subtle">
@@ -167,7 +170,10 @@ const Swap = () => {
           position: 'relative',
           backgroundColor: 'gray2',
           borderRadius: 8,
-          p: '5',
+          px: '3',
+          pt: '3',
+          pb: '5',
+          sm: { p: '5' },
         }}
       >
         <Text style="subtitle2" color="subtle">

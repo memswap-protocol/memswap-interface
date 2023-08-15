@@ -112,7 +112,7 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
       trigger={
         <Button
           color={token ? 'white' : 'black'}
-          size="medium"
+          size="small"
           corners="pill"
           css={{
             justifyContent: 'space-between',

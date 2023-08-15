@@ -33,7 +33,10 @@ export const QuoteInfo: FC<Props> = ({
     <Flex
       direction="column"
       css={{
-        p: 24,
+        p: '4',
+        sm: {
+          p: 24,
+        },
         '--borderColor': 'colors.gray6',
         border: '1px solid var(--borderColor)',
         borderRadius: 12,

@@ -1,8 +1,10 @@
 import type { NextPage } from 'next'
-import { Flex, Text } from '../components/primitives'
+import { Flex, Anchor } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
 import Swap from '../components/swap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 
 const Home: NextPage = () => {
   return (
@@ -14,9 +16,20 @@ const Home: NextPage = () => {
         css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
         <Swap />
-        <Text style="h4" css={{ textAlign: 'center', maxWidth: 500 }}>
-          A permissionless, general, and transparent swap aggregator
-        </Text>
+
+        {/* @TODO: add links */}
+        <Flex align="center" direction="column" css={{ gap: 24 }}>
+          <Anchor href="" target="_blank" weight="bold">
+            <Flex align="center" css={{ gap: '2' }}>
+              Docs <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Flex>
+          </Anchor>
+          <Anchor href="" target="_blank" weight="bold">
+            <Flex align="center" css={{ gap: '2' }}>
+              Light Paper <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Flex>
+          </Anchor>
+        </Flex>
       </Flex>
     </Layout>
   )

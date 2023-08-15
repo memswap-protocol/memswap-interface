@@ -20,7 +20,7 @@ export const IntentInfo: FC<Props> = ({
   amountOut,
 }) => {
   return (
-    <Flex align="center" css={{ gap: 24, pb: '3' }}>
+    <Flex align="center" css={{ gap: '3', sm: { gap: 24 }, pb: '3' }}>
       <Flex align="center" css={{ gap: '2' }}>
         <Text style="h6" ellipsify>
           {formatNumber(amountIn, 8)}

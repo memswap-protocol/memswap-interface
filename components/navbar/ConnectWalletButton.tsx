@@ -30,5 +30,12 @@ export const ConnectWalletButton: FC<Props> = ({ children, css }) => {
         {children}
       </Button>
     )
-  return <ConnectButton />
+  return (
+    <ConnectButton
+      accountStatus={{
+        smallScreen: 'avatar',
+        largeScreen: 'full',
+      }}
+    />
+  )
 }

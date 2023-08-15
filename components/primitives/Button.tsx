@@ -95,9 +95,9 @@ const Button = styled('button', {
       },
       small: {
         px: '3',
-        py: '4',
+        py: '2',
         lineHeight: '12px',
-        minHeight: 44,
+        minHeight: 40,
       },
       medium: {
         px: '5',
