@@ -103,8 +103,12 @@ const Swap = () => {
         >
           <Flex direction="column" css={{}}>
             <Input
-              type="number"
+              type="text"
               placeholder="0"
+              inputMode="decimal"
+              autoComplete="off"
+              autoCorrect="off"
+              pattern="^[0-9]*[.,]?[0-9]*$"
               size="large"
               css={{
                 backgroundColor: 'transaparent',
@@ -115,14 +119,10 @@ const Swap = () => {
               value={amountIn}
               onChange={(e) => {
                 const inputValue = e.target.value
-                if (inputValue) {
-                  if (inputValue.endsWith('.0') || inputValue.startsWith('0')) {
-                    setAmountIn(inputValue)
-                  } else {
-                    setAmountIn(Math.abs(Number(inputValue)).toString())
-                  }
-                } else {
-                  setAmountIn('')
+                const regex = /^[0-9]*[.,]?[0-9]*$/
+
+                if (regex.test(inputValue) || inputValue === '') {
+                  setAmountIn(inputValue)
                 }
               }}
             />
