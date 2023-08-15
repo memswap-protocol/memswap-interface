@@ -116,10 +116,7 @@ const Swap = () => {
               onChange={(e) => {
                 const inputValue = e.target.value
                 if (inputValue) {
-                  if (
-                    inputValue.endsWith('.0') ||
-                    inputValue.startsWith('0.')
-                  ) {
+                  if (inputValue.endsWith('.0') || inputValue.startsWith('0')) {
                     setAmountIn(inputValue)
                   } else {
                     setAmountIn(Math.abs(Number(inputValue)).toString())

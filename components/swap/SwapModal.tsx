@@ -7,6 +7,7 @@ import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as allChains from 'viem/chains'
+import { truncateAddress } from '../../utils/truncate'
 import {
   createPublicClient,
   http,
@@ -19,7 +20,12 @@ import {
   Address,
   formatUnits,
 } from 'viem'
-import { signTypedData, sendTransaction, readContract } from '@wagmi/core'
+import {
+  signTypedData,
+  sendTransaction,
+  readContract,
+  waitForTransaction,
+} from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
@@ -34,8 +40,9 @@ type FetchBalanceResult = {
 
 enum SwapStep {
   Error,
-  Signature,
-  Approving,
+  Signing,
+  Submitting,
+  MetamaskApproving,
   Complete,
 }
 
@@ -63,13 +70,13 @@ export const SwapModal: FC<Props> = ({
 }) => {
   const isMounted = useMounted()
   const { chain: activeChain } = useNetwork()
-  const { address, isDisconnected, connector } = useAccount()
+  const { address, isDisconnected, isConnecting, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
 
   const [open, setOpen] = useState(false)
   const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Complete)
   const [error, setError] = useState<Error | undefined>()
-  const [hash, setHash] = useState<string | undefined>()
+  const [txHash, setTxHash] = useState<string | undefined>()
 
   const { toast } = useToast()
 
@@ -85,10 +92,10 @@ export const SwapModal: FC<Props> = ({
 
   const isMetamaskWallet = connector?.id === 'metaMask'
 
-  // Reset state on close
+  // Reset state on modal close
   useEffect(() => {
     if (!open) {
-      setSwapStep(SwapStep.Signature)
+      setSwapStep(SwapStep.Signing)
       setError(undefined)
     }
   }, [open])
@@ -187,9 +194,6 @@ export const SwapModal: FC<Props> = ({
         primaryType: 'Intent',
       })
 
-      // Approval Step
-      setSwapStep(SwapStep.Approving)
-
       // Encode approval and intent
       const approveMethod =
         processedTokenIn === WETH2 ? 'depositAndApprove' : 'approve'
@@ -245,32 +249,40 @@ export const SwapModal: FC<Props> = ({
         address: processedTokenIn,
         abi: erc20ABI,
         functionName: 'allowance',
-        args: [address, processedTokenIn],
+        args: [address, MEMSWAP],
       })
 
-      console.log('Allowance: ', allowanceAmount)
-
-      const currentBaseFee = await publicClient
-        .getBlock()
-        .then((b) => b!.baseFeePerGas)
-
-      const maxPriorityFeePerGas = parseUnits('1', 18)
+      console.log('Allowance: ', allowanceAmount, parsedAmountIn)
 
       // Handle transactions
 
       // If user already approved for amountIn
       if (allowanceAmount >= parsedAmountIn) {
+        setSwapStep(SwapStep.Submitting)
         const { hash } = await sendTransaction({
           chainId: activeChain?.id,
           to: address,
           account: address,
           data: encodedIntentData,
-          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
-          maxPriorityFeePerGas: maxPriorityFeePerGas,
         })
+
+        setTxHash(hash)
+
+        const data = await waitForTransaction({
+          hash: hash,
+          onReplaced: (replacement) => {
+            setTxHash(replacement?.transaction?.hash),
+              console.log('Transaction replaced')
+          },
+        })
+
+        console.log('Data: ', data)
       }
       // if metamask wallet
       else if (isMetamaskWallet) {
+        setSwapStep(SwapStep.MetamaskApproving)
+        console.log('Metamask wallet flow')
+
         // For metamask, an extra tx is required due to custom approval handling
         const { hash: approvalHash } = await sendTransaction({
           chainId: activeChain?.id,
@@ -278,9 +290,23 @@ export const SwapModal: FC<Props> = ({
           account: address,
           value: 0n,
           data: encodedApprovalData,
-          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
-          maxPriorityFeePerGas: maxPriorityFeePerGas,
         })
+
+        setTxHash(approvalHash)
+
+        const approvalTransactionData = await waitForTransaction({
+          hash: approvalHash,
+          onReplaced: (replacement) => {
+            setTxHash(replacement?.transaction?.hash),
+              console.log('Transaction replaced')
+          },
+        })
+
+        console.log(approvalTransactionData)
+
+        setTxHash(undefined)
+
+        setSwapStep(SwapStep.Submitting)
 
         const { hash: intentHash } = await sendTransaction({
           chainId: activeChain?.id,
@@ -288,42 +314,59 @@ export const SwapModal: FC<Props> = ({
           account: address,
           value: 0n,
           data: encodedIntentData,
-          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
-          maxPriorityFeePerGas: maxPriorityFeePerGas,
         })
+
+        setTxHash(intentHash)
+
+        const intentTransactionData = await waitForTransaction({
+          hash: intentHash,
+          onReplaced: (replacement) => {
+            setTxHash(replacement?.transaction?.hash),
+              console.log('Transaction replaced')
+          },
+        })
+
+        console.log(intentTransactionData)
       }
       //
       else {
+        setSwapStep(SwapStep.Submitting)
         const { hash } = await sendTransaction({
           chainId: activeChain?.id,
           to: processedTokenIn,
           account: address,
           value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
           data: combinedEndcodedData as Address,
-          maxFeePerGas: (currentBaseFee || 0n) + maxPriorityFeePerGas,
-          maxPriorityFeePerGas: maxPriorityFeePerGas,
+        })
+
+        setTxHash(hash)
+
+        const data = await waitForTransaction({
+          hash: hash,
+          onReplaced: (replacement) => {
+            setTxHash(replacement?.transaction?.hash),
+              console.log('Transaction replaced')
+          },
         })
       }
 
-      // @TODO: add toast with etherscan link, reset tokenIn, tokenOut, amountIn
-
+      setSwapStep(SwapStep.Complete)
       toast({
         title: 'Transaction was successful.',
       })
-
-      // setHash(hash)
-
-      // console.log('hash: ', hash)
-
-      setSwapStep(SwapStep.Complete)
-    } catch (e: any) {
-      const error = e as Error
+    } catch (error: any) {
       setSwapStep(SwapStep.Error)
       setError(error)
-      console.error(e)
-      toast({
-        title: 'Oops, something went wrong.',
-      })
+      console.error(error)
+      if (error?.code === 4001) {
+        toast({
+          title: 'User rejected the transaction.',
+        })
+      } else {
+        toast({
+          title: 'Oops, something went wrong.',
+        })
+      }
     }
   }
 
@@ -339,7 +382,7 @@ export const SwapModal: FC<Props> = ({
         }
       }}
       disabled={
-        isDisconnected
+        isDisconnected || isConnecting
           ? false
           : !address ||
             !tokenIn ||
@@ -357,7 +400,7 @@ export const SwapModal: FC<Props> = ({
             )
       }
     >
-      {isDisconnected ? 'Connect Wallet' : 'Swap'}
+      {isDisconnected || isConnecting ? 'Connect Wallet' : 'Swap'}
     </Button>
   )
 
@@ -390,6 +433,15 @@ export const SwapModal: FC<Props> = ({
             amountIn={amountIn}
             amountOut={amountOut}
           />
+          {txHash ? (
+            <Anchor
+              href={`${activeChain?.blockExplorers?.default?.url}/tx/${txHash}`}
+              target="_blank"
+            >
+              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              {truncateAddress(txHash)}
+            </Anchor>
+          ) : null}
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
             onClick={() => setOpen(false)}
@@ -398,7 +450,7 @@ export const SwapModal: FC<Props> = ({
           </Button>
         </Flex>
       ) : null}
-      {swapStep === SwapStep.Signature ? (
+      {swapStep === SwapStep.Signing ? (
         <Flex
           align="center"
           direction="column"
@@ -420,7 +472,39 @@ export const SwapModal: FC<Props> = ({
           </Button>
         </Flex>
       ) : null}
-      {swapStep === SwapStep.Approving ? (
+      {swapStep === SwapStep.MetamaskApproving ? (
+        <Flex
+          align="center"
+          direction="column"
+          css={{ width: '100%', gap: 24, pt: '5' }}
+        >
+          <Text style="h5">
+            Approve {tokenIn?.symbol} to be used for swapping.
+          </Text>
+          <Text style="body1" css={{ textAlign: 'center' }}>
+            For ERC-20 swaps using Metamask, an additional transaction is needed
+            for custom approval handling. To avoid this, you can use a different
+            wallet.
+          </Text>
+          {txHash ? (
+            <Anchor
+              href={`${activeChain?.blockExplorers?.default?.url}/tx/${txHash}`}
+              target="_blank"
+            >
+              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              {truncateAddress(txHash)}
+            </Anchor>
+          ) : null}
+          <Button
+            disabled={true}
+            css={{ justifyContent: 'center', width: '100%' }}
+          >
+            <LoadingSpinner />
+            Approve Transaction
+          </Button>
+        </Flex>
+      ) : null}
+      {swapStep === SwapStep.Submitting ? (
         <Flex
           align="center"
           direction="column"
@@ -433,6 +517,15 @@ export const SwapModal: FC<Props> = ({
             amountIn={amountIn}
             amountOut={amountOut}
           />
+          {txHash ? (
+            <Anchor
+              href={`${activeChain?.blockExplorers?.default?.url}/tx/${txHash}`}
+              target="_blank"
+            >
+              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              {truncateAddress(txHash)}
+            </Anchor>
+          ) : null}
           <Button
             disabled={true}
             css={{ justifyContent: 'center', width: '100%' }}
@@ -452,11 +545,15 @@ export const SwapModal: FC<Props> = ({
             <FontAwesomeIcon icon={faCircleCheck} size="2x" />
           </Box>
           <Text style="h5">Success</Text>
-          <Anchor href="" target="_blank">
-            View on Etherscan
-          </Anchor>
-          {/* @TODO: parse tx hash, add block explorer*/}
-          {/* {hash ? <Anchor href="">View on Etherscan</Anchor> : null} */}
+          {txHash ? (
+            <Anchor
+              href={`${activeChain?.blockExplorers?.default?.url}/tx/${txHash}`}
+              target="_blank"
+            >
+              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              {truncateAddress(txHash)}
+            </Anchor>
+          ) : null}
           <Button
             css={{ justifyContent: 'center', width: '100%' }}
             onClick={() => setOpen(false)}

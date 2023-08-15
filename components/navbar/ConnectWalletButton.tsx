@@ -12,7 +12,7 @@ type Props = {
 
 export const ConnectWalletButton: FC<Props> = ({ children, css }) => {
   const isMounted = useMounted()
-  const { isDisconnected } = useAccount()
+  const { isDisconnected, isConnecting } = useAccount()
 
   const { openConnectModal } = useConnectModal()
 
@@ -20,7 +20,7 @@ export const ConnectWalletButton: FC<Props> = ({ children, css }) => {
     return null
   }
 
-  if (isDisconnected)
+  if (isDisconnected || isConnecting)
     return (
       <Button
         color="primary"

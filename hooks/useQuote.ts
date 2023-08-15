@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react'
 import {
   createPublicClient,
   formatUnits,
@@ -11,7 +12,6 @@ import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import wrappedContracts from '../constants/wrappedContracts'
-import { useCallback, useEffect, useState } from 'react'
 
 export const QUOTER_CONTRACT_ADDRESS =
   '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
