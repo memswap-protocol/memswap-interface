@@ -9,14 +9,28 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapModal } from './SwapModal'
 import { useMounted, useQuote } from '../../hooks'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { formatNumber } from '../../utils/numbers'
+import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
+import { USDC_TOKENS } from '../../constants/contracts'
 
 const Swap = () => {
   const isMounted = useMounted()
-  const { address } = useAccount()
   const { chain } = useNetwork()
+  const { address, isConnected } = useAccount({
+    onConnect() {
+      if (chain?.id !== 1) {
+        setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+        setTokenOut(undefined)
+      }
+    },
+    onDisconnect: () => {
+      if (chain?.id !== 1) {
+        setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+        setTokenOut(undefined)
+      }
+    },
+  })
 
   const [tokenIn, setTokenIn] = useState<Token | undefined>(
     chainDefaultTokens[1][0]
@@ -34,9 +48,31 @@ const Swap = () => {
     isError: errorFetchingQuote,
   } = useQuote(Number(debouncedAmountIn), FeeAmount.MEDIUM, tokenIn, tokenOut)
 
+  const { quotedAmountOut: tokenInUSD } = useQuote(
+    Number(debouncedAmountIn),
+    FeeAmount.MEDIUM,
+    tokenIn,
+    USDC_TOKENS[chain?.id || 1]
+  )
+
+  const { quotedAmountOut: tokenOutUSD } = useQuote(
+    Number(amountOut),
+    FeeAmount.MEDIUM,
+    tokenOut,
+    USDC_TOKENS[chain?.id || 1]
+  )
+
   useEffect(() => {
     setAmountOut(quotedAmountOut ?? '')
   }, [quotedAmountOut])
+
+  // Reset tokens on chain switch
+  useEffect(() => {
+    if (isConnected) {
+      setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+      setTokenOut(undefined)
+    }
+  }, [chain])
 
   const { data: tokenInBalance } = useBalance({
     chainId: chain?.id || 1,
@@ -104,7 +140,7 @@ const Swap = () => {
             gap: '4',
           }}
         >
-          <Flex direction="column" css={{}}>
+          <Flex direction="column" css={{ gap: '2' }}>
             <Input
               type="text"
               placeholder="0"
@@ -129,6 +165,11 @@ const Swap = () => {
                 }
               }}
             />
+            {tokenInUSD ? (
+              <Text style="subtitle2" color="subtle">
+                {formatDollar(Number(tokenInUSD))}
+              </Text>
+            ) : null}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
@@ -180,20 +221,34 @@ const Swap = () => {
           Receive
         </Text>
         <Flex align="start" justify="between" css={{ gap: '4' }}>
-          <Input
-            type="text"
-            disabled={true}
-            placeholder="0"
-            size="large"
-            css={{
-              backgroundColor: 'transaparent',
-              p: 0,
-              borderRadius: 0,
-              _focus: { boxShadow: 'none' },
-            }}
-            value={formatNumber(amountOut, 8).replace(',', '')}
-          />
-          <Flex direction="column" align="end" css={{ gap: '2' }}>
+          <Flex direction="column" align="start" css={{ gap: '2' }}>
+            <Input
+              type="text"
+              disabled={true}
+              placeholder="0"
+              size="large"
+              ellipsify
+              css={{
+                backgroundColor: 'transaparent',
+                p: 0,
+                borderRadius: 0,
+                _focus: { boxShadow: 'none' },
+              }}
+              value={formatNumber(amountOut, 8)}
+            />
+            {tokenOutUSD ? (
+              <Text style="subtitle2" color="subtle">
+                {formatDollar(Number(tokenOutUSD))}
+              </Text>
+            ) : null}
+          </Flex>
+
+          <Flex
+            direction="column"
+            justify="between"
+            align="end"
+            css={{ gap: '2' }}
+          >
             <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
             {tokenOutBalance !== undefined && isMounted ? (
               <Text style="subtitle2" color="subtle" ellipsify>

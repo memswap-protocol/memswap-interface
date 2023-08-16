@@ -41,6 +41,13 @@ const StyledInput = styled('input', {
         fontSize: 32,
       },
     },
+    ellipsify: {
+      true: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+      },
+    },
   },
 })
 

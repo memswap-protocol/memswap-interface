@@ -3,49 +3,42 @@ import '@rainbow-me/rainbowkit/styles.css'
 import {
   connectorsForWallets,
   DisclaimerComponent,
-  getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { ThemeProvider } from 'next-themes'
 import {
   coinbaseWallet,
+  injectedWallet,
   metaMaskWallet,
   rainbowWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
-import { Flex } from '../components/primitives'
 
 const WALLET_CONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
-  [
-    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
-    publicProvider(),
-  ]
+  [publicProvider()]
 )
-
-// const { connectors } = getDefaultWallets({
-//   appName: 'MemSwap',
-//   projectId: WALLET_CONNECT_PROJECT_ID,
-//   chains,
-// })
 
 const connectors = connectorsForWallets([
   {
-    groupName: 'Popular',
+    groupName: 'Recommended',
     wallets: [
+      injectedWallet({ chains }),
       rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
       coinbaseWallet({ appName: 'MemSwap', chains }),
       walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-      metaMaskWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
     ],
+  },
+  {
+    groupName: 'Other',
+    wallets: [metaMaskWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID })],
   },
 ])
 
@@ -56,12 +49,12 @@ const wagmiConfig = createConfig({
   webSocketPublicClient,
 })
 
-const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
+const Disclaimer: DisclaimerComponent = ({ Text }) => (
   <Text>
     When doing ERC-20 swaps with{' '}
-    <span style={{ fontWeight: 700 }}>Metamask</span>, an extra tx is required
-    due to custom approval handling. You can use a different wallet to avoid
-    this.
+    <span style={{ fontWeight: 700 }}>Metamask</span>, an additional transaction
+    is required due to custom approval handling. You can use a different wallet
+    to avoid this.
   </Text>
 )
 

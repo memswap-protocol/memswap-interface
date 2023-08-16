@@ -6,13 +6,14 @@ import { chainDefaultTokens } from '../constants/chainDefaultTokens'
 function useTokenList() {
   const { chain: activeChain } = useNetwork()
   const [tokens, setTokens] = useState<Token[] | undefined>()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | undefined>()
 
   const defaultTokens = chainDefaultTokens[activeChain?.id || 1]
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true)
       try {
         const response = await fetch('/api/tokenList')
         if (!response.ok) {

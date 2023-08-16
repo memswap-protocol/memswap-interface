@@ -1,20 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  createPublicClient,
-  formatUnits,
-  http,
-  parseUnits,
-  zeroAddress,
-} from 'viem'
+import { formatUnits, parseUnits, zeroAddress } from 'viem'
+import { getPublicClient } from '@wagmi/core'
 import { useNetwork } from 'wagmi'
-import * as wagmiChains from 'wagmi/chains'
 import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import wrappedContracts from '../constants/wrappedContracts'
-
-export const QUOTER_CONTRACT_ADDRESS =
-  '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
+import { WRAPPED_CONTRACTS, QUOTER_CONTRACT } from '../constants/contracts'
 
 const useQuote = (
   amountIn: number,
@@ -27,70 +18,85 @@ const useQuote = (
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const wagmiChain =
-    Object.values(wagmiChains).find(
-      (chain) => chain.id === (activeChain?.id || 1)
-    ) || wagmiChains.mainnet
-
-  const publicClient = createPublicClient({
-    chain: wagmiChain,
-    transport: http(),
-  })
+  const publicClient = getPublicClient()
 
   const isEthToWethSwap =
     (tokenIn?.address === zeroAddress ||
-      tokenIn?.address === wrappedContracts[activeChain?.id || 1]) &&
+      tokenIn?.address === WRAPPED_CONTRACTS[activeChain?.id || 1]) &&
     (tokenOut?.address === zeroAddress ||
-      tokenOut?.address === wrappedContracts[activeChain?.id || 1])
+      tokenOut?.address === WRAPPED_CONTRACTS[activeChain?.id || 1])
 
+  // For ETH, use WETH to feth quote
   const getResolvedAddress = useCallback(
     (address?: string) => {
       return address === zeroAddress
-        ? wrappedContracts[activeChain?.id || 1]
+        ? WRAPPED_CONTRACTS[activeChain?.id || 1]
         : address
     },
     [activeChain]
   )
 
-  useEffect(() => {
+  const resetState = useCallback(() => {
     setIsError(false)
-    if (isEthToWethSwap) {
-      setQuotedAmountOut(amountIn ? amountIn.toString() : undefined)
-    } else if (tokenIn && tokenOut && amountIn && !isEthToWethSwap) {
-      const fetchQuote = async () => {
-        try {
-          setIsLoading(true)
-          const { result, request } = await publicClient.simulateContract({
-            address: QUOTER_CONTRACT_ADDRESS,
-            abi: Quoter.abi,
-            functionName: 'quoteExactInputSingle',
-            account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', //@TODO: update account
-            args: [
-              getResolvedAddress(tokenIn?.address),
-              getResolvedAddress(tokenOut?.address),
-              feeAmount,
-              parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
-              0,
-            ],
-          })
+    setIsLoading(false)
+    setQuotedAmountOut(undefined)
+  }, [])
 
-          console.log(result, request)
-          setQuotedAmountOut(
-            result
-              ? formatUnits(result as bigint, tokenOut?.decimals || 18)
-              : undefined
-          )
-          setIsLoading(false)
-        } catch (e) {
-          console.log(e)
-          setQuotedAmountOut(undefined)
-          setIsError(true)
+  useEffect(() => {
+    let isCancelled = false
+
+    const fetchQuote = async () => {
+      try {
+        setIsLoading(true)
+        const { result } = await publicClient.simulateContract({
+          address: QUOTER_CONTRACT,
+          abi: Quoter.abi,
+          functionName: 'quoteExactInputSingle',
+          account: zeroAddress,
+          args: [
+            getResolvedAddress(tokenIn?.address),
+            getResolvedAddress(tokenOut?.address),
+            feeAmount,
+            parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
+            0,
+          ],
+        })
+
+        const quotedAmount = result
+          ? formatUnits(result as bigint, tokenOut?.decimals || 18)
+          : undefined
+
+        if (!isCancelled) {
+          setQuotedAmountOut(quotedAmount)
           setIsLoading(false)
         }
+      } catch (error) {
+        if (!isCancelled) {
+          console.log(error)
+          resetState()
+          setIsError(true)
+        }
       }
-      fetchQuote()
-    } else {
-      setQuotedAmountOut(undefined)
+    }
+
+    if (isEthToWethSwap || tokenIn?.address === tokenOut?.address) {
+      setQuotedAmountOut(amountIn ? amountIn.toString() : undefined)
+      return
+    }
+
+    // If the required conditions are not met, reset state.
+    if (!tokenIn || !tokenOut || !amountIn) {
+      resetState()
+      return
+    }
+
+    // If all conditions are met, fetch the quote.
+    fetchQuote()
+
+    // Cleanup function.
+    return () => {
+      isCancelled = true
+      resetState()
     }
   }, [
     amountIn,
@@ -99,6 +105,7 @@ const useQuote = (
     isEthToWethSwap,
     feeAmount,
     getResolvedAddress,
+    activeChain,
   ])
 
   return { quotedAmountOut, isLoading, isError }

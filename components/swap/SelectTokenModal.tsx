@@ -16,6 +16,7 @@ import {
   faChevronDown,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
+import { LoadingSpinner } from '../common/LoadingSpinner'
 
 const fuseSearchOptions = {
   includeScore: true,
@@ -40,7 +41,7 @@ export type Token = {
 
 export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
   const [open, setOpen] = useState(false)
-  const { tokens: tokenData, loading, error } = useTokenList()
+  const { tokens: tokenData, loading } = useTokenList()
   const [tokens, setTokens] = useState(tokenData)
 
   useEffect(() => {
@@ -161,15 +162,20 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
           css={{ mb: '1' }}
           onChange={(e) => handleSearch(e)}
         />
-        {/* @TODO: add loading indicator and error state */}
-        <FixedSizeList
-          itemCount={tokens?.length || 0}
-          height={400}
-          itemSize={50}
-          width={'100%'}
-        >
-          {TokenRow}
-        </FixedSizeList>
+        {loading ? (
+          <Flex direction="column" align="center" css={{ py: '6' }}>
+            <LoadingSpinner />
+          </Flex>
+        ) : (
+          <FixedSizeList
+            itemCount={tokens?.length || 0}
+            height={400}
+            itemSize={50}
+            width={'100%'}
+          >
+            {TokenRow}
+          </FixedSizeList>
+        )}
       </Flex>
     </Modal>
   )
