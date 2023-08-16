@@ -13,6 +13,7 @@ import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../constants/contracts'
+import { SlippageDropdown } from './SlippageDropdown'
 
 const Swap = () => {
   const isMounted = useMounted()
@@ -41,6 +42,8 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
 
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
+
+  const [slippagePercentage, setSlippagePercentage] = useState('0.5')
 
   const {
     quotedAmountOut,
@@ -115,9 +118,17 @@ const Swap = () => {
         maxWidth: 600,
       }}
     >
-      <Text style="h5" css={{ mb: '3' }}>
-        Swap
-      </Text>
+      <Flex justify="between" align="center" css={{ gap: '4' }}>
+        <Text style="h5" css={{ mb: '3' }}>
+          Swap
+        </Text>
+        <Flex align="center" css={{ gap: '2' }}>
+          <SlippageDropdown
+            slippagePercentage={slippagePercentage}
+            setSlippagePercentage={setSlippagePercentage}
+          />
+        </Flex>
+      </Flex>
       <Flex
         direction="column"
         css={{
@@ -279,6 +290,7 @@ const Swap = () => {
         tokenOut={tokenOut}
         amountIn={amountIn}
         amountOut={amountOut}
+        slippagePercentage={slippagePercentage}
         tokenInBalance={tokenInBalance}
         isFetchingQuote={isFetchingQuote}
         errorFetchingQuote={errorFetchingQuote}

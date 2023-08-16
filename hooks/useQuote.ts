@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
-import { formatUnits, parseUnits, zeroAddress } from 'viem'
-import { getPublicClient } from '@wagmi/core'
-import { useNetwork } from 'wagmi'
+import {
+  createPublicClient,
+  custom,
+  fallback,
+  formatUnits,
+  http,
+  parseUnits,
+  publicActions,
+  zeroAddress,
+} from 'viem'
+import * as allChains from 'viem/chains'
+import { useNetwork, useWalletClient } from 'wagmi'
 import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
@@ -18,7 +27,21 @@ const useQuote = (
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const publicClient = getPublicClient()
+  const { data: walletClient } = useWalletClient()
+
+  const viemChain =
+    Object.values(allChains).find(
+      (chain) => chain.id === (activeChain?.id || 1)
+    ) || allChains.mainnet
+
+  const publicClient = createPublicClient({
+    chain: viemChain,
+    transport: walletClient?.transport
+      ? fallback([custom(walletClient?.transport), http()])
+      : http(),
+  })
+
+  console.log(publicClient.transport)
 
   const isEthToWethSwap =
     (tokenIn?.address === zeroAddress ||

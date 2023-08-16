@@ -55,14 +55,28 @@ const Input = forwardRef<
   ElementRef<typeof StyledInput>,
   ComponentPropsWithoutRef<typeof StyledInput> & {
     icon?: ReactNode
+    iconPosition?: 'left' | 'right'
     containerCss?: SystemStyleObject
   }
->(({ children, icon, containerCss, ...props }, forwardedRef) => (
+>(({ children, icon, iconPosition, containerCss, ...props }, forwardedRef) => (
   <Flex css={{ ...containerCss, position: 'relative' }}>
     {icon && (
-      <div style={{ position: 'absolute', top: 12, left: 16 }}>{icon}</div>
+      <div
+        style={{
+          position: 'absolute',
+          top: 12,
+          left: iconPosition === 'right' ? 'unset' : 16,
+          right: iconPosition === 'right' ? 16 : 'unset',
+        }}
+      >
+        {icon}
+      </div>
     )}
-    <StyledInput paddingLeft={icon ? 42 : 16} ref={forwardedRef} {...props} />
+    <StyledInput
+      paddingLeft={icon && iconPosition !== 'right' ? 42 : 16}
+      ref={forwardedRef}
+      {...props}
+    />
   </Flex>
 ))
 

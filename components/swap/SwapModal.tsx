@@ -53,6 +53,7 @@ type Props = {
   tokenInBalance?: FetchBalanceResult
   amountIn: string
   amountOut: string
+  slippagePercentage: string
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
 }
@@ -63,6 +64,7 @@ export const SwapModal: FC<Props> = ({
   tokenInBalance,
   amountIn,
   amountOut,
+  slippagePercentage,
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
@@ -117,6 +119,13 @@ export const SwapModal: FC<Props> = ({
       const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
       const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
 
+      const endAmountOut =
+        Number(amountOut) * (1 - Number(slippagePercentage) / 100)
+      const parsedEndAmountOut = parseUnits(
+        endAmountOut.toString(),
+        tokenOut?.decimals || 18
+      )
+
       const processedTokenIn =
         tokenIn?.address === zeroAddress ? WETH2 : (tokenIn?.address as Address)
 
@@ -133,10 +142,11 @@ export const SwapModal: FC<Props> = ({
           .getBlock()
           .then((b) => Number(b!.timestamp) + 3600 * 24),
         amountIn: parsedAmountIn,
-        // @TODO: configure slippage settings
+
+        // @TODO: configure start amount out
         startAmountOut: parsedAmountOut,
         expectedAmountOut: parsedAmountOut,
-        endAmountOut: parsedAmountOut,
+        endAmountOut: parsedEndAmountOut,
       }
 
       intent.signature = await signTypedData({
@@ -411,7 +421,7 @@ export const SwapModal: FC<Props> = ({
           {error ? (
             <ErrorWell css={{ width: '100%' }} message={error?.message} />
           ) : null}
-          <Text style="h5">Sign your intent</Text>
+          <Text style="h5">Sign your order</Text>
           <IntentInfo
             tokenIn={tokenIn}
             tokenOut={tokenOut}
@@ -434,7 +444,7 @@ export const SwapModal: FC<Props> = ({
               css={{ justifyContent: 'center', width: '100%' }}
             >
               <LoadingSpinner />
-              Sign Intent
+              Sign Order
             </Button>
           )}
         </Flex>
@@ -502,7 +512,7 @@ export const SwapModal: FC<Props> = ({
               }}
             >
               <Flex justify="between" align="center">
-                <Text style="subtitle1">Submit yor intent</Text>
+                <Text style="subtitle1">Submit yor order</Text>
 
                 {txSuccess ? (
                   <Box css={{ color: 'green10' }}>
