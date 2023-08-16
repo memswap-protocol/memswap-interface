@@ -6,7 +6,6 @@ import {
   formatUnits,
   http,
   parseUnits,
-  publicActions,
   zeroAddress,
 } from 'viem'
 import * as allChains from 'viem/chains'
@@ -40,8 +39,6 @@ const useQuote = (
       ? fallback([custom(walletClient?.transport), http()])
       : http(),
   })
-
-  console.log(publicClient.transport)
 
   const isEthToWethSwap =
     (tokenIn?.address === zeroAddress ||

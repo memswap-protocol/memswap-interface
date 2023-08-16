@@ -74,6 +74,7 @@ const Input = forwardRef<
     )}
     <StyledInput
       paddingLeft={icon && iconPosition !== 'right' ? 42 : 16}
+      paddingRight={icon && iconPosition === 'right' ? 42 : 16}
       ref={forwardedRef}
       {...props}
     />

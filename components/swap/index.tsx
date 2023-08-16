@@ -14,6 +14,7 @@ import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../constants/contracts'
 import { SlippageDropdown } from './SlippageDropdown'
+import { DeadlineDropdown } from './DeadlineDropdown'
 
 const Swap = () => {
   const isMounted = useMounted()
@@ -44,6 +45,7 @@ const Swap = () => {
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
 
   const [slippagePercentage, setSlippagePercentage] = useState('0.5')
+  const [deadline, setDeadline] = useState(3600 * 24) // default 24hr
 
   const {
     quotedAmountOut,
@@ -127,6 +129,7 @@ const Swap = () => {
             slippagePercentage={slippagePercentage}
             setSlippagePercentage={setSlippagePercentage}
           />
+          <DeadlineDropdown deadline={deadline} setDeadline={setDeadline} />
         </Flex>
       </Flex>
       <Flex
