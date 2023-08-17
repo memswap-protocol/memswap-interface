@@ -18,6 +18,7 @@ const ErrorWell: FC<Props> = ({ message, css }) => {
         gap: '2',
         background: 'red2',
         borderRadius: 8,
+        overflow: 'hidden',
         ...css,
       }}
       align="center"

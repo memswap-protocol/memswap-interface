@@ -72,7 +72,10 @@ const ToastDescription = styled(ToastPrimitive.Description, {
 })
 
 const ToastAction = styled(ToastPrimitive.Action, {
-  base: {},
+  base: {
+    p: 0,
+    display: 'inline-block',
+  },
 })
 
 const ToastClose = styled(
@@ -119,5 +122,6 @@ export {
   Toast,
   ToastTitle,
   ToastDescription,
+  ToastAction,
   ToastClose,
 }

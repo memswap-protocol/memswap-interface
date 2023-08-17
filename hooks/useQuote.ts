@@ -92,7 +92,7 @@ const useQuote = (
         }
       } catch (error) {
         if (!isCancelled) {
-          console.log(error)
+          console.error(error)
           resetState()
           setIsError(true)
         }

@@ -32,7 +32,7 @@ import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
 import { useMounted } from '../../hooks'
 import { MEMSWAP_ABI } from '../../constants/memswapABI'
-import { MEMSWAP, WETH2 } from '../../constants/contracts'
+import { MEMSWAP, WETH2, WRAPPED_CONTRACTS } from '../../constants/contracts'
 
 type FetchBalanceResult = {
   decimals: number
@@ -72,30 +72,31 @@ export const SwapModal: FC<Props> = ({
   const { chain: activeChain } = useNetwork()
   const { address, isDisconnected, isConnecting, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
+  const { toast } = useToast()
+  const publicClient = getPublicClient()
 
+  // States
   const [open, setOpen] = useState(false)
   const [swapStep, setSwapStep] = useState<SwapStep>(SwapStep.Sign)
   const [error, setError] = useState<Error | undefined>()
-
   const [txHash, setTxHash] = useState<Address | undefined>()
   const [txSuccess, setTxSuccess] = useState(false)
-
   const [metamaskApprovalHash, setMetamaskApprovalHash] = useState<
     Address | undefined
   >()
-
   const [waitingForFulfillment, setWaitingForFulfillment] = useState(false)
-
   const [fulfilledHash, setFulfilledHash] = useState<Address | undefined>()
   const [fulfilledSuccess, setFulfilledSuccess] = useState(false)
-
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
-  const { toast } = useToast()
-
-  const publicClient = getPublicClient()
-
+  // Conditional Variables
   const isMetamaskWallet = connector?.id === 'metaMask'
+  const isEthToWethSwap =
+    tokenIn?.address === zeroAddress &&
+    tokenOut?.address === WRAPPED_CONTRACTS[activeChain?.id || 1]
+  const isWethToEthSwap =
+    tokenIn?.address === WRAPPED_CONTRACTS[activeChain?.id || 1] &&
+    tokenOut?.address === zeroAddress
 
   // Reset state on modal close
   useEffect(() => {
@@ -214,13 +215,6 @@ export const SwapModal: FC<Props> = ({
         args: [address, MEMSWAP],
       })
 
-      console.log(
-        'Allowance amount: ',
-        allowanceAmount,
-        'Amount in: ',
-        parsedAmountIn
-      )
-
       // Handle transactions
 
       // Scenario 1: User already has approval greater than amountIn
@@ -331,23 +325,22 @@ export const SwapModal: FC<Props> = ({
       setWaitingForFulfillment(true)
     } catch (err: any) {
       const error = err as Error
-      console.error(error)
-      if (err?.code === 4001) {
+      if (err?.code === 4001 || error?.name === 'UserRejectedRequestError') {
         error.message = 'User rejected the transaction.'
-        toast({
-          title: 'User rejected the transaction.',
-        })
+      } else if (error?.name === 'TransactionExecutionError') {
+        error.message = 'Transaction failed.'
       } else {
-        toast({
-          title: 'Oops, something went wrong.',
-        })
+        error.message = 'Oops, something went wrong.'
       }
+      toast({
+        title: error.message,
+      })
       setError(error)
     }
   }
 
   // Listen for IntentFulfilled Event
-  useContractEvent({
+  const unwatch = useContractEvent({
     address: waitingForFulfillment ? MEMSWAP : undefined,
     abi: MEMSWAP_ABI,
     eventName: 'IntentFulfilled',
@@ -357,10 +350,38 @@ export const SwapModal: FC<Props> = ({
       toast({
         title: 'Swap was successful.',
       })
+      // unwatch?.()
       setFulfilledSuccess(true)
       setWaitingForFulfillment(false)
     },
   })
+
+  function getButtonText() {
+    if (isDisconnected || isConnecting) {
+      return 'Connect Wallet'
+    }
+    if (!tokenOut) {
+      return 'Select a token'
+    }
+    if (
+      Number(amountIn) >
+      Number(
+        formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
+      )
+    ) {
+      return 'Insufficient Balance'
+    }
+    if (!amountIn) {
+      return `Enter ${tokenIn?.symbol} amount`
+    }
+    if (tokenIn?.symbol === 'ETH' && tokenOut?.symbol === 'WETH') {
+      return 'Wrap'
+    }
+    if (tokenIn?.symbol === 'WETH' && tokenOut?.symbol === 'ETH') {
+      return 'Unwrap'
+    }
+    return 'Swap'
+  }
 
   const trigger = (
     <Button
@@ -392,8 +413,7 @@ export const SwapModal: FC<Props> = ({
             )
       }
     >
-      {/* @TODO - add other text states */}
-      {isDisconnected || isConnecting ? 'Connect Wallet' : 'Swap'}
+      {getButtonText()}
     </Button>
   )
 
@@ -476,11 +496,18 @@ export const SwapModal: FC<Props> = ({
             </Anchor>
           ) : null}
           <Button
-            disabled={true}
+            disabled={!error}
             css={{ justifyContent: 'center', width: '100%' }}
+            onClick={() => setOpen(false)}
           >
-            <LoadingSpinner />
-            Approve Transaction
+            {error ? (
+              'Close'
+            ) : (
+              <>
+                <LoadingSpinner />
+                Approve Transaction
+              </>
+            )}
           </Button>
         </Flex>
       ) : null}

@@ -1,9 +1,6 @@
 import * as React from 'react'
 
-import {
-  ToastActionElement,
-  type ToastProps,
-} from '../components/primitives/Toast'
+import { type ToastProps } from '../components/primitives/Toast'
 import { useEffect, useState } from 'react'
 
 const TOAST_LIMIT = 3
@@ -13,7 +10,7 @@ type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
-  action?: ToastActionElement
+  action?: React.ReactNode
 }
 
 const actionTypes = {

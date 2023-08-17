@@ -1,12 +1,14 @@
 import type { NextPage } from 'next'
-import { Flex, Anchor } from '../components/primitives'
+import { Flex, Anchor, Button } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
 import Swap from '../components/swap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { useToast } from '../hooks/useToast'
 
 const Home: NextPage = () => {
+  const { toast } = useToast()
   return (
     <Layout>
       <Head />

@@ -20,7 +20,7 @@ export default async function handler() {
     const data = await response.json()
     tokens = data?.tokens
   } catch (error) {
-    console.log('Error fetching token list: ', error)
+    console.error('Error fetching token list: ', error)
     tokens = null
     cacheSettings = 'maxage=0, s-maxage=300 stale-while-revalidate' // Reduce cache time if token list API fails
   }

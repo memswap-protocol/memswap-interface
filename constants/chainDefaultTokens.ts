@@ -68,5 +68,13 @@ export const chainDefaultTokens: Record<number, Token[]> = {
       logoURI:
         'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
     },
+    {
+      chainId: 5,
+      address: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      decimals: 18,
+      logoURI: 'https://ethereum-optimism.github.io/data/DAI/logo.svg',
+    },
   ],
 }
