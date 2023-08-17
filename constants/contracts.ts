@@ -1,3 +1,4 @@
+import { Address } from 'viem'
 import { Token } from '../components/swap/SelectTokenModal'
 
 const MEMSWAP = '0x90d4ecf99ad7e8ac74994c5181ca78b279ca9f8e'
@@ -5,7 +6,7 @@ const WETH2 = '0xe6ea2a148c13893a8eedd57c75043055a8924c5f'
 
 const QUOTER_CONTRACT = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 
-const WRAPPED_CONTRACTS: Record<number, string> = {
+const WRAPPED_CONTRACTS: Record<number, Address> = {
   1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', //mainnet
   5: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', //goerli
 }

@@ -1,7 +1,14 @@
 import { FC, useEffect, useState } from 'react'
 import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
 import { Token } from './SelectTokenModal'
-import { erc20ABI, useAccount, useContractEvent, useNetwork } from 'wagmi'
+import {
+  erc20ABI,
+  useAccount,
+  useContractEvent,
+  useContractWrite,
+  useNetwork,
+  usePrepareContractWrite,
+} from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
@@ -31,7 +38,7 @@ import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
 import { useMounted } from '../../hooks'
-import { MEMSWAP_ABI } from '../../constants/memswapABI'
+import { MEMSWAP_ABI, WETH_ABI } from '../../constants/abis'
 import { MEMSWAP, WETH2, WRAPPED_CONTRACTS } from '../../constants/contracts'
 
 type FetchBalanceResult = {
@@ -111,6 +118,7 @@ export const SwapModal: FC<Props> = ({
     }
   }, [open])
 
+  // @TODO: optimize and clean up
   // Execute Swap
   const swap = async () => {
     if (!address) {
@@ -339,6 +347,50 @@ export const SwapModal: FC<Props> = ({
     }
   }
 
+  // Prepare ETH <> WETH Swap
+  const { config } = usePrepareContractWrite({
+    address: WRAPPED_CONTRACTS[activeChain?.id || 1],
+    abi: WETH_ABI,
+    functionName: isEthToWethSwap ? 'deposit' : 'withdraw',
+    args: isWethToEthSwap
+      ? [parseUnits(amountIn, tokenIn?.decimals || 18)]
+      : undefined,
+    value: isEthToWethSwap ? parseUnits(amountIn, tokenIn?.decimals || 18) : 0n,
+    enabled: isEthToWethSwap || isWethToEthSwap,
+  })
+
+  // Execute ETH <> WETH Swap
+  const { write: handleEthWethSwap } = useContractWrite({
+    ...config,
+    onSuccess(data) {
+      toast({
+        title: 'Swap was successful.',
+        action: data?.hash ? (
+          <Anchor
+            href={`${activeChain?.blockExplorers?.default?.url}/tx/${data?.hash}`}
+            target="_blank"
+          >
+            View on {activeChain?.blockExplorers?.default?.name}:{' '}
+            {truncateAddress(data?.hash)}
+          </Anchor>
+        ) : null,
+      })
+    },
+    onError(error) {
+      if (
+        error?.name === 'UserRejectedRequestError' ||
+        error?.message.startsWith('User rejected ')
+      ) {
+        error.message = 'User rejected the transaction.'
+      } else {
+        error.message = 'Oops, the transaction failed.'
+      }
+      toast({
+        title: error.message,
+      })
+    },
+  })
+
   // Listen for IntentFulfilled Event
   const unwatch = useContractEvent({
     address: waitingForFulfillment ? MEMSWAP : undefined,
@@ -390,6 +442,8 @@ export const SwapModal: FC<Props> = ({
       onClick={() => {
         if (isDisconnected) {
           openConnectModal?.()
+        } else if (isEthToWethSwap || isWethToEthSwap) {
+          handleEthWethSwap?.()
         } else {
           swap()
         }
@@ -426,7 +480,7 @@ export const SwapModal: FC<Props> = ({
       trigger={trigger}
       open={open}
       onOpenChange={(open) => {
-        if (!isDisconnected) {
+        if (!isDisconnected && !(isEthToWethSwap || isWethToEthSwap)) {
           setOpen(open)
         }
       }}

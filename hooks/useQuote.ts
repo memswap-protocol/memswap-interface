@@ -22,11 +22,10 @@ const useQuote = (
   tokenOut?: Token
 ) => {
   const { chain: activeChain } = useNetwork()
+  const { data: walletClient } = useWalletClient()
   const [quotedAmountOut, setQuotedAmountOut] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
-
-  const { data: walletClient } = useWalletClient()
 
   const viemChain =
     Object.values(allChains).find(
@@ -46,7 +45,7 @@ const useQuote = (
     (tokenOut?.address === zeroAddress ||
       tokenOut?.address === WRAPPED_CONTRACTS[activeChain?.id || 1])
 
-  // For ETH, use WETH to feth quote
+  // For ETH, need to use WETH to fetch quote
   const getResolvedAddress = useCallback(
     (address?: string) => {
       return address === zeroAddress
