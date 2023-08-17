@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
-import { Content, Overlay } from '../primitives/Dialog'
+import { AnimatedContent, Overlay } from '../primitives/Dialog'
 import {
   Root as DialogRoot,
   DialogTrigger,
@@ -38,7 +38,7 @@ export const Modal: FC<ComponentPropsWithoutRef<typeof DialogRoot> & Props> = ({
             backgroundColor: 'blackA10',
           }}
         >
-          <Content css={{ padding: '5', ...contentCss }}>
+          <AnimatedContent css={{ padding: '5', ...contentCss }}>
             <DialogClose
               asChild
               style={{ position: 'absolute', right: 32, top: 32 }}
@@ -48,7 +48,7 @@ export const Modal: FC<ComponentPropsWithoutRef<typeof DialogRoot> & Props> = ({
               </Button>
             </DialogClose>
             {children}
-          </Content>
+          </AnimatedContent>
         </Overlay>
       </DialogPortal>
     </DialogRoot>

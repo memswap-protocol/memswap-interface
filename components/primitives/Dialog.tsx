@@ -1,5 +1,6 @@
 import { styled } from '../../styled-system/jsx'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { motion } from 'framer-motion'
 import {
   ComponentPropsWithoutRef,
   ElementRef,
@@ -35,6 +36,31 @@ const Content = styled(DialogPrimitive.Content, {
   },
 })
 
+const AnimatedContent = forwardRef<
+  ElementRef<typeof Content>,
+  ComponentPropsWithoutRef<typeof Content>
+>(({ children, ...props }, forwardedRef) => (
+  <Content forceMount asChild {...props}>
+    <motion.div
+      ref={forwardedRef}
+      transition={{ type: 'spring', duration: 0.5 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
+    >
+      {children}
+    </motion.div>
+  </Content>
+))
+
+AnimatedContent.displayName = 'AnimatedContent'
+
 type Props = {
   trigger: ReactNode
   portalProps?: DialogPrimitive.PortalProps
@@ -64,4 +90,4 @@ const Dialog = forwardRef<
 
 Dialog.displayName = 'Dialog'
 
-export { Dialog, Content, Overlay }
+export { Dialog, Content, AnimatedContent, Overlay }

@@ -16,7 +16,7 @@ export default defineConfig({
   exclude: [],
   conditions: {
     extend: {
-      light: '.light &',
+      // light: '.light &',
       typeNumber: '&[type=number]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',
       data_state_open: '&[data-state="open"]',

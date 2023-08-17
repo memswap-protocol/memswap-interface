@@ -28,6 +28,7 @@ export const SlippageDropdown: FC<Props> = ({
             minHeight: 28,
             width: 118,
             whiteSpace: 'nowrap',
+            justifyContent: 'center',
           }}
         >
           {Number(slippagePercentage)}% slippage

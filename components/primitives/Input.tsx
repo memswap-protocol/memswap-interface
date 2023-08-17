@@ -27,7 +27,6 @@ const StyledInput = styled('input', {
       boxShadow: '0 0 0 2px var(--focusColor)',
     },
     _disabled: {
-      backgroundColor: 'gray2',
       color: 'gray9',
     },
     _spinButtons: {

@@ -243,7 +243,7 @@ const Swap = () => {
               size="large"
               ellipsify
               css={{
-                backgroundColor: 'transaparent',
+                backgroundColor: 'transparent',
                 p: 0,
                 borderRadius: 0,
                 _focus: { boxShadow: 'none' },
