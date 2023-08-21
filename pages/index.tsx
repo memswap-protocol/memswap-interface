@@ -5,10 +5,8 @@ import { Head } from '../components/Head'
 import Swap from '../components/swap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
-import { useToast } from '../hooks/useToast'
 
 const Home: NextPage = () => {
-  const { toast } = useToast()
   return (
     <Layout>
       <Head />
@@ -18,6 +16,7 @@ const Home: NextPage = () => {
         css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
         <Swap />
+        <Button onClick={() => methodDoesNotExist()}>Test</Button>
 
         {/* @TODO: add links */}
         <Flex align="center" direction="column" css={{ gap: 24 }}>

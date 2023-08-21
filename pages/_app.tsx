@@ -10,6 +10,7 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { ThemeProvider } from 'next-themes'
+import ErrorTrackingProvider from '../components/providers/ErrorTrackingProvider'
 import {
   coinbaseWallet,
   injectedWallet,
@@ -69,13 +70,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider
-          chains={chains}
-          modalSize="compact"
-          appInfo={{ disclaimer: Disclaimer }}
-        >
-          <Component {...pageProps} />
-        </RainbowKitProvider>
+        <ErrorTrackingProvider>
+          <RainbowKitProvider
+            chains={chains}
+            modalSize="compact"
+            appInfo={{ disclaimer: Disclaimer }}
+          >
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </ErrorTrackingProvider>
       </WagmiConfig>
     </ThemeProvider>
   )
