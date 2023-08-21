@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Flex, Anchor, Button } from '../components/primitives'
+import { Flex, Anchor } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
 import Swap from '../components/swap'
@@ -16,7 +16,6 @@ const Home: NextPage = () => {
         css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
         <Swap />
-        <Button onClick={() => methodDoesNotExist()}>Test</Button>
 
         {/* @TODO: add links */}
         <Flex align="center" direction="column" css={{ gap: 24 }}>

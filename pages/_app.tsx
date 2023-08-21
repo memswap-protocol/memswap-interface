@@ -1,3 +1,8 @@
+import AnalyticsProvider, {
+  initializeAnalytics,
+} from '../components/providers/AnalyticsProvider'
+initializeAnalytics()
+import ErrorTrackingProvider from '../components/providers/ErrorTrackingProvider'
 import '../styles/globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 import {
@@ -10,7 +15,6 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { ThemeProvider } from 'next-themes'
-import ErrorTrackingProvider from '../components/providers/ErrorTrackingProvider'
 import {
   coinbaseWallet,
   injectedWallet,
@@ -70,15 +74,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <WagmiConfig config={wagmiConfig}>
-        <ErrorTrackingProvider>
-          <RainbowKitProvider
-            chains={chains}
-            modalSize="compact"
-            appInfo={{ disclaimer: Disclaimer }}
-          >
-            <Component {...pageProps} />
-          </RainbowKitProvider>
-        </ErrorTrackingProvider>
+        <AnalyticsProvider>
+          <ErrorTrackingProvider>
+            <RainbowKitProvider
+              chains={chains}
+              modalSize="compact"
+              appInfo={{ disclaimer: Disclaimer }}
+            >
+              <Component {...pageProps} />
+            </RainbowKitProvider>
+          </ErrorTrackingProvider>
+        </AnalyticsProvider>
       </WagmiConfig>
     </ThemeProvider>
   )
