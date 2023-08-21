@@ -58,6 +58,7 @@ type Props = {
   tokenIn?: Token
   tokenOut?: Token
   tokenInBalance?: FetchBalanceResult
+  referrer?: Address
   amountIn: string
   amountOut: string
   slippagePercentage: string
@@ -69,6 +70,7 @@ export const SwapModal: FC<Props> = ({
   tokenIn,
   tokenOut,
   tokenInBalance,
+  referrer,
   amountIn,
   amountOut,
   slippagePercentage,
@@ -118,7 +120,9 @@ export const SwapModal: FC<Props> = ({
     }
   }, [open])
 
-  // @TODO: optimize and clean up
+  // Query Parameters
+
+  // @TODO: Create custom hook?
   // Execute Swap
   const swap = async () => {
     if (!address) {
@@ -144,7 +148,7 @@ export const SwapModal: FC<Props> = ({
         filler: zeroAddress,
         tokenIn: processedTokenIn,
         tokenOut: tokenOut?.address,
-        referrer: zeroAddress,
+        referrer: referrer ?? address,
         referrerFeeBps: 0,
         referrerSurplusBps: 0,
         deadline: await publicClient

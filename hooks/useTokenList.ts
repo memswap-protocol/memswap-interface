@@ -39,7 +39,7 @@ function useTokenList() {
       }
     }
     fetchData()
-  }, [activeChain, defaultTokens])
+  }, [defaultTokens])
 
   return { tokens, loading, error }
 }

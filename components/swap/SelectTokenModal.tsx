@@ -8,7 +8,6 @@ import {
 } from 'react'
 import { Text, Button, Flex, Input, Box } from '../primitives'
 import { Modal } from '../common/Modal'
-import { useTokenList } from '../../hooks'
 import Fuse from 'fuse.js'
 import { FixedSizeList } from 'react-window'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -28,6 +27,8 @@ const fuseSearchOptions = {
 type Props = {
   token?: Token
   setToken: Dispatch<SetStateAction<Token | undefined>>
+  tokenList?: Token[]
+  loadingTokenList: boolean
 }
 
 export type Token = {
@@ -39,22 +40,26 @@ export type Token = {
   logoURI: string
 }
 
-export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
+export const SelectTokenModal: FC<Props> = ({
+  token,
+  setToken,
+  tokenList,
+  loadingTokenList,
+}) => {
   const [open, setOpen] = useState(false)
-  const { tokens: tokenData, loading } = useTokenList()
-  const [tokens, setTokens] = useState(tokenData)
+  const [tokens, setTokens] = useState(tokenList)
 
   useEffect(() => {
-    setTokens(tokenData)
-  }, [open, tokenData])
+    setTokens(tokenList)
+  }, [open, tokenList])
 
-  const fuse = new Fuse(tokenData || [], fuseSearchOptions)
+  const fuse = new Fuse(tokenList || [], fuseSearchOptions)
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
 
     if (value.length === 0) {
-      setTokens(tokenData)
+      setTokens(tokenList)
       return
     }
 
@@ -162,7 +167,7 @@ export const SelectTokenModal: FC<Props> = ({ token, setToken }) => {
           css={{ mb: '1' }}
           onChange={(e) => handleSearch(e)}
         />
-        {loading ? (
+        {loadingTokenList ? (
           <Flex direction="column" align="center" css={{ py: '6' }}>
             <LoadingSpinner />
           </Flex>

@@ -7,7 +7,12 @@ import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { SwapModal } from './SwapModal'
-import { useMounted, useQuote } from '../../hooks'
+import {
+  useDeepLinkParams,
+  useMounted,
+  useQuote,
+  useTokenList,
+} from '../../hooks'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
@@ -34,6 +39,9 @@ const Swap = () => {
     },
   })
 
+  // @TODO: only call fetch token list once here
+  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
+
   const [tokenIn, setTokenIn] = useState<Token | undefined>(
     chainDefaultTokens[1][0]
   )
@@ -46,6 +54,23 @@ const Swap = () => {
 
   const [slippagePercentage, setSlippagePercentage] = useState('0.5')
   const [deadline, setDeadline] = useState(3600 * 24) // default 24hr
+
+  // Deep Link Parameters
+  const {
+    tokenIn: deepLinkTokenIn,
+    tokenOut: deepLinkTokenOut,
+    referrer: deepLinkReferrer,
+  } = useDeepLinkParams(tokenList || [])
+
+  useEffect(() => {
+    if (deepLinkTokenIn?.address) {
+      setTokenIn(deepLinkTokenIn)
+    }
+
+    if (deepLinkTokenOut?.address) {
+      setTokenOut(deepLinkTokenOut)
+    }
+  }, [deepLinkTokenIn, deepLinkTokenOut, deepLinkReferrer])
 
   const {
     quotedAmountOut,
@@ -186,7 +211,12 @@ const Swap = () => {
             ) : null}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
-            <SelectTokenModal token={tokenIn} setToken={setTokenIn} />
+            <SelectTokenModal
+              token={tokenIn}
+              setToken={setTokenIn}
+              tokenList={tokenList}
+              loadingTokenList={loadingTokenList}
+            />
             {tokenInBalance !== undefined && isMounted ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
@@ -263,7 +293,12 @@ const Swap = () => {
             align="end"
             css={{ gap: '2' }}
           >
-            <SelectTokenModal token={tokenOut} setToken={setTokenOut} />
+            <SelectTokenModal
+              token={tokenOut}
+              setToken={setTokenOut}
+              tokenList={tokenList}
+              loadingTokenList={loadingTokenList}
+            />
             {tokenOutBalance !== undefined && isMounted ? (
               <Text style="subtitle2" color="subtle" ellipsify>
                 Balance:{' '}
@@ -293,6 +328,7 @@ const Swap = () => {
         tokenOut={tokenOut}
         amountIn={amountIn}
         amountOut={amountOut}
+        referrer={deepLinkReferrer}
         slippagePercentage={slippagePercentage}
         tokenInBalance={tokenInBalance}
         isFetchingQuote={isFetchingQuote}
