@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useBalance, useAccount, useNetwork } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
-import { Button, Flex, Text, Input } from '../primitives'
-import { Token, SelectTokenModal } from './SelectTokenModal'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { Button, Flex, Text, Input } from '../primitives'
+import { Token, SelectTokenModal } from './SelectTokenModal'
 import { SwapModal } from './SwapModal'
 import {
   useDeepLinkParams,
@@ -13,7 +15,6 @@ import {
   useQuote,
   useTokenList,
 } from '../../hooks'
-import { FeeAmount } from '@uniswap/v3-sdk'
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
@@ -23,6 +24,7 @@ import { DeadlineDropdown } from './DeadlineDropdown'
 
 const Swap = () => {
   const isMounted = useMounted()
+  const router = useRouter()
   const { chain } = useNetwork()
   const { address, isConnected } = useAccount({
     onConnect() {
@@ -39,7 +41,6 @@ const Swap = () => {
     },
   })
 
-  // @TODO: only call fetch token list once here
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
 
   const [tokenIn, setTokenIn] = useState<Token | undefined>(
@@ -130,6 +131,25 @@ const Swap = () => {
 
     setTokenIn(currentTokenOut)
     setTokenOut(currentTokenIn)
+
+    const updatedQuery = {
+      ...router.query,
+      ...(currentTokenOut?.address
+        ? { from: currentTokenOut.address }
+        : undefined),
+      ...(currentTokenIn?.address ? { to: currentTokenIn.address } : undefined),
+    }
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: updatedQuery,
+      },
+      undefined,
+      {
+        shallow: true,
+      }
+    )
   }, [tokenOut, tokenIn])
 
   return (
@@ -212,6 +232,7 @@ const Swap = () => {
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
+              tokenType="from"
               token={tokenIn}
               setToken={setTokenIn}
               tokenList={tokenList}
@@ -294,6 +315,7 @@ const Swap = () => {
             css={{ gap: '2' }}
           >
             <SelectTokenModal
+              tokenType="to"
               token={tokenOut}
               setToken={setTokenOut}
               tokenList={tokenList}

@@ -21,21 +21,19 @@ function useDeepLinkParams(tokens: Token[]) {
   useEffect(() => {
     const { query } = router
 
-    if (query.tokenIn) {
-      const foundTokenIn = fuse.search(query.tokenIn as Address)[0]?.item
+    if (query.from) {
+      const foundTokenIn = fuse.search(query.from as Address)[0]?.item
       if (foundTokenIn) setTokenIn(foundTokenIn)
     }
 
-    if (query.tokenOut) {
-      const foundTokenOut = fuse.search(query.tokenOut as Address)?.[0]?.item
+    if (query.to) {
+      const foundTokenOut = fuse.search(query.to as Address)?.[0]?.item
       if (foundTokenOut) setTokenOut(foundTokenOut)
     }
 
-    console.log(query.referrer)
     if (query.referrer && isAddress(query.referrer as string))
-      console.log('set referrer')
-    setReferrer(query.referrer as Address)
-  }, [router.query, tokens])
+      setReferrer(query.referrer as Address)
+  }, [tokens])
 
   return { tokenIn, tokenOut, referrer }
 }

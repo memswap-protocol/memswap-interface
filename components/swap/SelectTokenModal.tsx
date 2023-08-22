@@ -16,6 +16,7 @@ import {
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { LoadingSpinner } from '../common/LoadingSpinner'
+import { useRouter } from 'next/router'
 
 const fuseSearchOptions = {
   includeScore: true,
@@ -25,6 +26,7 @@ const fuseSearchOptions = {
 }
 
 type Props = {
+  tokenType: 'from' | 'to'
   token?: Token
   setToken: Dispatch<SetStateAction<Token | undefined>>
   tokenList?: Token[]
@@ -41,6 +43,7 @@ export type Token = {
 }
 
 export const SelectTokenModal: FC<Props> = ({
+  tokenType,
   token,
   setToken,
   tokenList,
@@ -49,9 +52,11 @@ export const SelectTokenModal: FC<Props> = ({
   const [open, setOpen] = useState(false)
   const [tokens, setTokens] = useState(tokenList)
 
+  const router = useRouter()
+
   useEffect(() => {
     setTokens(tokenList)
-  }, [open, tokenList])
+  }, [tokenList])
 
   const fuse = new Fuse(tokenList || [], fuseSearchOptions)
 
@@ -89,6 +94,29 @@ export const SelectTokenModal: FC<Props> = ({
         onClick={() => {
           setToken(currentToken)
           setOpen(false)
+          const queryUpdate = { ...router.query }
+          queryUpdate[tokenType] = currentToken?.address
+
+          router.push(
+            {
+              pathname: router.pathname,
+              query: queryUpdate,
+            },
+            undefined,
+            {
+              shallow: true,
+            }
+          )
+          // router.push(
+          //   {
+          //     pathname: router.pathname,
+          //     query: { tokenType: currentToken?.address },
+          //   },
+          //   undefined,
+          //   {
+          //     shallow: true,
+          //   }
+          // )
         }}
       >
         <img
@@ -141,9 +169,11 @@ export const SelectTokenModal: FC<Props> = ({
               <Text ellipsify>{token?.symbol}</Text>
             </>
           ) : (
-            'Select Token'
+            <Text css={{ color: 'white' }} ellipsify>
+              Select token
+            </Text>
           )}
-          <FontAwesomeIcon icon={faChevronDown} />
+          <FontAwesomeIcon icon={faChevronDown} width={16} height={16} />
         </Button>
       }
       open={open}
