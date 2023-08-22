@@ -19,6 +19,7 @@ export default defineConfig({
       typeNumber: '&[type=number]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',
       data_state_open: '&[data-state="open"]',
+      data_state_open_child: '[data-state=open] &',
       data_state_closed: '&[data-state="closed"]',
       data_swipe_move: '&[data-swipe="move"]',
       data_swipe_cancel: '&[data-swipe="cancel"]',
@@ -128,6 +129,14 @@ export default defineConfig({
       swipeOut: {
         from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
         to: { transform: `translateX(calc(100% + 16px))` },
+      },
+      slideDown: {
+        from: { height: 0 },
+        to: { height: 'var(--radix-accordion-content-height)' },
+      },
+      slideUp: {
+        from: { height: 'var(--radix-accordion-content-height)' },
+        to: { height: 0 },
       },
     },
   },

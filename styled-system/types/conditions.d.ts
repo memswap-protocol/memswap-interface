@@ -92,6 +92,7 @@ export type Conditions = {
 	"_typeNumber": string
 	"_spinButtons": string
 	"_data_state_open": string
+	"_data_state_open_child": string
 	"_data_state_closed": string
 	"_data_swipe_move": string
 	"_data_swipe_cancel": string
