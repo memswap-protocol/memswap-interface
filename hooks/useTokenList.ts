@@ -7,7 +7,7 @@ import fetcher from '../utils/fetcher'
 
 function useTokenList() {
   const { chain: activeChain } = useNetwork()
-  const defaultTokens = chainDefaultTokens[activeChain?.id || 1]
+  const defaultTokens = chainDefaultTokens[activeChain?.id === 5 ? 5 : 1]
 
   const { data, error } = useSWR<{ tokens: Token[] }>('/api/tokenList', fetcher)
 

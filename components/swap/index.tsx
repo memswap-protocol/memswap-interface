@@ -26,16 +26,18 @@ const Swap = () => {
   const isMounted = useMounted()
   const router = useRouter()
   const { chain } = useNetwork()
+  const defaultTokens = chainDefaultTokens[chain?.id === 5 ? 5 : 1]
+
   const { address, isConnected } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {
-        setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+        setTokenIn(defaultTokens[0])
         setTokenOut(undefined)
       }
     },
     onDisconnect: () => {
       if (chain?.id !== 1) {
-        setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+        setTokenIn(defaultTokens[0])
         setTokenOut(undefined)
       }
     },
@@ -43,9 +45,7 @@ const Swap = () => {
 
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
 
-  const [tokenIn, setTokenIn] = useState<Token | undefined>(
-    chainDefaultTokens[1][0]
-  )
+  const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
 
   const [amountIn, setAmountIn] = useState('')
@@ -83,7 +83,7 @@ const Swap = () => {
     tokenIn,
     tokenOut
   )
-  // @TODO: add back
+  // @TODO: add back once we figure out 1inch rate limiting
   // const { quote: tokenInUSD } = useQuoteWithFallback(
   //   Number(debouncedAmountIn),
   //   FeeAmount.MEDIUM,
@@ -105,7 +105,8 @@ const Swap = () => {
   // Reset tokens on chain switch
   useEffect(() => {
     if (isConnected) {
-      setTokenIn(chainDefaultTokens[chain?.id || 1][0])
+      console.log(chain)
+      setTokenIn(defaultTokens[0])
       setTokenOut(undefined)
     }
   }, [chain])
