@@ -165,10 +165,10 @@ const Swap = () => {
         width: '100%',
         backgroundColor: 'white',
         boxShadow: '0px 0px 50px 0px #0000001F',
-        borderRadius: 8,
+        borderRadius: 16,
         p: '4',
         gap: '3',
-        maxWidth: 570,
+        maxWidth: 540,
       }}
     >
       <Flex justify="between" align="center" css={{ gap: '4' }}>
@@ -188,7 +188,7 @@ const Swap = () => {
         css={{
           position: 'relative',
           backgroundColor: 'gray2',
-          borderRadius: 8,
+          borderRadius: 12,
           px: '3',
           pt: '3',
           pb: '5',
@@ -281,7 +281,7 @@ const Swap = () => {
         css={{
           position: 'relative',
           backgroundColor: 'gray2',
-          borderRadius: 8,
+          borderRadius: 12,
           px: '3',
           pt: '3',
           pb: '5',
