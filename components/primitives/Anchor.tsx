@@ -4,7 +4,7 @@ const Anchor = styled('a', {
   base: {
     fontWeight: 500,
     fontSize: 14,
-    color: 'primary10',
+    color: 'primary11',
     _hover: {
       color: 'primary9',
     },

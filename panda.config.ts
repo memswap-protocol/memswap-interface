@@ -1,5 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
-import { slate, blue, blackA, red, green } from '@radix-ui/colors'
+import { slate, crimson, blackA, red, green } from '@radix-ui/colors'
 
 export default defineConfig({
   // Whether to use css reset
@@ -43,18 +43,18 @@ export default defineConfig({
       },
       colors: {
         // Primary
-        primary1: { value: blue.blue1 },
-        primary2: { value: blue.blue2 },
-        primary3: { value: blue.blue3 },
-        primary4: { value: blue.blue4 },
-        primary5: { value: blue.blue5 },
-        primary6: { value: blue.blue6 },
-        primary7: { value: blue.blue7 },
-        primary8: { value: blue.blue8 },
-        primary9: { value: blue.blue9 },
-        primary10: { value: blue.blue10 },
-        primary11: { value: blue.blue11 },
-        primary12: { value: blue.blue12 },
+        primary1: { value: crimson.crimson1 },
+        primary2: { value: crimson.crimson2 },
+        primary3: { value: crimson.crimson3 },
+        primary4: { value: crimson.crimson4 },
+        primary5: { value: crimson.crimson5 },
+        primary6: { value: crimson.crimson6 },
+        primary7: { value: crimson.crimson7 },
+        primary8: { value: crimson.crimson8 },
+        primary9: { value: crimson.crimson9 },
+        primary10: { value: crimson.crimson10 },
+        primary11: { value: crimson.crimson11 },
+        primary12: { value: crimson.crimson12 },
 
         // Gray
         gray1: { value: slate.slate1 },
