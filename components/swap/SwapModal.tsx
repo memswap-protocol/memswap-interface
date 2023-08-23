@@ -163,8 +163,11 @@ export const SwapModal: FC<Props> = ({
         isPartiallyFillable: false,
 
         // @TODO: configure start amount out
-        startAmountOut: parsedAmountOut,
-        expectedAmountOut: parsedAmountOut,
+        // startAmountOut: parsedAmountOut,
+        // expectedAmountOut: parsedAmountOut,
+
+        startAmountOut: parsedEndAmountOut,
+        expectedAmountOut: parsedEndAmountOut,
         endAmountOut: parsedEndAmountOut,
       }
 
