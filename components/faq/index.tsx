@@ -29,9 +29,11 @@ export const FAQs = () => {
     <Flex
       direction="column"
       align="center"
-      css={{ maxWidth: 570, width: '100%' }}
+      css={{ maxWidth: 700, width: '100%' }}
     >
-      <Text style="h4">FAQ</Text>
+      <Text style="h4" color="blue">
+        FAQ
+      </Text>
       <AccordionRoot type="multiple">
         {faqs.map((faq, idx) => (
           <AccordionItem value={`item-${idx}`} key={idx}>

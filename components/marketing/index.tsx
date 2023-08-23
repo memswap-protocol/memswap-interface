@@ -12,6 +12,7 @@ export const Marketing = () => {
       align="center"
       css={{
         gap: '4',
+        maxWidth: 540,
       }}
     >
       <Flex align="center" css={{ gap: 18, flexWrap: 'wrap' }}>

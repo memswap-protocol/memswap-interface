@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         css={{
           py: 120,
           px: '2',
-          gap: '6',
+          gap: 56,
           width: '100%',
           sm: { px: '6' },
           md: { py: '6' },

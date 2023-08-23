@@ -59,6 +59,9 @@ const Text = styled('span', {
       error: {
         color: 'red11',
       },
+      blue: {
+        color: 'blue12',
+      },
     },
     italic: {
       true: {
