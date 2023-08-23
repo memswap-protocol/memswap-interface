@@ -13,7 +13,7 @@ const Navbar = () => {
       css={{
         '--borderColor': 'colors.gray6',
         borderBottom: '1px solid var(--borderColor)',
-        sm: {
+        md: {
           borderRadius: 100,
           boxShadow: '0px 0px 50px 0px #0000001F',
           borderBottom: 'none',

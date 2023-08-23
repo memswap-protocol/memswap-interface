@@ -16,7 +16,7 @@ const Layout: FC<Props> = ({ children }) => {
           height: '100%',
           width: '100%',
           minHeight: '100vh',
-          sm: { pt: 56 },
+          md: { pt: 56 },
         }}
       >
         <Flex

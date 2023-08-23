@@ -1,10 +1,12 @@
 import { Address } from 'viem'
 import { Token } from '../components/swap/SelectTokenModal'
 
-const MEMSWAP = '0x90d4ecf99ad7e8ac74994c5181ca78b279ca9f8e'
-const WETH2 = '0xe6ea2a148c13893a8eedd57c75043055a8924c5f'
+const MEMSWAP = '0x749f8feaec5eb53f9ce677a252467fa289272591'
+const MEMSWAP_WETH = '0x5088a0a51e45b5a00c049676dc11f12bb8b4ec29'
 
-const QUOTER_CONTRACT = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
+const MATCHMAKER = '0xf4f6df97aa065758c70e6fb7d938ec392dda98e0'
+
+const UNISWAP_QUOTER_CONTRACT = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 
 const WRAPPED_CONTRACTS: Record<number, Address> = {
   1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', //mainnet
@@ -32,4 +34,11 @@ const USDC_TOKENS: Record<number, Token> = {
   },
 }
 
-export { MEMSWAP, WETH2, QUOTER_CONTRACT, WRAPPED_CONTRACTS, USDC_TOKENS }
+export {
+  MEMSWAP,
+  MEMSWAP_WETH,
+  MATCHMAKER,
+  UNISWAP_QUOTER_CONTRACT,
+  WRAPPED_CONTRACTS,
+  USDC_TOKENS,
+}

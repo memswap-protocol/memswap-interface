@@ -31,8 +31,11 @@ const useOneInchQuote = (
     activeChain
   )
 
+  const isOnMainnet = activeChain?.id === 1
+
   const hookEnabled = Boolean(
-    amountIn &&
+    isOnMainnet &&
+      amountIn &&
       tokenIn &&
       tokenOut &&
       !isEthToWethSwap &&
@@ -61,7 +64,7 @@ const useOneInchQuote = (
   return {
     quote: quote,
     isLoading: !error && !data && hookEnabled,
-    isError: error,
+    isError: error || !isOnMainnet, // if on mainnet, set isError to true, so useQuoteWithFallback will fetch the quote onchain
   }
 }
 

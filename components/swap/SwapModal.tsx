@@ -31,6 +31,7 @@ import {
   sendTransaction,
   readContract,
   waitForTransaction,
+  writeContract,
   watchContractEvent,
   getPublicClient,
 } from '@wagmi/core'
@@ -39,7 +40,12 @@ import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
 import { useMounted } from '../../hooks'
 import { MEMSWAP_ABI, WETH_ABI } from '../../constants/abis'
-import { MEMSWAP, WETH2, WRAPPED_CONTRACTS } from '../../constants/contracts'
+import {
+  MATCHMAKER,
+  MEMSWAP,
+  MEMSWAP_WETH,
+  WRAPPED_CONTRACTS,
+} from '../../constants/contracts'
 
 type FetchBalanceResult = {
   decimals: number
@@ -120,9 +126,6 @@ export const SwapModal: FC<Props> = ({
     }
   }, [open])
 
-  // Query Parameters
-
-  // @TODO: Create custom hook?
   // Execute Swap
   const swap = async () => {
     if (!address) {
@@ -140,14 +143,16 @@ export const SwapModal: FC<Props> = ({
       )
 
       const processedTokenIn =
-        tokenIn?.address === zeroAddress ? WETH2 : (tokenIn?.address as Address)
+        tokenIn?.address === zeroAddress
+          ? MEMSWAP_WETH
+          : (tokenIn?.address as Address)
 
       // Create Intent
       const intent: any = {
-        maker: address,
-        filler: zeroAddress,
         tokenIn: processedTokenIn,
         tokenOut: tokenOut?.address,
+        maker: address,
+        filler: MATCHMAKER,
         referrer: referrer ?? address,
         referrerFeeBps: 0,
         referrerSurplusBps: 0,
@@ -155,6 +160,7 @@ export const SwapModal: FC<Props> = ({
           .getBlock()
           .then((b) => Number(b!.timestamp) + 3600 * 24),
         amountIn: parsedAmountIn,
+        isPartiallyFillable: false,
 
         // @TODO: configure start amount out
         startAmountOut: parsedAmountOut,
@@ -171,7 +177,7 @@ export const SwapModal: FC<Props> = ({
 
       // Encode approval and intent
       const approveMethod =
-        processedTokenIn === WETH2 ? 'depositAndApprove' : 'approve'
+        processedTokenIn === MEMSWAP_WETH ? 'depositAndApprove' : 'approve'
 
       const approveAbiItem = parseAbiItem(
         `function ${approveMethod}(address spender, uint256 amount)`
@@ -192,6 +198,7 @@ export const SwapModal: FC<Props> = ({
           'uint32',
           'uint32',
           'uint32',
+          'bool',
           'uint128',
           'uint128',
           'uint128',
@@ -200,14 +207,15 @@ export const SwapModal: FC<Props> = ({
         ]),
         // @ts-ignore - @TODO: add types
         [
-          intent.maker,
-          intent.filler,
           intent.tokenIn,
           intent.tokenOut,
+          intent.maker,
+          intent.filler,
           intent.referrer,
           intent.referrerFeeBps,
           intent.referrerSurplusBps,
           intent.deadline,
+          intent.isPartiallyFillable,
           intent.amountIn,
           intent.startAmountOut,
           intent.expectedAmountOut,
@@ -234,11 +242,13 @@ export const SwapModal: FC<Props> = ({
       if (allowanceAmount >= parsedAmountIn) {
         setSwapStep(SwapStep.Submit)
 
-        const { hash } = await sendTransaction({
-          chainId: activeChain?.id,
-          to: address,
+        const { hash } = await writeContract({
+          address: MEMSWAP,
+          abi: MEMSWAP_ABI,
+          functionName: 'post',
+          args: [intent],
           account: address,
-          data: encodedIntentData,
+          chainId: activeChain?.id,
         })
 
         setTxHash(hash)
@@ -333,9 +343,11 @@ export const SwapModal: FC<Props> = ({
         message: intent,
         primaryType: 'Intent',
       })
+      console.log('Intent hash: ', intentHash)
       setIntentHash(intentHash)
       setWaitingForFulfillment(true)
     } catch (err: any) {
+      console.error(err)
       const error = err as Error
       if (err?.code === 4001 || error?.name === 'UserRejectedRequestError') {
         error.message = 'User rejected the transaction.'
@@ -359,7 +371,10 @@ export const SwapModal: FC<Props> = ({
     args: isWethToEthSwap
       ? [parseUnits(amountIn, tokenIn?.decimals || 18)]
       : undefined,
-    value: isEthToWethSwap ? parseUnits(amountIn, tokenIn?.decimals || 18) : 0n,
+    // @ts-ignore @TODO - fix type
+    value: isEthToWethSwap
+      ? parseUnits(amountIn, tokenIn?.decimals || 18)
+      : undefined,
     enabled: isEthToWethSwap || isWethToEthSwap,
   })
 
@@ -395,11 +410,11 @@ export const SwapModal: FC<Props> = ({
     },
   })
 
-  // Listen for IntentFulfilled Event
+  // Listen for IntentValidated Event
   const unwatch = useContractEvent({
     address: waitingForFulfillment ? MEMSWAP : undefined,
     abi: MEMSWAP_ABI,
-    eventName: 'IntentFulfilled',
+    eventName: 'IntentValidated',
     listener(log) {
       console.log(log)
       // check if event equals intentHash
@@ -652,7 +667,7 @@ export const SwapModal: FC<Props> = ({
                   {truncateAddress(fulfilledHash)}
                 </Anchor>
               ) : txSuccess && !fulfilledSuccess ? (
-                <Text color="subtle" style="body1">
+                <Text color="subtle" style="body2">
                   You can close this modal while waiting for the swap to be
                   fulfilled. The transaction will continue in the background.
                 </Text>

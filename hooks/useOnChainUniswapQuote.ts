@@ -13,7 +13,7 @@ import { useNetwork, useWalletClient } from 'wagmi'
 import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { WRAPPED_CONTRACTS, QUOTER_CONTRACT } from '../constants/contracts'
+import { UNISWAP_QUOTER_CONTRACT } from '../constants/contracts'
 import { resolveTokenAddress, useIsEthToWethSwap } from '../utils/quote'
 
 const useOnChainUniswapQuote = (
@@ -59,7 +59,7 @@ const useOnChainUniswapQuote = (
       try {
         setIsLoading(true)
         const { result } = await publicClient.simulateContract({
-          address: QUOTER_CONTRACT,
+          address: UNISWAP_QUOTER_CONTRACT,
           abi: Quoter.abi,
           functionName: 'quoteExactInputSingle',
           account: zeroAddress,

@@ -1,56 +1,99 @@
 const MEMSWAP_ABI = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  { inputs: [], name: 'IntentAlreadyFulfilled', type: 'error' },
-  { inputs: [], name: 'IntentExpired', type: 'error' },
-  { inputs: [], name: 'IntentNotFulfilled', type: 'error' },
+  { inputs: [], name: 'AuthorizationIsExpired', type: 'error' },
+  { inputs: [], name: 'AuthorizationIsInsufficient', type: 'error' },
+  { inputs: [], name: 'AuthorizationIsNotPartiallyFillable', type: 'error' },
+  { inputs: [], name: 'IntentIsCancelled', type: 'error' },
+  { inputs: [], name: 'IntentIsExpired', type: 'error' },
+  { inputs: [], name: 'IntentIsFilled', type: 'error' },
+  { inputs: [], name: 'IntentIsNotPartiallyFillable', type: 'error' },
   { inputs: [], name: 'InvalidSignature', type: 'error' },
+  { inputs: [], name: 'InvalidSolution', type: 'error' },
+  { inputs: [], name: 'MerkleTreeTooLarge', type: 'error' },
   { inputs: [], name: 'Unauthorized', type: 'error' },
   { inputs: [], name: 'UnsuccessfullCall', type: 'error' },
   {
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+    ],
+    name: 'IntentCancelled',
+    type: 'event',
+  },
+  { anonymous: false, inputs: [], name: 'IntentPosted', type: 'event' },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: 'bytes32',
         name: 'intentHash',
         type: 'bytes32',
       },
       {
-        components: [
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'filler', type: 'address' },
-          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
-          {
-            internalType: 'contract IERC20',
-            name: 'tokenOut',
-            type: 'address',
-          },
-          { internalType: 'address', name: 'referrer', type: 'address' },
-          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
-          {
-            internalType: 'uint32',
-            name: 'referrerSurplusBps',
-            type: 'uint32',
-          },
-          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
-          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
-          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
-          {
-            internalType: 'uint128',
-            name: 'expectedAmountOut',
-            type: 'uint128',
-          },
-          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
-        ],
         indexed: false,
-        internalType: 'struct Memswap.Intent',
-        name: 'intent',
-        type: 'tuple',
+        internalType: 'address',
+        name: 'tokenIn',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'tokenOut',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'maker',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'filler',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'amountIn',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'amountOut',
+        type: 'uint128',
       },
     ],
-    name: 'IntentFulfilled',
+    name: 'IntentSolved',
     type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+    ],
+    name: 'IntentValidated',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'AUTHORIZATION_TYPEHASH',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [],
@@ -61,33 +104,35 @@ const MEMSWAP_ABI = [
   },
   {
     inputs: [],
-    name: 'ORDER_TYPEHASH',
+    name: 'INTENT_TYPEHASH',
     outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'address', name: 'filler', type: 'address' },
-      { internalType: 'bytes32', name: 'intentHash', type: 'bytes32' },
+    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    name: 'authorization',
+    outputs: [
+      { internalType: 'uint128', name: 'maximumAmountIn', type: 'uint128' },
+      { internalType: 'uint128', name: 'minimumAmountOut', type: 'uint128' },
+      { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+      { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
     ],
-    name: 'delegate',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
       {
         components: [
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'filler', type: 'address' },
           { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
           {
             internalType: 'contract IERC20',
             name: 'tokenOut',
             type: 'address',
           },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
           { internalType: 'address', name: 'referrer', type: 'address' },
           { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
           {
@@ -96,6 +141,7 @@ const MEMSWAP_ABI = [
             type: 'uint32',
           },
           { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
           { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
           { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
           {
@@ -110,10 +156,24 @@ const MEMSWAP_ABI = [
         name: 'intent',
         type: 'tuple',
       },
-      { internalType: 'address', name: 'fillContract', type: 'address' },
-      { internalType: 'bytes', name: 'fillData', type: 'bytes' },
+      { internalType: 'address', name: 'authorizedFiller', type: 'address' },
+      {
+        components: [
+          { internalType: 'uint128', name: 'maximumAmountIn', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'minimumAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+        ],
+        internalType: 'struct Memswap.Authorization',
+        name: 'auth',
+        type: 'tuple',
+      },
     ],
-    name: 'execute',
+    name: 'authorize',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -122,14 +182,14 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'filler', type: 'address' },
           { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
           {
             internalType: 'contract IERC20',
             name: 'tokenOut',
             type: 'address',
           },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
           { internalType: 'address', name: 'referrer', type: 'address' },
           { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
           {
@@ -138,6 +198,75 @@ const MEMSWAP_ABI = [
             type: 'uint32',
           },
           { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent[]',
+        name: 'intents',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'cancel',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'intentHash', type: 'bytes32' },
+      { internalType: 'address', name: 'authorizedFiller', type: 'address' },
+      {
+        components: [
+          { internalType: 'uint128', name: 'maximumAmountIn', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'minimumAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+        ],
+        internalType: 'struct Memswap.Authorization',
+        name: 'auth',
+        type: 'tuple',
+      },
+    ],
+    name: 'getAuthorizationHash',
+    outputs: [
+      { internalType: 'bytes32', name: 'authorizationHash', type: 'bytes32' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
           { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
           { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
           {
@@ -160,20 +289,268 @@ const MEMSWAP_ABI = [
   },
   {
     inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    name: 'isDelegated',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    name: 'intentStatus',
+    outputs: [
+      { internalType: 'bool', name: 'isValidated', type: 'bool' },
+      { internalType: 'bool', name: 'isCancelled', type: 'bool' },
+      { internalType: 'uint128', name: 'amountFilled', type: 'uint128' },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    name: 'isFulfilled',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    name: 'post',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent',
+        name: 'intent',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'address', name: 'to', type: 'address' },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          { internalType: 'uint128', name: 'amount', type: 'uint128' },
+        ],
+        internalType: 'struct Memswap.Solution',
+        name: 'solution',
+        type: 'tuple',
+      },
+    ],
+    name: 'solve',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent',
+        name: 'intent',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'address', name: 'to', type: 'address' },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          { internalType: 'uint128', name: 'amount', type: 'uint128' },
+        ],
+        internalType: 'struct Memswap.Solution',
+        name: 'solution',
+        type: 'tuple',
+      },
+    ],
+    name: 'solveWithOnChainAuthorizationCheck',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent',
+        name: 'intent',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'address', name: 'to', type: 'address' },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          { internalType: 'uint128', name: 'amount', type: 'uint128' },
+        ],
+        internalType: 'struct Memswap.Solution',
+        name: 'solution',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'uint128', name: 'maximumAmountIn', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'minimumAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+        ],
+        internalType: 'struct Memswap.Authorization',
+        name: 'auth',
+        type: 'tuple',
+      },
+      { internalType: 'bytes', name: 'signature', type: 'bytes' },
+    ],
+    name: 'solveWithSignatureAuthorizationCheck',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'contract IERC20', name: 'tokenIn', type: 'address' },
+          {
+            internalType: 'contract IERC20',
+            name: 'tokenOut',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'maker', type: 'address' },
+          { internalType: 'address', name: 'filler', type: 'address' },
+          { internalType: 'address', name: 'referrer', type: 'address' },
+          { internalType: 'uint32', name: 'referrerFeeBps', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'referrerSurplusBps',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
+          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
+          { internalType: 'uint128', name: 'amountIn', type: 'uint128' },
+          { internalType: 'uint128', name: 'startAmountOut', type: 'uint128' },
+          {
+            internalType: 'uint128',
+            name: 'expectedAmountOut',
+            type: 'uint128',
+          },
+          { internalType: 'uint128', name: 'endAmountOut', type: 'uint128' },
+          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+        ],
+        internalType: 'struct Memswap.Intent[]',
+        name: 'intents',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'validate',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   { stateMutability: 'payable', type: 'receive' },
-]
+] as const
 
 const WETH_ABI = [
   {
@@ -327,6 +704,6 @@ const WETH_ABI = [
     name: 'Withdrawal',
     type: 'event',
   },
-]
+] as const
 
 export { MEMSWAP_ABI, WETH_ABI }
