@@ -12,8 +12,8 @@ import { SwapModal } from './SwapModal'
 import {
   useDeepLinkParams,
   useMounted,
-  useQuote,
   useTokenList,
+  useQuoteWithFallback,
 } from '../../hooks'
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
@@ -74,28 +74,33 @@ const Swap = () => {
   }, [deepLinkTokenIn, deepLinkTokenOut, deepLinkReferrer])
 
   const {
-    quotedAmountOut,
+    quote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useQuote(Number(debouncedAmountIn), FeeAmount.MEDIUM, tokenIn, tokenOut)
-
-  const { quotedAmountOut: tokenInUSD } = useQuote(
+  } = useQuoteWithFallback(
     Number(debouncedAmountIn),
     FeeAmount.MEDIUM,
     tokenIn,
-    USDC_TOKENS[chain?.id || 1]
+    tokenOut
   )
+  // @TODO: add back
+  // const { quote: tokenInUSD } = useQuoteWithFallback(
+  //   Number(debouncedAmountIn),
+  //   FeeAmount.MEDIUM,
+  //   tokenIn,
+  //   USDC_TOKENS[chain?.id || 1]
+  // )
 
-  const { quotedAmountOut: tokenOutUSD } = useQuote(
-    Number(amountOut),
-    FeeAmount.MEDIUM,
-    tokenOut,
-    USDC_TOKENS[chain?.id || 1]
-  )
+  // const { quote: tokenOutUSD } = useQuoteWithFallback(
+  //   Number(amountOut),
+  //   FeeAmount.MEDIUM,
+  //   tokenOut,
+  //   USDC_TOKENS[chain?.id || 1]
+  // )
 
   useEffect(() => {
-    setAmountOut(quotedAmountOut ?? '')
-  }, [quotedAmountOut])
+    setAmountOut(quote ?? '')
+  }, [quote])
 
   // Reset tokens on chain switch
   useEffect(() => {
@@ -224,11 +229,11 @@ const Swap = () => {
                 }
               }}
             />
-            {tokenInUSD ? (
+            {/* {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null}
+            ) : null} */}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
@@ -301,11 +306,11 @@ const Swap = () => {
               }}
               value={formatNumber(amountOut, 8)}
             />
-            {tokenOutUSD ? (
+            {/* {tokenOutUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenOutUSD))}
               </Text>
-            ) : null}
+            ) : null} */}
           </Flex>
 
           <Flex
@@ -339,7 +344,7 @@ const Swap = () => {
       <QuoteInfo
         errorFetchingQuote={errorFetchingQuote}
         isFetchingQuote={isFetchingQuote}
-        quotedAmountOut={quotedAmountOut}
+        quotedAmountOut={quote}
         tokenIn={tokenIn}
         tokenOut={tokenOut}
         amountIn={amountIn}

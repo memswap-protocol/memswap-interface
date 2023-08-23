@@ -56,7 +56,7 @@ export const SelectTokenModal: FC<Props> = ({
 
   useEffect(() => {
     setTokens(tokenList)
-  }, [tokenList])
+  }, [open, tokenList])
 
   const fuse = new Fuse(tokenList || [], fuseSearchOptions)
 

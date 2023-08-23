@@ -14,8 +14,9 @@ import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { WRAPPED_CONTRACTS, QUOTER_CONTRACT } from '../constants/contracts'
+import { resolveTokenAddress, useIsEthToWethSwap } from '../utils/quote'
 
-const useQuote = (
+const useOnChainUniswapQuote = (
   amountIn: number,
   feeAmount: FeeAmount,
   tokenIn?: Token,
@@ -23,7 +24,7 @@ const useQuote = (
 ) => {
   const { chain: activeChain } = useNetwork()
   const { data: walletClient } = useWalletClient()
-  const [quotedAmountOut, setQuotedAmountOut] = useState<string | undefined>()
+  const [quote, setQuote] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
@@ -39,26 +40,16 @@ const useQuote = (
       : http(),
   })
 
-  const isEthToWethSwap =
-    (tokenIn?.address === zeroAddress ||
-      tokenIn?.address === WRAPPED_CONTRACTS[activeChain?.id || 1]) &&
-    (tokenOut?.address === zeroAddress ||
-      tokenOut?.address === WRAPPED_CONTRACTS[activeChain?.id || 1])
-
-  // For ETH, need to use WETH to fetch quote
-  const getResolvedAddress = useCallback(
-    (address?: string) => {
-      return address === zeroAddress
-        ? WRAPPED_CONTRACTS[activeChain?.id || 1]
-        : address
-    },
-    [activeChain]
+  const isEthToWethSwap = useIsEthToWethSwap(
+    tokenIn?.address,
+    tokenOut?.address,
+    activeChain
   )
 
   const resetState = useCallback(() => {
     setIsError(false)
     setIsLoading(false)
-    setQuotedAmountOut(undefined)
+    setQuote(undefined)
   }, [])
 
   useEffect(() => {
@@ -73,8 +64,8 @@ const useQuote = (
           functionName: 'quoteExactInputSingle',
           account: zeroAddress,
           args: [
-            getResolvedAddress(tokenIn?.address),
-            getResolvedAddress(tokenOut?.address),
+            resolveTokenAddress(tokenIn?.address, activeChain),
+            resolveTokenAddress(tokenOut?.address, activeChain),
             feeAmount,
             parseUnits(amountIn.toString(), tokenIn?.decimals || 18),
             0,
@@ -86,7 +77,7 @@ const useQuote = (
           : undefined
 
         if (!isCancelled) {
-          setQuotedAmountOut(quotedAmount)
+          setQuote(quotedAmount)
           setIsLoading(false)
         }
       } catch (error) {
@@ -99,7 +90,7 @@ const useQuote = (
     }
 
     if (isEthToWethSwap || tokenIn?.address === tokenOut?.address) {
-      setQuotedAmountOut(amountIn ? amountIn.toString() : undefined)
+      setQuote(amountIn ? amountIn.toString() : undefined)
       return
     }
 
@@ -123,11 +114,11 @@ const useQuote = (
     tokenOut,
     isEthToWethSwap,
     feeAmount,
-    getResolvedAddress,
+    resolveTokenAddress,
     activeChain,
   ])
 
-  return { quotedAmountOut, isLoading, isError }
+  return { quote, isLoading, isError }
 }
 
-export default useQuote
+export default useOnChainUniswapQuote

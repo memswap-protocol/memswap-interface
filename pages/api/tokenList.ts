@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
+import { Token } from '../../components/swap/SelectTokenModal'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
 export default async function handler() {
-  let tokens
+  let tokens: Token[]
   let cacheSettings = 'maxage=0, s-maxage=86400 stale-while-revalidate' // Default cache settings
 
   try {
@@ -21,7 +22,7 @@ export default async function handler() {
     tokens = data?.tokens
   } catch (error) {
     console.error('Error fetching token list: ', error)
-    tokens = null
+    tokens = []
     cacheSettings = 'maxage=0, s-maxage=300 stale-while-revalidate' // Reduce cache time if token list API fails
   }
   return new NextResponse(
