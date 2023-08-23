@@ -168,7 +168,7 @@ const Swap = () => {
         borderRadius: 8,
         p: '4',
         gap: '3',
-        maxWidth: 600,
+        maxWidth: 570,
       }}
     >
       <Flex justify="between" align="center" css={{ gap: '4' }}>
