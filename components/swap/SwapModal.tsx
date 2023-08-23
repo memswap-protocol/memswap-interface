@@ -235,6 +235,8 @@ export const SwapModal: FC<Props> = ({
         args: [address, MEMSWAP],
       })
 
+      console.log('Allowance: ', allowanceAmount)
+
       // Handle transactions
 
       // Scenario 1: User already has approval greater than amountIn
