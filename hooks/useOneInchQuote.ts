@@ -31,7 +31,7 @@ const useOneInchQuote = (
     activeChain
   )
 
-  const isOnMainnet = activeChain?.id === 1
+  const isOnMainnet = activeChain?.id !== 5
 
   const hookEnabled = Boolean(
     isOnMainnet &&
