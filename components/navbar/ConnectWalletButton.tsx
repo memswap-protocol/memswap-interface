@@ -16,11 +16,7 @@ export const ConnectWalletButton: FC<Props> = ({ children, css }) => {
 
   const { openConnectModal } = useConnectModal()
 
-  if (!isMounted) {
-    return null
-  }
-
-  if (isDisconnected || isConnecting)
+  if (isDisconnected || isConnecting || !isMounted)
     return (
       <Button
         color="primary"
