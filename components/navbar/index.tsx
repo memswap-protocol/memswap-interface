@@ -11,18 +11,22 @@ const Navbar = () => {
       align="center"
       justify="between"
       css={{
+        position: 'fixed',
+        width: '100%',
+        maxWidth: 1200,
+        px: 24,
+        py: '3',
+        zIndex: 9999,
+        backgroundColor: 'white',
         '--borderColor': 'colors.gray6',
         borderBottom: '1px solid var(--borderColor)',
         md: {
+          position: 'relative',
           borderRadius: 100,
           boxShadow: '0px 0px 50px 0px #0000001F',
           borderBottom: 'none',
         },
         lg: { mx: 'auto', width: '100%' },
-        maxWidth: 1200,
-        backgroundColor: 'white',
-        px: 24,
-        py: '3',
       }}
     >
       <Flex align="center" css={{ gap: '5' }}>

@@ -14,7 +14,7 @@ const Home: NextPage = () => {
       <Flex
         align="center"
         direction="column"
-        css={{ py: '6', px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
+        css={{ py: 120, px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
       >
         <Swap />
         <FAQs />
