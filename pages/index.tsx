@@ -6,6 +6,7 @@ import Swap from '../components/swap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FAQs } from '../components/faq'
+import { Marketing } from '../components/marketing'
 
 const Home: NextPage = () => {
   return (
@@ -14,9 +15,17 @@ const Home: NextPage = () => {
       <Flex
         align="center"
         direction="column"
-        css={{ py: 120, px: '2', gap: '6', width: '100%', sm: { px: '6' } }}
+        css={{
+          py: 120,
+          px: '2',
+          gap: '6',
+          width: '100%',
+          sm: { px: '6' },
+          md: { py: '6' },
+        }}
       >
         <Swap />
+        <Marketing />
         <FAQs />
 
         {/* @TODO: add links */}
