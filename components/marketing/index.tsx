@@ -15,7 +15,7 @@ export const Marketing = () => {
         maxWidth: 540,
       }}
     >
-      <Flex align="center" css={{ gap: 18, flexWrap: 'wrap' }}>
+      <Flex align="center" justify="center" css={{ gap: 18, flexWrap: 'wrap' }}>
         {featureHighlights.map((highlight, idx) => (
           <FeatureHighlightPill text={highlight} key={idx} />
         ))}

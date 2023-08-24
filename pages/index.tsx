@@ -20,20 +20,18 @@ const Home: NextPage = () => {
           px: '2',
           gap: 56,
           width: '100%',
+          bp400: { px: 24 },
           sm: { px: '6' },
           md: { py: '6' },
         }}
       >
         <Swap />
         <Marketing />
-        <FAQs />
-
         {/* @TODO: add links */}
         <Flex align="center" direction="column" css={{ gap: 24 }}>
           <Anchor
             href=""
             target="_blank"
-            weight="bold"
             css={{ display: 'block', md: { display: 'none' } }}
           >
             <Flex align="center" css={{ gap: '2' }}>
@@ -43,7 +41,6 @@ const Home: NextPage = () => {
           <Anchor
             href=""
             target="_blank"
-            weight="bold"
             css={{ display: 'block', md: { display: 'none' } }}
           >
             <Flex align="center" css={{ gap: '2' }}>
@@ -51,6 +48,7 @@ const Home: NextPage = () => {
             </Flex>
           </Anchor>
         </Flex>
+        <FAQs />
       </Flex>
     </Layout>
   )
