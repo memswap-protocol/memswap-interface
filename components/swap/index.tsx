@@ -105,7 +105,6 @@ const Swap = () => {
   // Reset tokens on chain switch
   useEffect(() => {
     if (isConnected) {
-      console.log(chain)
       setTokenIn(defaultTokens[0])
       setTokenOut(undefined)
     }

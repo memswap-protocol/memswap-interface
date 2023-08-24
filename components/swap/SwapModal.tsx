@@ -8,6 +8,7 @@ import {
   useContractWrite,
   useNetwork,
   usePrepareContractWrite,
+  useWalletClient,
 } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
@@ -15,6 +16,7 @@ import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { truncateAddress } from '../../utils/truncate'
 import { getEIP712Domain, getEIP712Types } from '../../utils/swap'
+import { _TypedDataEncoder } from '@ethersproject/hash'
 import {
   parseUnits,
   zeroAddress,
@@ -25,15 +27,17 @@ import {
   Address,
   formatUnits,
   hashTypedData,
+  createPublicClient,
+  http,
+  fallback,
+  custom,
 } from 'viem'
+import * as allChains from 'viem/chains'
 import {
   signTypedData,
   sendTransaction,
   readContract,
-  waitForTransaction,
   writeContract,
-  watchContractEvent,
-  getPublicClient,
 } from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
@@ -88,7 +92,20 @@ export const SwapModal: FC<Props> = ({
   const { address, isDisconnected, isConnecting, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { toast } = useToast()
-  const publicClient = getPublicClient()
+
+  const { data: walletClient } = useWalletClient()
+
+  const viemChain =
+    Object.values(allChains).find(
+      (chain) => chain.id === (activeChain?.id || 1)
+    ) || allChains.mainnet
+
+  const publicClient = createPublicClient({
+    chain: viemChain,
+    transport: walletClient?.transport
+      ? fallback([custom(walletClient?.transport), http()])
+      : http(),
+  })
 
   // States
   const [open, setOpen] = useState(false)
@@ -238,9 +255,9 @@ export const SwapModal: FC<Props> = ({
         args: [address, MEMSWAP],
       })
 
-      console.log('Allowance: ', allowanceAmount)
-
+      //////////////////////
       // Handle transactions
+      //////////////////////
 
       // Scenario 1: User already has approval greater than amountIn
       // Zero value transfer with intent in calldata
@@ -258,7 +275,7 @@ export const SwapModal: FC<Props> = ({
 
         setTxHash(hash)
 
-        await waitForTransaction({
+        await publicClient.waitForTransactionReceipt({
           hash: hash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
@@ -284,7 +301,7 @@ export const SwapModal: FC<Props> = ({
 
         setMetamaskApprovalHash(approvalHash)
 
-        await waitForTransaction({
+        await publicClient.waitForTransactionReceipt({
           hash: approvalHash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
@@ -304,7 +321,7 @@ export const SwapModal: FC<Props> = ({
 
         setTxHash(intentTransactionHash)
 
-        await waitForTransaction({
+        await publicClient.waitForTransactionReceipt({
           hash: intentTransactionHash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
@@ -328,7 +345,7 @@ export const SwapModal: FC<Props> = ({
 
         setTxHash(hash)
 
-        await waitForTransaction({
+        await publicClient.waitForTransactionReceipt({
           hash: hash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
@@ -339,16 +356,16 @@ export const SwapModal: FC<Props> = ({
 
       setTxSuccess(true)
 
-      // Listen for fulfilment in useContractEvent hook
-      console.log('Listening for IntentFulfilled Event ')
+      // Generate intent hash and listen for fulfillment in useContractEvent hook
 
-      const intentHash = hashTypedData({
-        domain: getEIP712Domain(activeChain?.id || 1),
-        types: getEIP712Types(),
-        message: intent,
-        primaryType: 'Intent',
-      })
-      console.log('Intent hash: ', intentHash)
+      // Need to use TypedDataEncoder from @ethersproject for now as viem's hashStruct function is not currently exported
+      // See here for more info: https://github.com/wagmi-dev/viem/discussions/761
+      const intentHash = _TypedDataEncoder.hashStruct(
+        'Intent',
+        getEIP712Types(),
+        intent
+      )
+
       setIntentHash(intentHash)
       setWaitingForFulfillment(true)
     } catch (err: any) {
@@ -381,6 +398,7 @@ export const SwapModal: FC<Props> = ({
       ? parseUnits(amountIn, tokenIn?.decimals || 18)
       : undefined,
     enabled: isEthToWethSwap || isWethToEthSwap,
+    chainId: activeChain?.id,
   })
 
   // Execute ETH <> WETH Swap
@@ -415,20 +433,26 @@ export const SwapModal: FC<Props> = ({
     },
   })
 
-  // Listen for IntentValidated Event
+  // Listen for IntentSolved Event
   const unwatch = useContractEvent({
+    chainId: activeChain?.id,
     address: waitingForFulfillment ? MEMSWAP : undefined,
     abi: MEMSWAP_ABI,
-    eventName: 'IntentValidated',
+    eventName: 'IntentSolved',
     listener(log) {
-      console.log(log)
-      // check if event equals intentHash
-      toast({
-        title: 'Swap was successful.',
-      })
-      // unwatch?.()
-      setFulfilledSuccess(true)
-      setWaitingForFulfillment(false)
+      const eventIntentHash = log[0]?.args.intentHash
+
+      // check if event's intentHash equals swap's intentHash
+      if (eventIntentHash === intentHash) {
+        unwatch?.()
+        toast({
+          title: 'Swap was successful.',
+        })
+        const eventFulfilledHash = log[0]?.transactionHash
+        setFulfilledHash(eventFulfilledHash)
+        setFulfilledSuccess(true)
+        setWaitingForFulfillment(false)
+      }
     },
   })
 

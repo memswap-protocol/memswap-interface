@@ -25,11 +25,6 @@ const useQuoteWithFallback = (
     oneInchQuoteError ? tokenOut : undefined // don't run hook unless 1inch api fails
   )
 
-  console.log('oneInchQuote: ', oneInchQuote)
-  console.log('onChainUniswapQuote: ', onChainUniswapQuote)
-  console.log('-----------------------------')
-  console.log('oneInchQuoteError: ', oneInchQuoteError)
-
   return {
     quote: !oneInchQuoteError ? oneInchQuote : onChainUniswapQuote,
     isLoading: oneInchQuoteLoading || onChainUniswapQuoteLoading,
