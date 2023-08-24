@@ -47,9 +47,7 @@ const useOneInchQuote = (
     fetcher,
     {
       revalidateOnFocus: false,
-      revalidateOnMount: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
+      revalidateOnMount: true,
     }
   )
 
