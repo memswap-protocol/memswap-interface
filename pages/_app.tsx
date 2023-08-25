@@ -14,7 +14,6 @@ import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
-import { ThemeProvider } from 'next-themes'
 import {
   coinbaseWallet,
   injectedWallet,
@@ -65,28 +64,19 @@ const Disclaimer: DisclaimerComponent = ({ Text }) => (
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="_light"
-      value={{
-        dark: '_dark',
-        light: 'light',
-      }}
-    >
-      <WagmiConfig config={wagmiConfig}>
-        <AnalyticsProvider>
-          <ErrorTrackingProvider>
-            <RainbowKitProvider
-              chains={chains}
-              modalSize="compact"
-              appInfo={{ disclaimer: Disclaimer }}
-            >
-              <Component {...pageProps} />
-            </RainbowKitProvider>
-          </ErrorTrackingProvider>
-        </AnalyticsProvider>
-      </WagmiConfig>
-    </ThemeProvider>
+    <WagmiConfig config={wagmiConfig}>
+      <AnalyticsProvider>
+        <ErrorTrackingProvider>
+          <RainbowKitProvider
+            chains={chains}
+            modalSize="compact"
+            appInfo={{ disclaimer: Disclaimer }}
+          >
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </ErrorTrackingProvider>
+      </AnalyticsProvider>
+    </WagmiConfig>
   )
 }
 
