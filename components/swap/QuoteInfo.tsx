@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { Flex, Text } from '../primitives'
 import { LoadingSpinner } from '../common/LoadingSpinner'
-import { Token } from './SelectTokenModal'
 import { formatNumber } from '../../utils/numbers'
+import { Token } from '../../types'
 
-type Props = {
+type QuoteInfoProps = {
   quotedAmountOut?: string
   tokenIn?: Token
   tokenOut?: Token
@@ -14,7 +14,7 @@ type Props = {
   errorFetchingQuote: boolean
 }
 
-export const QuoteInfo: FC<Props> = ({
+export const QuoteInfo: FC<QuoteInfoProps> = ({
   quotedAmountOut,
   tokenIn,
   tokenOut,

@@ -2,12 +2,12 @@ import { Dispatch, FC, SetStateAction } from 'react'
 import { Dropdown } from '../primitives/Dropdown'
 import { Button, Input, Text, Flex } from '../primitives'
 
-type Props = {
+type SlippageDropdownProps = {
   slippagePercentage: string
   setSlippagePercentage: Dispatch<SetStateAction<string>>
 }
 
-export const SlippageDropdown: FC<Props> = ({
+export const SlippageDropdown: FC<SlippageDropdownProps> = ({
   slippagePercentage,
   setSlippagePercentage,
 }) => {

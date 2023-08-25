@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import { Token } from '../components/swap/SelectTokenModal'
+import { Token } from '../types'
 
 export const chainDefaultTokens: Record<number, Token[]> = {
   1: [

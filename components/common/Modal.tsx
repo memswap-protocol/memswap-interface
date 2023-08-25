@@ -11,18 +11,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { SystemStyleObject } from '../../styled-system/types'
 
-type Props = {
+type ModalProps = {
   trigger?: ReactNode
   contentCss?: SystemStyleObject
   children: ReactNode
 }
 
-export const Modal: FC<ComponentPropsWithoutRef<typeof DialogRoot> & Props> = ({
-  trigger,
-  contentCss,
-  children,
-  ...props
-}) => {
+export const Modal: FC<
+  ComponentPropsWithoutRef<typeof DialogRoot> & ModalProps
+> = ({ trigger, contentCss, children, ...props }) => {
   return (
     <DialogRoot modal={true} {...props}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>

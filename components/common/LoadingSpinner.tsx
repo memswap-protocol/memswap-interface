@@ -1,6 +1,7 @@
+import { SVGProps } from 'react'
 import { styled } from '../../styled-system/jsx'
 
-const spinnerSVG = (props: any) => {
+const spinnerSVG = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="21"

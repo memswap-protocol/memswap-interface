@@ -1,6 +1,6 @@
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { Token } from '../components/swap/SelectTokenModal'
 import { useOneInchQuote, useOnChainUniswapQuote } from '.'
+import { Token } from '../types'
 
 const useQuoteWithFallback = (
   amountIn: number,

@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from 'react'
 import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
-import { Token } from './SelectTokenModal'
 import {
   erc20ABI,
   useAccount,
@@ -26,7 +25,6 @@ import {
   parseAbiParameters,
   Address,
   formatUnits,
-  hashTypedData,
   createPublicClient,
   http,
   fallback,
@@ -50,13 +48,7 @@ import {
   MEMSWAP_WETH,
   WRAPPED_CONTRACTS,
 } from '../../constants/contracts'
-
-type FetchBalanceResult = {
-  decimals: number
-  formatted: string
-  symbol: string
-  value: bigint
-}
+import { FetchBalanceResult, Intent, Token } from '../../types'
 
 enum SwapStep {
   Sign,
@@ -64,7 +56,7 @@ enum SwapStep {
   Submit,
 }
 
-type Props = {
+type SwapModalProps = {
   tokenIn?: Token
   tokenOut?: Token
   tokenInBalance?: FetchBalanceResult
@@ -76,7 +68,7 @@ type Props = {
   errorFetchingQuote: boolean
 }
 
-export const SwapModal: FC<Props> = ({
+export const SwapModal: FC<SwapModalProps> = ({
   tokenIn,
   tokenOut,
   tokenInBalance,
@@ -165,11 +157,11 @@ export const SwapModal: FC<Props> = ({
           : (tokenIn?.address as Address)
 
       // Create Intent
-      const intent: any = {
+      const intent = {
         tokenIn: processedTokenIn,
-        tokenOut: tokenOut?.address,
+        tokenOut: tokenOut?.address as Address,
         maker: address,
-        filler: MATCHMAKER,
+        filler: MATCHMAKER as Address,
         referrer: referrer ?? address,
         referrerFeeBps: 0,
         referrerSurplusBps: 0,
@@ -186,7 +178,7 @@ export const SwapModal: FC<Props> = ({
         startAmountOut: parsedEndAmountOut,
         expectedAmountOut: parsedEndAmountOut,
         endAmountOut: parsedEndAmountOut,
-      }
+      } as Intent
 
       intent.signature = await signTypedData({
         domain: getEIP712Domain(activeChain?.id || 1),
@@ -225,7 +217,7 @@ export const SwapModal: FC<Props> = ({
           'uint128',
           'bytes',
         ]),
-        // @ts-ignore - @TODO: add types
+        // @ts-ignore
         [
           intent.tokenIn,
           intent.tokenOut,
@@ -240,7 +232,7 @@ export const SwapModal: FC<Props> = ({
           intent.startAmountOut,
           intent.expectedAmountOut,
           intent.endAmountOut,
-          (intent as any).signature,
+          intent.signature,
         ]
       )
 
@@ -255,9 +247,9 @@ export const SwapModal: FC<Props> = ({
         args: [address, MEMSWAP],
       })
 
-      //////////////////////
-      // Handle transactions
-      //////////////////////
+      //////////////////////////////
+      // Handle transaction
+      //////////////////////////////
 
       // Scenario 1: User already has approval greater than amountIn
       // Zero value transfer with intent in calldata
@@ -441,8 +433,6 @@ export const SwapModal: FC<Props> = ({
     eventName: 'IntentSolved',
     listener(log) {
       const eventIntentHash = log[0]?.args.intentHash
-
-      // check if event's intentHash equals swap's intentHash
       if (eventIntentHash === intentHash) {
         unwatch?.()
         toast({

@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Fuse from 'fuse.js'
-import { Token } from '../components/swap/SelectTokenModal'
 import { Address, isAddress } from 'viem'
+import { Token } from '../types'
 
 const fuseDeepLinkOptions = {
   keys: ['address', 'symbol'],

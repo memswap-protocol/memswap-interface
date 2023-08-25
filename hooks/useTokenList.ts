@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import useSWR from 'swr'
-import { Token } from '../components/swap/SelectTokenModal'
 import { useNetwork } from 'wagmi'
 import { chainDefaultTokens } from '../constants/chainDefaultTokens'
 import fetcher from '../utils/fetcher'
+import { Token } from '../types'
 
 function useTokenList() {
   const { chain: activeChain } = useNetwork()

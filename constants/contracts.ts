@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { Token } from '../components/swap/SelectTokenModal'
+import { Token } from '../types'
 
 const MEMSWAP = '0x749f8feaec5eb53f9ce677a252467fa289272591'
 const MEMSWAP_WETH = '0x5088a0a51e45b5a00c049676dc11f12bb8b4ec29'

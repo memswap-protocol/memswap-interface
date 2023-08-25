@@ -5,11 +5,13 @@ import { useAccount } from 'wagmi'
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN
 
-type Props = {
+type ErrorTrackingProviderProps = {
   children: ReactElement
 }
 
-const ErrorTrackingProvider: FC<Props> = ({ children }) => {
+const ErrorTrackingProvider: FC<ErrorTrackingProviderProps> = ({
+  children,
+}) => {
   const { address } = useAccount()
 
   useEffect(() => {

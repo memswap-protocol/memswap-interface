@@ -4,7 +4,7 @@ import posthog from 'posthog-js'
 
 const posthogClientToken = process.env.NEXT_PUBLIC_POSTHOG_CLIENT_TOKEN
 
-type Props = {
+type AnalyticsProviderProps = {
   children: ReactElement
 }
 
@@ -25,7 +25,7 @@ export const initializeAnalytics = () => {
   }
 }
 
-const AnalyticsProvider: FC<Props> = ({ children }) => {
+const AnalyticsProvider: FC<AnalyticsProviderProps> = ({ children }) => {
   const accountData = useAccount()
 
   useEffect(() => {

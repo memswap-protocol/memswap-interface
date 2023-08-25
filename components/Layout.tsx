@@ -3,11 +3,11 @@ import { FC, ReactNode } from 'react'
 import Navbar from './navbar'
 import Toaster from './providers/ToastProvider'
 
-type Props = {
+type LayoutProps = {
   children: ReactNode
 }
 
-const Layout: FC<Props> = ({ children }) => {
+const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <Box

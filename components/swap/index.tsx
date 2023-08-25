@@ -7,7 +7,7 @@ import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { Button, Flex, Text, Input } from '../primitives'
-import { Token, SelectTokenModal } from './SelectTokenModal'
+import { SelectTokenModal } from './SelectTokenModal'
 import { SwapModal } from './SwapModal'
 import {
   useDeepLinkParams,
@@ -21,6 +21,7 @@ import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../constants/contracts'
 import { SlippageDropdown } from './SlippageDropdown'
 import { DeadlineDropdown } from './DeadlineDropdown'
+import { Token } from '../../types'
 
 const Swap = () => {
   const isMounted = useMounted()

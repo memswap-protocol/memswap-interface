@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { Flex, Text } from '../primitives'
-import { Token } from './SelectTokenModal'
+import { Token } from '../../types'
 
 type Props = {
   token?: Token

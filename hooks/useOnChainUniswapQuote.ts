@@ -10,11 +10,11 @@ import {
 } from 'viem'
 import * as allChains from 'viem/chains'
 import { useNetwork, useWalletClient } from 'wagmi'
-import { Token } from '../components/swap/SelectTokenModal'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { UNISWAP_QUOTER_CONTRACT } from '../constants/contracts'
 import { resolveTokenAddress, useIsEthToWethSwap } from '../utils/quote'
+import { Token } from '../types'
 
 const useOnChainUniswapQuote = (
   amountIn: number,

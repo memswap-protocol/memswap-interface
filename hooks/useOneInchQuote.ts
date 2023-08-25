@@ -1,10 +1,10 @@
 import useSWR from 'swr'
 import fetcher from '../utils/fetcher'
-import { Token } from '../components/swap/SelectTokenModal'
 import { formatUnits, parseUnits } from 'viem'
 import { buildQueryString } from '../utils/params'
 import { resolveTokenAddress, useIsEthToWethSwap } from '../utils/quote'
 import { useNetwork } from 'wagmi'
+import { Token } from '../types'
 
 type QuoteResponse = {
   toAmount: string
@@ -33,7 +33,7 @@ const useOneInchQuote = (
 
   const isOnMainnet = activeChain?.id !== 5
 
-  const hookEnabled = Boolean(
+  const enabled = Boolean(
     isOnMainnet &&
       amountIn &&
       tokenIn &&
@@ -43,7 +43,7 @@ const useOneInchQuote = (
   )
 
   const { data, error } = useSWR<QuoteResponse>(
-    hookEnabled ? [url] : null,
+    enabled ? [url] : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -61,7 +61,7 @@ const useOneInchQuote = (
 
   return {
     quote: quote,
-    isLoading: !error && !data && hookEnabled,
+    isLoading: !error && !data && enabled,
     isError: error || !isOnMainnet, // if on mainnet, set isError to true, so useQuoteWithFallback will fetch the quote onchain
   }
 }

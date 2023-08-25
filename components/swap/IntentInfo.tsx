@@ -1,19 +1,19 @@
 import { FC } from 'react'
 import { Flex, Text, Box } from '../primitives'
-import { Token } from './SelectTokenModal'
 import { formatNumber } from '../../utils/numbers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CurrencyPill } from './CurrencyPill'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { Token } from '../../types'
 
-type Props = {
+type IntentInfoProps = {
   tokenIn?: Token
   tokenOut?: Token
   amountIn: string
   amountOut: string
 }
 
-export const IntentInfo: FC<Props> = ({
+export const IntentInfo: FC<IntentInfoProps> = ({
   tokenIn,
   tokenOut,
   amountIn,

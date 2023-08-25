@@ -1,4 +1,5 @@
 import {
+  CSSProperties,
   ChangeEvent,
   Dispatch,
   FC,
@@ -17,6 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { useRouter } from 'next/router'
+import { Token } from '../../types'
 
 const fuseSearchOptions = {
   includeScore: true,
@@ -25,7 +27,7 @@ const fuseSearchOptions = {
   keys: ['name', 'symbol', 'address'],
 }
 
-type Props = {
+type SelectTokenModalProps = {
   tokenType: 'from' | 'to'
   token?: Token
   setToken: Dispatch<SetStateAction<Token | undefined>>
@@ -33,16 +35,7 @@ type Props = {
   loadingTokenList: boolean
 }
 
-export type Token = {
-  chainId: number
-  address: string
-  name: string
-  symbol: string
-  decimals: number
-  logoURI: string
-}
-
-export const SelectTokenModal: FC<Props> = ({
+export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   tokenType,
   token,
   setToken,
@@ -73,8 +66,10 @@ export const SelectTokenModal: FC<Props> = ({
     setTokens(items)
   }
 
-  // @ts-ignore: ignore react-window 'any' types
-  const TokenRow = ({ index, style }) => {
+  const TokenRow: FC<{ index: number; style: CSSProperties }> = ({
+    index,
+    style,
+  }) => {
     const currentToken = tokens?.[index]
     const isSelected = currentToken?.address === token?.address
     return (
@@ -107,16 +102,6 @@ export const SelectTokenModal: FC<Props> = ({
               shallow: true,
             }
           )
-          // router.push(
-          //   {
-          //     pathname: router.pathname,
-          //     query: { tokenType: currentToken?.address },
-          //   },
-          //   undefined,
-          //   {
-          //     shallow: true,
-          //   }
-          // )
         }}
       >
         <img

@@ -2,7 +2,7 @@ import { Dispatch, FC, SetStateAction } from 'react'
 import { Dropdown, DropdownMenuItem } from '../primitives/Dropdown'
 import { Button, Text, Flex } from '../primitives'
 
-type Props = {
+type DeadlineDropdownProps = {
   deadline: number
   setDeadline: Dispatch<SetStateAction<number>>
 }
@@ -30,7 +30,10 @@ const Deadlines: Record<string, DeadlineInfo> = {
     value: 6000,
   },
 }
-export const DeadlineDropdown: FC<Props> = ({ deadline, setDeadline }) => {
+export const DeadlineDropdown: FC<DeadlineDropdownProps> = ({
+  deadline,
+  setDeadline,
+}) => {
   const displayText = Deadlines[`${deadline}`]?.text || 'Fast'
 
   return (
