@@ -47,19 +47,6 @@ const Navbar = () => {
             </Box>
           </Flex>
         </Anchor>
-        <Anchor
-          href=""
-          target="_blank"
-          color="gray"
-          css={{ display: 'none', md: { display: 'block' } }}
-        >
-          <Flex align="center" css={{ gap: '2' }}>
-            Light Paper
-            <Box css={{ color: 'gray11' }}>
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </Box>
-          </Flex>
-        </Anchor>
       </Flex>
       <ConnectWalletButton
         css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}

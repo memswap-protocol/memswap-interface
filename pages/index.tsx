@@ -3,8 +3,8 @@ import { Flex } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
 import Swap from '../components/swap'
-import { FAQs } from '../components/faq'
-import { Marketing } from '../components/marketing'
+import { FAQs } from '../components/faqs'
+import { Marketing } from '../components/marketing-info'
 
 const Home: NextPage = () => {
   return (

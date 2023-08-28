@@ -3,7 +3,7 @@ import { Flex, Text, Anchor, Box } from '../primitives'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FeatureHighlightPill } from './FeatureHighlightPill'
 
-const featureHighlights = ['Permissionless', 'Secured', 'Decentralized', 'Open']
+const featureHighlights = ['Permissionless', 'Secure', 'Decentralized', 'Open']
 
 export const Marketing = () => {
   return (

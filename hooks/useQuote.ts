@@ -5,7 +5,7 @@ import {
   CurrencyAmount,
   SwapType,
 } from '@uniswap/smart-order-router'
-import { useNetwork } from 'wagmi'
+import { useNetwork, useWalletClient } from 'wagmi'
 import { Token } from '../types'
 import { parseUnits } from 'viem'
 import { createUniswapToken, useIsEthToWethSwap } from '../utils/quote'
@@ -13,9 +13,12 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 
 const useQuote = (amountIn: number, tokenIn?: Token, tokenOut?: Token) => {
   const { chain } = useNetwork()
+  const { data: walletClient } = useWalletClient()
   const [quote, setQuote] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
+
+  console.log(walletClient)
 
   const rpcUrl =
     chain?.rpcUrls?.alchemy?.http[0] || 'https://eth-mainnet.g.alchemy.com/v2'
