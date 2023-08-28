@@ -2,6 +2,7 @@ import { styled } from '../../styled-system/jsx'
 
 const Anchor = styled('a', {
   base: {
+    width: 'max-content',
     fontWeight: 500,
     fontSize: 14,
     color: 'primary11',

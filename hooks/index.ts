@@ -1,6 +1,4 @@
 export { default as useTokenList } from './useTokenList'
-export { default as useOnChainUniswapQuote } from './useOnChainUniswapQuote'
 export { default as useMounted } from './useMounted'
 export { default as useDeepLinkParams } from './useDeepLinkParams'
-export { default as useOneInchQuote } from './useOneInchQuote'
-export { default as useQuoteWithFallback } from './useQuoteWithFallback'
+export { default as useQuote } from './useQuote'

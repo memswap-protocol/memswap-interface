@@ -303,12 +303,17 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         setSwapStep(SwapStep.Submit)
 
-        const { hash: intentTransactionHash } = await sendTransaction({
+        const { hash: intentTransactionHash } = await writeContract({
           chainId: activeChain?.id,
-          to: address,
+          // to: address,
+          // account: address,
+          // value: 0n,
+          // data: encodedIntentData,
+          address: MEMSWAP,
+          abi: MEMSWAP_ABI,
+          functionName: 'post',
+          args: [intent],
           account: address,
-          value: 0n,
-          data: encodedIntentData,
         })
 
         setTxHash(intentTransactionHash)
@@ -424,6 +429,8 @@ export const SwapModal: FC<SwapModalProps> = ({
       })
     },
   })
+
+  // @TODO: debug multiple transactions
 
   // Listen for IntentSolved Event
   const unwatch = useContractEvent({

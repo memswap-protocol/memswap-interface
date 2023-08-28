@@ -24,14 +24,26 @@ export const Marketing = () => {
         MemSwap is an “intents-based” swap protocol that provides best-in-class
         price execution.
       </Text>
-      <Anchor href="" target="_blank">
-        <Flex align="center" css={{ gap: '2', width: '100%' }}>
-          Learn more about the protocol
-          <Box>
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-          </Box>
-        </Flex>
-      </Anchor>
+      {/* @TODO: add links */}
+      <Flex align="center" direction="column" css={{ gap: 24 }}>
+        <Anchor href="" target="_blank">
+          <Flex align="center" css={{ gap: '2', width: '100%' }}>
+            Learn more about the protocol
+            <Box>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+        <Anchor
+          href=""
+          target="_blank"
+          css={{ display: 'block', md: { display: 'none' } }}
+        >
+          <Flex align="center" css={{ gap: '2' }}>
+            Docs <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </Flex>
+        </Anchor>
+      </Flex>
     </Flex>
   )
 }

@@ -7,9 +7,17 @@ import { Token } from '../types'
 
 function useTokenList() {
   const { chain: activeChain } = useNetwork()
-  const defaultTokens = chainDefaultTokens[activeChain?.id === 5 ? 5 : 1]
+  const defaultTokens = chainDefaultTokens[activeChain?.id || 1]
 
-  const { data, error } = useSWR<{ tokens: Token[] }>('/api/tokenList', fetcher)
+  const { data, error } = useSWR<{ tokens: Token[] }>(
+    'https://gateway.ipfs.io/ipns/tokens.uniswap.org',
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 86400000, // refresh every 24 hours
+    }
+  )
 
   const tokens = useMemo(() => {
     if (!data) return defaultTokens

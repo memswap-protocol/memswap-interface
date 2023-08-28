@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useBalance, useAccount, useNetwork } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
-import { FeeAmount } from '@uniswap/v3-sdk'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +12,7 @@ import {
   useDeepLinkParams,
   useMounted,
   useTokenList,
-  useQuoteWithFallback,
+  useQuote,
 } from '../../hooks'
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
@@ -57,7 +56,7 @@ const Swap = () => {
   const [slippagePercentage, setSlippagePercentage] = useState('0.5')
   const [deadline, setDeadline] = useState(3600 * 24) // default 24hr
 
-  // Deep Link Parameters
+  // Deep Link Query Parameters
   const {
     tokenIn: deepLinkTokenIn,
     tokenOut: deepLinkTokenOut,
@@ -78,26 +77,19 @@ const Swap = () => {
     quote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useQuoteWithFallback(
-    Number(debouncedAmountIn),
-    FeeAmount.MEDIUM,
-    tokenIn,
-    tokenOut
-  )
-  // @TODO: add back once we figure out 1inch rate limiting
-  // const { quote: tokenInUSD } = useQuoteWithFallback(
-  //   Number(debouncedAmountIn),
-  //   FeeAmount.MEDIUM,
-  //   tokenIn,
-  //   USDC_TOKENS[chain?.id || 1]
-  // )
+  } = useQuote(Number(debouncedAmountIn), tokenIn, tokenOut)
 
-  // const { quote: tokenOutUSD } = useQuoteWithFallback(
-  //   Number(amountOut),
-  //   FeeAmount.MEDIUM,
-  //   tokenOut,
-  //   USDC_TOKENS[chain?.id || 1]
-  // )
+  const { quote: tokenInUSD } = useQuote(
+    Number(debouncedAmountIn),
+    tokenIn,
+    USDC_TOKENS[chain?.id || 1]
+  )
+
+  const { quote: tokenOutUSD } = useQuote(
+    Number(amountOut),
+    tokenOut,
+    USDC_TOKENS[chain?.id || 1]
+  )
 
   useEffect(() => {
     setAmountOut(quote ?? '')
@@ -230,11 +222,11 @@ const Swap = () => {
                 }
               }}
             />
-            {/* {tokenInUSD ? (
+            {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null} */}
+            ) : null}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
@@ -307,11 +299,11 @@ const Swap = () => {
               }}
               value={formatNumber(amountOut, 8)}
             />
-            {/* {tokenOutUSD ? (
+            {tokenOutUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenOutUSD))}
               </Text>
-            ) : null} */}
+            ) : null}
           </Flex>
 
           <Flex
