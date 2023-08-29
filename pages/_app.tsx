@@ -14,6 +14,7 @@ import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 import {
   coinbaseWallet,
   injectedWallet,
@@ -27,7 +28,10 @@ const WALLET_CONNECT_PROJECT_ID =
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
-  [publicProvider()]
+  [
+    publicProvider(),
+    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || '' }),
+  ]
 )
 
 const connectors = connectorsForWallets([

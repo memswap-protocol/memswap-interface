@@ -140,6 +140,9 @@ export const SwapModal: FC<SwapModalProps> = ({
     if (!address) {
       throw Error('No wallet connected')
     }
+    if (!tokenIn?.address || !tokenOut?.address) {
+      throw Error('Missing tokenIn or tokenOut address')
+    }
     try {
       const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
       const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
@@ -159,7 +162,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Create Intent
       const intent = {
         tokenIn: processedTokenIn,
-        tokenOut: tokenOut?.address as Address,
+        tokenOut: tokenOut.address,
         maker: address,
         filler: MATCHMAKER as Address,
         referrer: referrer ?? address,

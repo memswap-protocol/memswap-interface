@@ -1,7 +1,5 @@
-import * as React from 'react'
-
-import { type ToastProps } from '../components/primitives/Toast'
 import { useEffect, useState } from 'react'
+import { type ToastProps } from '../components/primitives/Toast'
 
 const TOAST_LIMIT = 3
 const TOAST_REMOVE_DELAY = 1000
