@@ -14,6 +14,8 @@ type Token = {
   logoURI: string
 }
 
+type SwapMode = 'Rapid' | 'Dutch' | 'Private'
+
 type FetchBalanceResult = {
   decimals: number
   formatted: string
@@ -21,4 +23,4 @@ type FetchBalanceResult = {
   value: bigint
 }
 
-export { type Intent, type Token, type FetchBalanceResult }
+export { type Intent, type Token, type SwapMode, type FetchBalanceResult }

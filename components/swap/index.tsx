@@ -17,18 +17,16 @@ import {
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
-import { USDC_TOKENS } from '../../constants/contracts'
-import { SlippageDropdown } from './SlippageDropdown'
-import { DeadlineDropdown } from './DeadlineDropdown'
-import { Token } from '../../types'
+import { MATCHMAKER, USDC_TOKENS } from '../../constants/contracts'
+import { SwapMode, Token } from '../../types'
 import { ModeToggle } from './ModeToggle'
+import { SettingsDropdown } from './settings/SettingsDropdown'
 
 const Swap = () => {
   const isMounted = useMounted()
   const router = useRouter()
   const { chain } = useNetwork()
   const defaultTokens = chainDefaultTokens[chain?.id === 5 ? 5 : 1]
-
   const { address, isConnected } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {
@@ -43,26 +41,23 @@ const Swap = () => {
       }
     },
   })
-
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
-
   const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
-
   const [amountIn, setAmountIn] = useState('')
-  const [amountOut, setAmountOut] = useState('')
-
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
-
+  const [amountOut, setAmountOut] = useState('')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5')
-  const [deadline, setDeadline] = useState(3600 * 24) // default 24hr
+  const [deadline, setDeadline] = useState('5') // default 5 mins
+  const [matchmaker, setMatchmaker] = useState<Address>(MATCHMAKER)
+  const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
 
   // Deep Link Query Parameters
   const {
     tokenIn: deepLinkTokenIn,
     tokenOut: deepLinkTokenOut,
     referrer: deepLinkReferrer,
-  } = useDeepLinkParams(tokenList || [])
+  } = useDeepLinkParams(tokenList)
 
   useEffect(() => {
     if (deepLinkTokenIn?.address) {
@@ -96,32 +91,26 @@ const Swap = () => {
     setAmountOut(quote ?? '')
   }, [quote])
 
-  // Reset tokens on chain switch
-  useEffect(() => {
-    if (isConnected) {
-      setTokenIn(defaultTokens[0])
-      setTokenOut(undefined)
-    }
-  }, [chain])
-
   const { data: tokenInBalance } = useBalance({
     chainId: chain?.id || 1,
-    address: tokenIn ? address : undefined,
-    watch: tokenIn ? true : false,
+    address: address,
+    watch: true,
     token:
-      tokenIn && tokenIn?.address !== zeroAddress
+      tokenIn?.address !== zeroAddress
         ? (tokenIn?.address as Address)
         : undefined,
+    enabled: Boolean(tokenIn),
   })
 
   const { data: tokenOutBalance } = useBalance({
     chainId: chain?.id || 1,
-    address: tokenOut ? address : undefined,
-    watch: tokenOut ? true : false,
+    address: address,
+    watch: true,
     token:
-      tokenOut && tokenOut?.address !== zeroAddress
+      tokenOut?.address !== zeroAddress
         ? (tokenOut?.address as Address)
         : undefined,
+    enabled: Boolean(tokenOut),
   })
 
   const switchTokens = useCallback(() => {
@@ -168,13 +157,15 @@ const Swap = () => {
         <Text style="h5" css={{ mb: '3' }}>
           Swap
         </Text>
-        <Flex align="center" css={{ gap: '2' }}>
-          <SlippageDropdown
-            slippagePercentage={slippagePercentage}
-            setSlippagePercentage={setSlippagePercentage}
-          />
-          <DeadlineDropdown deadline={deadline} setDeadline={setDeadline} />
-        </Flex>
+        <SettingsDropdown
+          swapMode={swapMode}
+          slippagePercentage={slippagePercentage}
+          setSlippagePercentage={setSlippagePercentage}
+          deadline={deadline}
+          setDeadline={setDeadline}
+          matchmaker={matchmaker}
+          setMatchmaker={setMatchmaker}
+        />
       </Flex>
       <Flex
         direction="column"
@@ -208,10 +199,10 @@ const Swap = () => {
               pattern="^[0-9]*[.,]?[0-9]*$"
               size="large"
               css={{
-                backgroundColor: 'transaparent',
+                backgroundColor: 'transparent',
                 borderRadius: 0,
                 p: 0,
-                _focus: { boxShadow: 'none' },
+                _focus: { boxShadow: 'none', outline: 'none' },
               }}
               value={amountIn}
               onChange={(e) => {
@@ -344,7 +335,7 @@ const Swap = () => {
         amountIn={amountIn}
         amountOut={amountOut}
       />
-      <ModeToggle />
+      <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         tokenIn={tokenIn}
         tokenOut={tokenOut}
@@ -352,6 +343,7 @@ const Swap = () => {
         amountOut={amountOut}
         referrer={deepLinkReferrer}
         slippagePercentage={slippagePercentage}
+        deadline={deadline}
         tokenInBalance={tokenInBalance}
         isFetchingQuote={isFetchingQuote}
         errorFetchingQuote={errorFetchingQuote}

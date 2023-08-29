@@ -6,6 +6,7 @@ import {
   DisclaimerComponent,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
+import * as Tooltip from '@radix-ui/react-tooltip'
 import type { AppProps } from 'next/app'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, mainnet } from 'wagmi/chains'
@@ -27,7 +28,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || '' }),
     publicProvider(),
-    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || '' }),
   ]
 )
 
@@ -72,7 +72,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           modalSize="compact"
           appInfo={{ disclaimer: Disclaimer }}
         >
-          <Component {...pageProps} />
+          <Tooltip.Provider>
+            <Component {...pageProps} />
+          </Tooltip.Provider>
         </RainbowKitProvider>
       </ErrorTrackingProvider>
     </WagmiConfig>

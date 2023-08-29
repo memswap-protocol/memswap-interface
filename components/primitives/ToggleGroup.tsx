@@ -1,5 +1,5 @@
-import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
 import { styled } from '../../styled-system/jsx'
+import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
 
 const ToggleGroupRoot = styled(ToggleGroupPrimitive.Root, {
   base: {
@@ -18,21 +18,16 @@ const ToggleGroupItem = styled(ToggleGroupPrimitive.Item, {
     height: 40,
     width: '100%',
     display: 'flex',
+    gap: '2',
     fontSize: 14,
+    borderRadius: 6,
     lineHeight: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    '&:first-child': {
-      marginLeft: 0,
-      borderTopLeftRadius: 4,
-      borderBottomLeftRadius: 4,
-    },
     '&:last-child': { borderTopRightRadius: 4, borderBottomRightRadius: 4 },
-    // '&:hover': { backgroundColor: violet.violet3 },
     '&[data-state=on]': {
       backgroundColor: 'white',
     },
-    '&:focus': { position: 'relative' },
   },
 })
 

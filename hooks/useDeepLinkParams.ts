@@ -11,7 +11,6 @@ const fuseDeepLinkOptions = {
 
 function useDeepLinkParams(tokens: Token[]) {
   const router = useRouter()
-
   const [tokenIn, setTokenIn] = useState<Token | undefined>()
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
   const [referrer, setReferrer] = useState<Address | undefined>()

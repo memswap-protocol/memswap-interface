@@ -7,7 +7,7 @@ import {
   useContractWrite,
   useNetwork,
   usePrepareContractWrite,
-  useWalletClient,
+  usePublicClient,
 } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
@@ -25,12 +25,7 @@ import {
   parseAbiParameters,
   Address,
   formatUnits,
-  createPublicClient,
-  http,
-  fallback,
-  custom,
 } from 'viem'
-import * as allChains from 'viem/chains'
 import {
   signTypedData,
   sendTransaction,
@@ -64,6 +59,7 @@ type SwapModalProps = {
   amountIn: string
   amountOut: string
   slippagePercentage: string
+  deadline: string
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
 }
@@ -76,6 +72,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   amountIn,
   amountOut,
   slippagePercentage,
+  deadline,
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
@@ -84,20 +81,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   const { address, isDisconnected, isConnecting, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { toast } = useToast()
-
-  const { data: walletClient } = useWalletClient()
-
-  const viemChain =
-    Object.values(allChains).find(
-      (chain) => chain.id === (activeChain?.id || 1)
-    ) || allChains.mainnet
-
-  const publicClient = createPublicClient({
-    chain: viemChain,
-    transport: walletClient?.transport
-      ? fallback([custom(walletClient?.transport), http()])
-      : http(),
-  })
+  const publicClient = usePublicClient()
 
   // States
   const [open, setOpen] = useState(false)
@@ -170,10 +154,9 @@ export const SwapModal: FC<SwapModalProps> = ({
         referrerSurplusBps: 0,
         deadline: await publicClient
           .getBlock()
-          .then((b) => Number(b!.timestamp) + 3600 * 24),
+          .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
         amountIn: parsedAmountIn,
         isPartiallyFillable: false,
-
         // @TODO: configure start amount out
         // startAmountOut: parsedAmountOut,
         // expectedAmountOut: parsedAmountOut,
@@ -308,10 +291,6 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         const { hash: intentTransactionHash } = await writeContract({
           chainId: activeChain?.id,
-          // to: address,
-          // account: address,
-          // value: 0n,
-          // data: encodedIntentData,
           address: MEMSWAP,
           abi: MEMSWAP_ABI,
           functionName: 'post',
@@ -433,7 +412,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     },
   })
 
-  // @TODO: debug multiple transactions
+  // @TODO: check that event listener works for multiple transaction
 
   // Listen for IntentSolved Event
   const unwatch = useContractEvent({
@@ -460,7 +439,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     if (isDisconnected || isConnecting) {
       return 'Connect Wallet'
     }
-    if (!tokenOut) {
+    if (!tokenOut || !tokenIn) {
       return 'Select a token'
     }
     if (

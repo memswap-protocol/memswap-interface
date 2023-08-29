@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { usePublicClient, type PublicClient } from 'wagmi'
 import { providers } from 'ethers'
-import { type HttpTransport } from 'viem'
 
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient
@@ -11,20 +10,14 @@ export function publicClientToProvider(publicClient: PublicClient) {
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
 
-  // Alpha Router doesn't work with fallback providers, so extract first transport as a JsonRpcProvider
+  // Uniswap's Alpha Router doesn't work with fallback providers, so just extract the first transport
   if (transport.type === 'fallback') {
     return new providers.JsonRpcProvider(
       transport?.transports[0].value.url,
       network
     )
   }
-  // return new providers.FallbackProvider(
-  //   (transport?.transports as ReturnType<HttpTransport>[]).map(
-  //     ({ value }) => {
-  //       return new providers.JsonRpcProvider(value?.url, network)
-  //     }
-  //   )
-  // )
+
   return new providers.JsonRpcProvider(transport.url, network)
 }
 

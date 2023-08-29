@@ -25,6 +25,7 @@ const StyledTrigger = styled(Accordion.Trigger, {
     flex: 1,
     gap: '2',
     display: 'flex',
+    textAlign: 'left',
     alignItems: 'center',
     justifyContent: 'space-between',
     lineHeight: 1,

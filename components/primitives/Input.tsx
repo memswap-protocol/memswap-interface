@@ -10,7 +10,6 @@ import { SystemStyleObject } from '../../styled-system/types'
 
 const StyledInput = styled('input', {
   base: {
-    all: 'unset',
     width: '100%',
     px: 16,
     py: 12,
@@ -25,6 +24,7 @@ const StyledInput = styled('input', {
     '--focusColor': 'colors.primary11',
     _focus: {
       boxShadow: '0 0 0 2px var(--focusColor)',
+      outline: 'none',
     },
     _disabled: {
       color: 'gray9',
@@ -38,7 +38,7 @@ const StyledInput = styled('input', {
     size: {
       large: {
         fontSize: 32,
-        // lineHeight: '42px',
+        lineHeight: '42px',
       },
     },
     ellipsify: {
