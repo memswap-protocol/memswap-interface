@@ -10,14 +10,21 @@ export function publicClientToProvider(publicClient: PublicClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
-  if (transport.type === 'fallback')
-    return new providers.FallbackProvider(
-      (transport?.transports as ReturnType<HttpTransport>[]).map(
-        ({ value }) => {
-          return new providers.JsonRpcProvider(value?.url, network)
-        }
-      )
+
+  // Alpha Router doesn't work with fallback providers, so extract first transport as a JsonRpcProvider
+  if (transport.type === 'fallback') {
+    return new providers.JsonRpcProvider(
+      transport?.transports[0].value.url,
+      network
     )
+  }
+  // return new providers.FallbackProvider(
+  //   (transport?.transports as ReturnType<HttpTransport>[]).map(
+  //     ({ value }) => {
+  //       return new providers.JsonRpcProvider(value?.url, network)
+  //     }
+  //   )
+  // )
   return new providers.JsonRpcProvider(transport.url, network)
 }
 

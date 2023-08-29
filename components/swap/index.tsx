@@ -21,6 +21,7 @@ import { USDC_TOKENS } from '../../constants/contracts'
 import { SlippageDropdown } from './SlippageDropdown'
 import { DeadlineDropdown } from './DeadlineDropdown'
 import { Token } from '../../types'
+import { ModeToggle } from './ModeToggle'
 
 const Swap = () => {
   const isMounted = useMounted()
@@ -343,6 +344,7 @@ const Swap = () => {
         amountIn={amountIn}
         amountOut={amountOut}
       />
+      <ModeToggle />
       <SwapModal
         tokenIn={tokenIn}
         tokenOut={tokenOut}

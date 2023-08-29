@@ -35,7 +35,8 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
       css={{
         p: '4',
         sm: {
-          p: 24,
+          px: 24,
+          py: '4',
         },
         '--borderColor': 'colors.gray6',
         border: '1px solid var(--borderColor)',
@@ -44,21 +45,21 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
     >
       {isFetchingQuote ? (
         <Flex align="center" justify="between">
-          <Text style="body1">Fetching Price</Text>
+          <Text style="body2">Fetching Price...</Text>
           <LoadingSpinner />
         </Flex>
       ) : null}
 
       {!isFetchingQuote && errorFetchingQuote ? (
-        <Text style="body1" color="error">
+        <Text style="body2" color="error">
           There was an error fetching the quote
         </Text>
       ) : null}
 
       {!isFetchingQuote && !errorFetchingQuote && quotedAmountOut ? (
         <Flex align="center" justify="between" css={{ gap: '4' }}>
-          <Text style="body1">Best Price</Text>
-          <Text style="body1" color="subtle">
+          <Text style="body2">Best Price</Text>
+          <Text style="body2" color="subtle">
             1 {tokenIn?.symbol} = {formatNumber(bestPrice, 8)}{' '}
             {tokenOut?.symbol}
           </Text>

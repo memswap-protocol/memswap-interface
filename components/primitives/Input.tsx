@@ -38,6 +38,7 @@ const StyledInput = styled('input', {
     size: {
       large: {
         fontSize: 32,
+        // lineHeight: '42px',
       },
     },
     ellipsify: {

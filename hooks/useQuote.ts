@@ -28,20 +28,20 @@ const useQuote = (amountIn: number, tokenIn?: Token, tokenOut?: Token) => {
   // provider, so need to think about the best way to move forward
 
   // Ethers provider
-  const ethersProvider = useMemo(() => {
-    return new providers.JsonRpcProvider(
-      `${rpcUrl}/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
-    )
-  }, [rpcUrl])
+  // const ethersProvider = useMemo(() => {
+  //   return new providers.JsonRpcProvider(
+  //     `${rpcUrl}/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+  //   )
+  // }, [rpcUrl])
 
-  // const provider = useEthersProvider()
+  const provider = useEthersProvider()
 
   const router = useMemo(() => {
     return new AlphaRouter({
       chainId: chain?.id || 1,
-      provider: ethersProvider,
+      provider: provider,
     })
-  }, [chain, ethersProvider])
+  }, [chain, provider])
 
   const parsedAmountIn = parseUnits(
     amountIn.toString(),
