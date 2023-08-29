@@ -1,7 +1,3 @@
-import AnalyticsProvider, {
-  initializeAnalytics,
-} from '../components/providers/AnalyticsProvider'
-initializeAnalytics()
 import ErrorTrackingProvider from '../components/providers/ErrorTrackingProvider'
 import '../styles/globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
@@ -69,17 +65,15 @@ const Disclaimer: DisclaimerComponent = ({ Text }) => (
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <AnalyticsProvider>
-        <ErrorTrackingProvider>
-          <RainbowKitProvider
-            chains={chains}
-            modalSize="compact"
-            appInfo={{ disclaimer: Disclaimer }}
-          >
-            <Component {...pageProps} />
-          </RainbowKitProvider>
-        </ErrorTrackingProvider>
-      </AnalyticsProvider>
+      <ErrorTrackingProvider>
+        <RainbowKitProvider
+          chains={chains}
+          modalSize="compact"
+          appInfo={{ disclaimer: Disclaimer }}
+        >
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </ErrorTrackingProvider>
     </WagmiConfig>
   )
 }
