@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   AlphaRouter,
   CurrencyAmount,
@@ -10,22 +10,17 @@ import { Token } from '../types'
 import { parseUnits } from 'viem'
 import { createUniswapToken, useIsEthToWethSwap } from '../utils/quote'
 import { Percent, TradeType } from '@uniswap/sdk-core'
-import { useEthersProvider } from '../utils/ethersAdapter'
 
-const useQuote = (amountIn: number, tokenIn?: Token, tokenOut?: Token) => {
+const useQuote = (
+  router: AlphaRouter,
+  amountIn: number,
+  tokenIn?: Token,
+  tokenOut?: Token
+) => {
   const { chain } = useNetwork()
   const [quote, setQuote] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
-
-  const provider = useEthersProvider()
-
-  const router = useMemo(() => {
-    return new AlphaRouter({
-      chainId: chain?.id || 1,
-      provider: provider,
-    })
-  }, [chain, provider])
 
   const parsedAmountIn = parseUnits(
     amountIn.toString(),

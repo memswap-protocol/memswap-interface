@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useBalance, useAccount, useNetwork } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
@@ -21,6 +21,8 @@ import { MATCHMAKER, USDC_TOKENS } from '../../constants/contracts'
 import { SwapMode, Token } from '../../types'
 import { ModeToggle } from './ModeToggle'
 import { SettingsDropdown } from './settings/SettingsDropdown'
+import { useEthersProvider } from '../../utils/ethersAdapter'
+import { AlphaRouter } from '@uniswap/smart-order-router'
 
 const Swap = () => {
   const isMounted = useMounted()
@@ -28,7 +30,6 @@ const Swap = () => {
   const { chain } = useNetwork()
   const defaultTokens = chainDefaultTokens[chain?.id === 5 ? 5 : 1]
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
-
   const { address, isConnected } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {
@@ -43,6 +44,15 @@ const Swap = () => {
       }
     },
   })
+
+  const provider = useEthersProvider()
+
+  const alphaRouter = useMemo(() => {
+    return new AlphaRouter({
+      chainId: chain?.id || 1,
+      provider: provider,
+    })
+  }, [chain, provider])
 
   // Intent states
   const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
@@ -76,15 +86,17 @@ const Swap = () => {
     quote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useQuote(Number(debouncedAmountIn), tokenIn, tokenOut)
+  } = useQuote(alphaRouter, Number(debouncedAmountIn), tokenIn, tokenOut)
 
   const { quote: tokenInUSD } = useQuote(
+    alphaRouter,
     Number(debouncedAmountIn),
     tokenIn,
     USDC_TOKENS[chain?.id || 1]
   )
 
   const { quote: tokenOutUSD } = useQuote(
+    alphaRouter,
     Number(amountOut),
     tokenOut,
     USDC_TOKENS[chain?.id || 1]

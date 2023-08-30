@@ -229,12 +229,12 @@ export const SwapModal: FC<SwapModalProps> = ({
         args: [address, MEMSWAP],
       })
 
-      //////////////////////////////
-      // Handle transaction
-      //////////////////////////////
+      /////////////////////////////////////////////////////////////////////
+      // Handle transactions
+      /////////////////////////////////////////////////////////////////////
 
-      // Scenario 1: User already has approval greater than amountIn
-      // Zero value transfer with intent in calldata
+      // Scenario 1: User already has given approval greater than amountIn
+      // Call 'post' method on Memswap contract
       if (allowanceAmount >= parsedAmountIn) {
         setSwapStep(SwapStep.Submit)
 
@@ -259,12 +259,12 @@ export const SwapModal: FC<SwapModalProps> = ({
       }
 
       // Scenario 2: User is using metamask wallet
-      // 2 Seperate transactions, 1 for approval, 1 for intent
+      // For metamask, an extra tx is required because the extension strips away any appended calldata
+      // https://github.com/MetaMask/metamask-extension/issues/20439
+      // 2 Separate transactions, 1 for approval, 1 to call 'post' method on Memswap contract
       else if (isMetamaskWallet) {
         setSwapStep(SwapStep.MetamaskApproval)
 
-        // For metamask, an extra tx is required because the extension strips away any appended calldata
-        // https://github.com/MetaMask/metamask-extension/issues/20439
         const { hash: approvalHash } = await sendTransaction({
           chainId: activeChain?.id,
           to: processedTokenIn,
@@ -305,7 +305,8 @@ export const SwapModal: FC<SwapModalProps> = ({
         })
       }
 
-      // Scenario 3: Normal swap
+      // Scenario 3: Normal swap (user is has not given approval, is not using metamask wallet,
+      // is not wrapping/unwrapping ETH)
       // 1 transaction with the intent appended to the approval
       else {
         setSwapStep(SwapStep.Submit)
