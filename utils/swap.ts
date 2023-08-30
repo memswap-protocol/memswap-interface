@@ -1,11 +1,18 @@
 import { Address } from 'viem'
 import { MEMSWAP } from '../constants/contracts'
+import { Intent } from '../types'
+import { _TypedDataEncoder } from '@ethersproject/hash'
+
+// Need to use TypedDataEncoder from @ethersproject for now as viem's hashStruct function is not currently exported
+// See here for more info: https://github.com/wagmi-dev/viem/discussions/761
+const getIntentHash = (intent: Intent) =>
+  _TypedDataEncoder.hashStruct('Intent', getEIP712Types(), intent)
 
 const getEIP712Domain = (chainId: number) => ({
   name: 'Memswap',
   version: '1.0',
   chainId,
-  verifyingContract: MEMSWAP as Address,
+  verifyingContract: MEMSWAP[chainId],
 })
 
 const getEIP712Types = () => ({
@@ -23,20 +30,20 @@ const getEIP712Types = () => ({
       type: 'address',
     },
     {
-      name: 'filler',
+      name: 'matchmaker',
       type: 'address',
     },
     {
-      name: 'referrer',
+      name: 'source',
       type: 'address',
     },
     {
-      name: 'referrerFeeBps',
-      type: 'uint32',
+      name: 'feeBps',
+      type: 'uint16',
     },
     {
-      name: 'referrerSurplusBps',
-      type: 'uint32',
+      name: 'surplusBps',
+      type: 'uint16',
     },
     {
       name: 'deadline',
@@ -51,18 +58,18 @@ const getEIP712Types = () => ({
       type: 'uint128',
     },
     {
-      name: 'startAmountOut',
-      type: 'uint128',
-    },
-    {
-      name: 'expectedAmountOut',
-      type: 'uint128',
-    },
-    {
       name: 'endAmountOut',
       type: 'uint128',
+    },
+    {
+      name: 'startAmountBps',
+      type: 'uint16',
+    },
+    {
+      name: 'expectedAmountBps',
+      type: 'uint16',
     },
   ],
 })
 
-export { getEIP712Domain, getEIP712Types }
+export { getIntentHash, getEIP712Domain, getEIP712Types }

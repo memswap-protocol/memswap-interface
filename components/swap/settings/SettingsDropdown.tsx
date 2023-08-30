@@ -40,7 +40,7 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
           <FontAwesomeIcon icon={faGear} />
         </Button>
       }
-      contentProps={{ sideOffset: 12, style: { maxWidth: 280 }, align: 'end' }}
+      contentProps={{ sideOffset: 12, style: { maxWidth: 248 }, align: 'end' }}
     >
       <Flex direction="column" css={{ gap: '2' }}>
         <SlippageInput

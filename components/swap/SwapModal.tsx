@@ -12,7 +12,11 @@ import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { truncateAddress } from '../../utils/truncate'
-import { getEIP712Domain, getEIP712Types } from '../../utils/swap'
+import {
+  getEIP712Domain,
+  getEIP712Types,
+  getIntentHash,
+} from '../../utils/swap'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import {
   parseUnits,
@@ -97,6 +101,8 @@ export const SwapModal: FC<SwapModalProps> = ({
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
   // Conditional Variables
+  const memswapContract = MEMSWAP[activeChain?.id || 1]
+  const memswapWethContract = MEMSWAP_WETH[activeChain?.id || 1]
   const isMetamaskWallet = connector?.id === 'metaMask'
   const isEthToWethSwap =
     tokenIn?.address === zeroAddress &&
@@ -137,30 +143,28 @@ export const SwapModal: FC<SwapModalProps> = ({
         tokenOut?.decimals || 18
       )
 
-      const processedTokenIn =
-        tokenIn?.address === zeroAddress ? MEMSWAP_WETH : tokenIn?.address
+      const processedTokenInAddress =
+        tokenIn?.address === zeroAddress
+          ? memswapWethContract
+          : tokenIn?.address
 
       // Create Intent
       const intent = {
-        tokenIn: processedTokenIn,
+        tokenIn: processedTokenInAddress,
         tokenOut: tokenOut.address,
         maker: address,
-        filler: MATCHMAKER as Address,
-        referrer: referrer ?? address,
-        referrerFeeBps: 0,
-        referrerSurplusBps: 0,
+        matchmaker: MATCHMAKER[activeChain?.id || 1] as Address,
+        source: referrer ?? address,
+        feeBps: 0,
+        surplusBps: 0,
         deadline: await publicClient
           .getBlock()
           .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
-        amountIn: parsedAmountIn,
         isPartiallyFillable: false,
-        // @TODO: configure start amount out
-        // startAmountOut: parsedAmountOut,
-        // expectedAmountOut: parsedAmountOut,
-
-        startAmountOut: parsedEndAmountOut,
-        expectedAmountOut: parsedEndAmountOut,
+        amountIn: parsedAmountIn,
         endAmountOut: parsedEndAmountOut,
+        startAmountBps: 0,
+        expectedAmountBps: 0,
       } as Intent
 
       intent.signature = await signTypedData({
@@ -172,7 +176,9 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       // Encode approval and intent
       const approveMethod =
-        processedTokenIn === MEMSWAP_WETH ? 'depositAndApprove' : 'approve'
+        processedTokenInAddress === memswapWethContract
+          ? 'depositAndApprove'
+          : 'approve'
 
       const approveAbiItem = parseAbiItem(
         `function ${approveMethod}(address spender, uint256 amount)`
@@ -180,7 +186,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       const encodedApprovalData = encodeFunctionData({
         abi: [approveAbiItem],
-        args: [MEMSWAP, parsedAmountIn],
+        args: [memswapContract, parsedAmountIn],
       })
 
       const encodedIntentData = encodeAbiParameters(
@@ -190,14 +196,14 @@ export const SwapModal: FC<SwapModalProps> = ({
           'address',
           'address',
           'address',
-          'uint32',
-          'uint32',
+          'uint16',
+          'uint16',
           'uint32',
           'bool',
           'uint128',
           'uint128',
-          'uint128',
-          'uint128',
+          'uint16',
+          'uint16',
           'bytes',
         ]),
         // @ts-ignore
@@ -205,16 +211,16 @@ export const SwapModal: FC<SwapModalProps> = ({
           intent.tokenIn,
           intent.tokenOut,
           intent.maker,
-          intent.filler,
-          intent.referrer,
-          intent.referrerFeeBps,
-          intent.referrerSurplusBps,
+          intent.matchmaker,
+          intent.source,
+          intent.feeBps,
+          intent.surplusBps,
           intent.deadline,
           intent.isPartiallyFillable,
           intent.amountIn,
-          intent.startAmountOut,
-          intent.expectedAmountOut,
           intent.endAmountOut,
+          intent.startAmountBps,
+          intent.expectedAmountBps,
           intent.signature,
         ]
       )
@@ -224,11 +230,19 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       // Fetch allowance amount
       const allowanceAmount = await readContract({
-        address: processedTokenIn,
+        address: processedTokenInAddress,
         abi: erc20ABI,
         functionName: 'allowance',
-        args: [address, MEMSWAP],
+        args: [address, memswapContract],
       })
+
+      // Generate intent hash and start listing for IntentSolved Event in useContractEvent hook
+      // The intent could be solved in the same block that it is submitted, so we need to start listening before
+      // we submit the transaction
+      const intentHash = getIntentHash(intent)
+
+      setIntentHash(intentHash)
+      setWaitingForFulfillment(true)
 
       /////////////////////////////////////////////////////////////////////
       // Handle transactions
@@ -240,7 +254,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         setSwapStep(SwapStep.Submit)
 
         const { hash } = await writeContract({
-          address: MEMSWAP,
+          address: memswapContract,
           abi: MEMSWAP_ABI,
           functionName: 'post',
           args: [intent],
@@ -268,7 +282,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         const { hash: approvalHash } = await sendTransaction({
           chainId: activeChain?.id,
-          to: processedTokenIn,
+          to: processedTokenInAddress,
           account: address,
           value: 0n,
           data: encodedApprovalData,
@@ -288,7 +302,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         const { hash: intentTransactionHash } = await writeContract({
           chainId: activeChain?.id,
-          address: MEMSWAP,
+          address: memswapContract,
           abi: MEMSWAP_ABI,
           functionName: 'post',
           args: [intent],
@@ -314,7 +328,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         const { hash } = await sendTransaction({
           chainId: activeChain?.id,
-          to: processedTokenIn,
+          to: processedTokenInAddress,
           account: address,
           value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
           data: combinedEndcodedData as Address,
@@ -332,19 +346,6 @@ export const SwapModal: FC<SwapModalProps> = ({
       }
 
       setTxSuccess(true)
-
-      // Generate intent hash and listen for fulfillment in useContractEvent hook
-
-      // Need to use TypedDataEncoder from @ethersproject for now as viem's hashStruct function is not currently exported
-      // See here for more info: https://github.com/wagmi-dev/viem/discussions/761
-      const intentHash = _TypedDataEncoder.hashStruct(
-        'Intent',
-        getEIP712Types(),
-        intent
-      )
-
-      setIntentHash(intentHash)
-      setWaitingForFulfillment(true)
     } catch (err: any) {
       console.error(err)
       const error = err as Error
@@ -373,7 +374,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   // Listen for IntentSolved Event for submitted intent hash
   const unwatch = useContractEvent({
     chainId: activeChain?.id,
-    address: waitingForFulfillment ? MEMSWAP : undefined,
+    address: waitingForFulfillment ? memswapContract : undefined,
     abi: MEMSWAP_ABI,
     eventName: 'IntentSolved',
     listener(log) {

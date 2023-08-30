@@ -1,14 +1,36 @@
 import { Address } from 'viem'
 import { Token } from '../types'
 
-const MEMSWAP = '0x749f8feaec5eb53f9ce677a252467fa289272591'
-const MEMSWAP_WETH = '0x5088a0a51e45b5a00c049676dc11f12bb8b4ec29'
+type ChainIdToAddress = { [chainId: number]: Address }
 
-const MATCHMAKER = '0xf4f6df97aa065758c70e6fb7d938ec392dda98e0'
+// Protocol
+const MEMSWAP: ChainIdToAddress = {
+  1: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
+  5: '0x62e309adcf935d62f824081148798ef8a7466b66',
+}
 
-const UNISWAP_QUOTER_CONTRACT = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
+const MEMSWAP_WETH: ChainIdToAddress = {
+  1: '0x2712515766af2e2680f20e8372c7ea6010eaca66',
+  5: '0x5088a0a51e45b5a00c049676dc11f12bb8b4ec29',
+}
 
-const WRAPPED_CONTRACTS: Record<number, Address> = {
+// Matchmaker
+const MATCHMAKER: ChainIdToAddress = {
+  1: '0xf4f6df97aa065758c70e6fb7d938ec392dda98e0',
+  5: '0xf4f6df97aa065758c70e6fb7d938ec392dda98e0',
+}
+
+// Solver
+const SOLVER: ChainIdToAddress = {
+  1: '0x743dbd073d951bc1e7ee276eb79a285595993d63',
+  5: '0x743dbd073d951bc1e7ee276eb79a285595993d63',
+}
+const SOLUTION_PROXY: ChainIdToAddress = {
+  1: '0x55dc25bffa85f85f0f68ee3433ea36a0c5bd4ac6',
+  5: '0x9c99a452d623cbeecc981461f96c8660565ffdf5',
+}
+
+const WRAPPED_CONTRACTS: ChainIdToAddress = {
   1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', //mainnet
   5: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', //goerli
 }
@@ -38,7 +60,8 @@ export {
   MEMSWAP,
   MEMSWAP_WETH,
   MATCHMAKER,
-  UNISWAP_QUOTER_CONTRACT,
+  SOLVER,
+  SOLUTION_PROXY,
   WRAPPED_CONTRACTS,
   USDC_TOKENS,
 }

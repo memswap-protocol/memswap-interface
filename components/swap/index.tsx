@@ -62,7 +62,9 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
   const [deadline, setDeadline] = useState('5') // default 5 mins
-  const [matchmaker, setMatchmaker] = useState<Address>(MATCHMAKER)
+  const [matchmaker, setMatchmaker] = useState<Address>(
+    MATCHMAKER[chain?.id || 1]
+  )
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
 
   // Deep Link Query Parameters
