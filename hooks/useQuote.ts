@@ -5,7 +5,7 @@ import {
   SwapType,
 } from '@uniswap/smart-order-router'
 import { Protocol } from '@uniswap/router-sdk'
-import { useNetwork, useWalletClient } from 'wagmi'
+import { useNetwork } from 'wagmi'
 import { Token } from '../types'
 import { parseUnits } from 'viem'
 import { createUniswapToken, useIsEthToWethSwap } from '../utils/quote'
@@ -61,7 +61,7 @@ const useQuote = (amountIn: number, tokenIn?: Token, tokenOut?: Token) => {
           TradeType.EXACT_INPUT,
           {
             type: SwapType.UNIVERSAL_ROUTER,
-            slippageTolerance: new Percent(5, 100), //@TODO: pass custom slippage
+            slippageTolerance: new Percent(5, 100),
           },
           {
             protocols: [Protocol.V3],

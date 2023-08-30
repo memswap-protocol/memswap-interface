@@ -27,6 +27,8 @@ const Swap = () => {
   const router = useRouter()
   const { chain } = useNetwork()
   const defaultTokens = chainDefaultTokens[chain?.id === 5 ? 5 : 1]
+  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
+
   const { address, isConnected } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {
@@ -41,13 +43,14 @@ const Swap = () => {
       }
     },
   })
-  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
+
+  // Intent states
   const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
   const [tokenOut, setTokenOut] = useState<Token | undefined>()
   const [amountIn, setAmountIn] = useState('')
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
   const [amountOut, setAmountOut] = useState('')
-  const [slippagePercentage, setSlippagePercentage] = useState('0.5')
+  const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
   const [deadline, setDeadline] = useState('5') // default 5 mins
   const [matchmaker, setMatchmaker] = useState<Address>(MATCHMAKER)
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')

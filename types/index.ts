@@ -1,5 +1,6 @@
 import { AbiParametersToPrimitiveTypes, ExtractAbiFunction } from 'abitype'
 import { MEMSWAP_ABI } from '../constants/abis'
+import { Address } from 'viem'
 
 type Intent = AbiParametersToPrimitiveTypes<
   ExtractAbiFunction<typeof MEMSWAP_ABI, 'validate'>['inputs']
@@ -7,7 +8,7 @@ type Intent = AbiParametersToPrimitiveTypes<
 
 type Token = {
   chainId: number
-  address: string
+  address: Address
   name: string
   symbol: string
   decimals: number

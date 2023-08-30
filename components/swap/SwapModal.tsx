@@ -4,9 +4,7 @@ import {
   erc20ABI,
   useAccount,
   useContractEvent,
-  useContractWrite,
   useNetwork,
-  usePrepareContractWrite,
   usePublicClient,
 } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
@@ -35,8 +33,8 @@ import {
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
-import { useMounted } from '../../hooks'
-import { MEMSWAP_ABI, WETH_ABI } from '../../constants/abis'
+import { useMounted, useWethEthSwap } from '../../hooks'
+import { MEMSWAP_ABI } from '../../constants/abis'
 import {
   MATCHMAKER,
   MEMSWAP,
@@ -139,9 +137,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       )
 
       const processedTokenIn =
-        tokenIn?.address === zeroAddress
-          ? MEMSWAP_WETH
-          : (tokenIn?.address as Address)
+        tokenIn?.address === zeroAddress ? MEMSWAP_WETH : tokenIn?.address
 
       // Create Intent
       const intent = {
@@ -364,55 +360,15 @@ export const SwapModal: FC<SwapModalProps> = ({
     }
   }
 
-  // Prepare ETH <> WETH Swap
-  const { config } = usePrepareContractWrite({
-    address: WRAPPED_CONTRACTS[activeChain?.id || 1],
-    abi: WETH_ABI,
-    functionName: isEthToWethSwap ? 'deposit' : 'withdraw',
-    args: isWethToEthSwap
-      ? [parseUnits(amountIn, tokenIn?.decimals || 18)]
-      : undefined,
-    // @ts-ignore @TODO - fix type
-    value: isEthToWethSwap
-      ? parseUnits(amountIn, tokenIn?.decimals || 18)
-      : undefined,
+  // WETH<>ETH Swap
+  const { handleWethEthSwap } = useWethEthSwap({
+    tokenIn,
+    amountIn,
+    mode: isEthToWethSwap ? 'wrap' : 'unwrap',
     enabled: isEthToWethSwap || isWethToEthSwap,
-    chainId: activeChain?.id,
   })
 
-  // Execute ETH <> WETH Swap
-  const { write: handleEthWethSwap } = useContractWrite({
-    ...config,
-    onSuccess(data) {
-      toast({
-        title: 'Swap was successful.',
-        action: data?.hash ? (
-          <Anchor
-            href={`${activeChain?.blockExplorers?.default?.url}/tx/${data?.hash}`}
-            target="_blank"
-          >
-            View on {activeChain?.blockExplorers?.default?.name}:{' '}
-            {truncateAddress(data?.hash)}
-          </Anchor>
-        ) : null,
-      })
-    },
-    onError(error) {
-      if (
-        error?.name === 'UserRejectedRequestError' ||
-        error?.message.startsWith('User rejected ')
-      ) {
-        error.message = 'User rejected the transaction.'
-      } else {
-        error.message = 'Oops, the transaction failed.'
-      }
-      toast({
-        title: error.message,
-      })
-    },
-  })
-
-  // @TODO: check that event listener works for multiple transaction
+  // @TODO: check that event listener works for multiple transactions
 
   // Listen for IntentSolved Event
   const unwatch = useContractEvent({
@@ -470,7 +426,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         if (isDisconnected) {
           openConnectModal?.()
         } else if (isEthToWethSwap || isWethToEthSwap) {
-          handleEthWethSwap?.()
+          handleWethEthSwap?.()
         } else {
           swap()
         }
