@@ -97,6 +97,7 @@ export type Conditions = {
 	"_data_swipe_move": string
 	"_data_swipe_cancel": string
 	"_data_swipe_end": string
+	"_data_state_checked": string
 	"bp300": string
 	"bp300Only": string
 	"bp300Down": string

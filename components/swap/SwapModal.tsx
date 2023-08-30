@@ -74,6 +74,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
+  // Configuration
   const isMounted = useMounted()
   const { chain: activeChain } = useNetwork()
   const { address, isDisconnected, isConnecting, connector } = useAccount()
@@ -369,9 +370,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     enabled: isEthToWethSwap || isWethToEthSwap,
   })
 
-  // @TODO: check that event listener works for multiple transactions
-
-  // Listen for IntentSolved Event
+  // Listen for IntentSolved Event for submitted intent hash
   const unwatch = useContractEvent({
     chainId: activeChain?.id,
     address: waitingForFulfillment ? MEMSWAP : undefined,

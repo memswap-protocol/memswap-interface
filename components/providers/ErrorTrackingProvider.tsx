@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs'
 
 import { FC, ReactElement, useEffect } from 'react'
 import { useAccount } from 'wagmi'
+import { useAppMode } from './AppModeProvider'
 
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN
 
@@ -13,9 +14,10 @@ const ErrorTrackingProvider: FC<ErrorTrackingProviderProps> = ({
   children,
 }) => {
   const { address } = useAccount()
+  const { dAppModeEnabled } = useAppMode()
 
   useEffect(() => {
-    if (!SENTRY_DSN) {
+    if (!SENTRY_DSN || dAppModeEnabled) {
       return
     }
 

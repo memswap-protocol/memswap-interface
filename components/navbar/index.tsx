@@ -1,11 +1,20 @@
-import { Anchor, Flex, Box } from '../primitives'
+import { Anchor, Flex, Box, Switch, Text } from '../primitives'
 import Image from 'next/image'
 import { ConnectWalletButton } from './ConnectWalletButton'
 import Link from 'next/link'
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowUpRightFromSquare,
+  faInfoCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useAppMode } from '../providers/AppModeProvider'
+import Tooltip from '../primitives/Tooltip'
 
 const Navbar = () => {
+  // @TODO: temporarily putting the app mode toggle in the navbar
+  // Need to talk to team to decide where it should go
+
+  const { dAppModeEnabled, toggleDAppMode } = useAppMode()
   return (
     <Flex
       align="center"
@@ -48,6 +57,37 @@ const Navbar = () => {
           </Flex>
         </Anchor>
       </Flex>
+      <Flex align="center" css={{ gap: '2' }}>
+        <Flex align="start" css={{ gap: '1' }}>
+          <Text style="subtitle1" color="subtle">
+            dApp Mode
+          </Text>
+          <Tooltip
+            sideOffset={10}
+            content={
+              <Text
+                style="body2"
+                css={{ display: 'inline-block', maxWidth: 250 }}
+              >
+                {
+                  'When disabled, only public RPC urls will be used and error tracking will be disabled.'
+                }
+              </Text>
+            }
+          >
+            <Flex css={{ color: 'primary11', height: 12 }}>
+              <FontAwesomeIcon icon={faInfoCircle} width={12} height={12} />
+            </Flex>
+          </Tooltip>
+        </Flex>
+        <Switch
+          checked={dAppModeEnabled}
+          onCheckedChange={(checked) => {
+            toggleDAppMode()
+          }}
+        />
+      </Flex>
+
       <ConnectWalletButton
         css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
       >

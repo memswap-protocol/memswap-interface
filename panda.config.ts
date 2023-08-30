@@ -24,10 +24,10 @@ export default defineConfig({
       data_swipe_move: '&[data-swipe="move"]',
       data_swipe_cancel: '&[data-swipe="cancel"]',
       data_swipe_end: '&[data-swipe="end"]',
+      data_state_checked: '&[data-state="checked"]',
     },
   },
 
-  // Useful for theme customization
   theme: {
     tokens: {
       spacing: {
