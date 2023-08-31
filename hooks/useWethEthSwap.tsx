@@ -14,7 +14,7 @@ type WethEthSwapType = {
   enabled: boolean
 }
 
-// Used to wrap ETH or unwrap WETH
+// Wrap ETH or unwrap WETH
 const useWethEthSwap = ({
   tokenIn,
   amountIn,
@@ -33,7 +33,7 @@ const useWethEthSwap = ({
     address: WRAPPED_CONTRACTS[activeChain?.id || 1],
     abi: WETH_ABI,
     functionName: mode === 'wrap' ? 'deposit' : 'withdraw',
-    // @ts-ignore @TODO: infer types
+    // @ts-ignore @TODO: infer correct types
     args: mode === 'unwrap' ? [parsedAmountIn] : undefined,
     // @ts-ignore
     value: mode === 'wrap' ? parsedAmountIn : undefined,

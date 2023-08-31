@@ -15,7 +15,7 @@ export const DeadlineInput: FC<DeadlineInputProps> = ({
       <Text style="subtitle2">Swap Deadline</Text>
       <Input
         value={deadline}
-        placeholder="10"
+        placeholder="5"
         onChange={(e) => {
           const inputValue = e.target.value
           const regex = /^[0-9]*[.,]?[0-9]*$/
@@ -29,7 +29,7 @@ export const DeadlineInput: FC<DeadlineInputProps> = ({
         }}
         onBlur={() => {
           if (deadline === '') {
-            setDeadline('10')
+            setDeadline('5')
           }
         }}
         icon={<>mins</>}
