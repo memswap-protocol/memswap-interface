@@ -28,7 +28,6 @@ const useWethEthSwap = ({
     ? parseUnits(amountIn, tokenIn?.decimals || 18)
     : undefined
 
-  // Prepare ETH <> WETH Swap
   const { config } = usePrepareContractWrite({
     address: WRAPPED_CONTRACTS[activeChain?.id || 1],
     abi: WETH_ABI,
@@ -41,7 +40,6 @@ const useWethEthSwap = ({
     chainId: activeChain?.id,
   })
 
-  // Execute ETH <> WETH Swap
   const { write: handleWethEthSwap } = useContractWrite({
     ...config,
     onSuccess(data) {

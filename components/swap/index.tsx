@@ -213,7 +213,7 @@ const Swap = () => {
               inputMode="decimal"
               autoComplete="off"
               autoCorrect="off"
-              pattern="^[0-9]*[.,]?[0-9]*$"
+              pattern="^[0-9]*[.]?[0-9]*$"
               size="large"
               css={{
                 backgroundColor: 'transparent',
@@ -224,7 +224,7 @@ const Swap = () => {
               value={amountIn}
               onChange={(e) => {
                 const inputValue = e.target.value
-                const regex = /^[0-9]*[.,]?[0-9]*$/
+                const regex = /^[0-9]*[.]?[0-9]*$/
 
                 if (regex.test(inputValue) || inputValue === '') {
                   setAmountIn(inputValue)

@@ -383,6 +383,15 @@ export const SwapModal: FC<SwapModalProps> = ({
         unwatch?.()
         toast({
           title: 'Swap was successful.',
+          action: log[0]?.transactionHash ? (
+            <Anchor
+              href={`${activeChain?.blockExplorers?.default?.url}/tx/${log[0]?.transactionHash}`}
+              target="_blank"
+            >
+              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              {truncateAddress(log[0]?.transactionHash)}
+            </Anchor>
+          ) : null,
         })
         const eventFulfilledHash = log[0]?.transactionHash
         setFulfilledHash(eventFulfilledHash)
