@@ -1,12 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
-import {
-  erc20ABI,
-  useAccount,
-  useContractEvent,
-  useNetwork,
-  usePublicClient,
-} from 'wagmi'
+import { erc20ABI, useAccount, useContractEvent, usePublicClient } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
@@ -37,7 +31,7 @@ import {
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
-import { useMounted, useWethEthSwap } from '../../hooks'
+import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
 import { MEMSWAP_ABI } from '../../constants/abis'
 import {
   MATCHMAKER,
@@ -80,7 +74,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 }) => {
   // Configuration
   const isMounted = useMounted()
-  const { chain: activeChain } = useNetwork()
+  const { chain } = useSupportedNetwork()
   const { address, isDisconnected, isConnecting, connector } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { toast } = useToast()
@@ -101,14 +95,14 @@ export const SwapModal: FC<SwapModalProps> = ({
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
   // Conditional Variables
-  const memswapContract = MEMSWAP[activeChain?.id || 1]
-  const memswapWethContract = MEMSWAP_WETH[activeChain?.id || 1]
+  const memswapContract = MEMSWAP[chain.id]
+  const memswapWethContract = MEMSWAP_WETH[chain.id]
   const isMetamaskWallet = connector?.id === 'metaMask'
   const isEthToWethSwap =
     tokenIn?.address === zeroAddress &&
-    tokenOut?.address === WRAPPED_CONTRACTS[activeChain?.id || 1]
+    tokenOut?.address === WRAPPED_CONTRACTS[chain.id]
   const isWethToEthSwap =
-    tokenIn?.address === WRAPPED_CONTRACTS[activeChain?.id || 1] &&
+    tokenIn?.address === WRAPPED_CONTRACTS[chain.id] &&
     tokenOut?.address === zeroAddress
 
   // Reset state on modal close
@@ -153,7 +147,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         tokenIn: processedTokenInAddress,
         tokenOut: tokenOut.address,
         maker: address,
-        matchmaker: MATCHMAKER[activeChain?.id || 1] as Address,
+        matchmaker: MATCHMAKER[chain.id] as Address,
         source: referrer ?? address,
         feeBps: 0,
         surplusBps: 0,
@@ -168,7 +162,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       } as Intent
 
       intent.signature = await signTypedData({
-        domain: getEIP712Domain(activeChain?.id || 1),
+        domain: getEIP712Domain(chain.id),
         types: getEIP712Types(),
         message: intent,
         primaryType: 'Intent',
@@ -259,7 +253,7 @@ export const SwapModal: FC<SwapModalProps> = ({
           functionName: 'post',
           args: [intent],
           account: address,
-          chainId: activeChain?.id,
+          chainId: chain.id,
         })
 
         setTxHash(hash)
@@ -281,7 +275,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         setSwapStep(SwapStep.MetamaskApproval)
 
         const { hash: approvalHash } = await sendTransaction({
-          chainId: activeChain?.id,
+          chainId: chain.id,
           to: processedTokenInAddress,
           account: address,
           value: 0n,
@@ -301,7 +295,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         setSwapStep(SwapStep.Submit)
 
         const { hash: intentTransactionHash } = await writeContract({
-          chainId: activeChain?.id,
+          chainId: chain.id,
           address: memswapContract,
           abi: MEMSWAP_ABI,
           functionName: 'post',
@@ -327,7 +321,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         setSwapStep(SwapStep.Submit)
 
         const { hash } = await sendTransaction({
-          chainId: activeChain?.id,
+          chainId: chain.id,
           to: processedTokenInAddress,
           account: address,
           value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
@@ -373,7 +367,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   // Listen for IntentSolved Event for submitted intent hash
   const unwatch = useContractEvent({
-    chainId: activeChain?.id,
+    chainId: chain.id,
     address: waitingForFulfillment ? memswapContract : undefined,
     abi: MEMSWAP_ABI,
     eventName: 'IntentSolved',
@@ -385,10 +379,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           title: 'Swap was successful.',
           action: log[0]?.transactionHash ? (
             <Anchor
-              href={`${activeChain?.blockExplorers?.default?.url}/tx/${log[0]?.transactionHash}`}
+              href={`${chain.blockExplorers?.default?.url}/tx/${log[0]?.transactionHash}`}
               target="_blank"
             >
-              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              View on {chain.blockExplorers?.default?.name}:{' '}
               {truncateAddress(log[0]?.transactionHash)}
             </Anchor>
           ) : null,
@@ -535,10 +529,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           </Text>
           {metamaskApprovalHash ? (
             <Anchor
-              href={`${activeChain?.blockExplorers?.default?.url}/tx/${metamaskApprovalHash}`}
+              href={`${chain.blockExplorers?.default?.url}/tx/${metamaskApprovalHash}`}
               target="_blank"
             >
-              View on {activeChain?.blockExplorers?.default?.name}:{' '}
+              View on {chain.blockExplorers?.default?.name}:{' '}
               {truncateAddress(metamaskApprovalHash)}
             </Anchor>
           ) : null}
@@ -601,10 +595,10 @@ export const SwapModal: FC<SwapModalProps> = ({
               </Flex>
               {txHash ? (
                 <Anchor
-                  href={`${activeChain?.blockExplorers?.default?.url}/tx/${txHash}`}
+                  href={`${chain.blockExplorers?.default?.url}/tx/${txHash}`}
                   target="_blank"
                 >
-                  View on {activeChain?.blockExplorers?.default?.name}:{' '}
+                  View on {chain.blockExplorers?.default?.name}:{' '}
                   {truncateAddress(txHash)}
                 </Anchor>
               ) : null}
@@ -634,10 +628,10 @@ export const SwapModal: FC<SwapModalProps> = ({
               </Flex>
               {fulfilledHash ? (
                 <Anchor
-                  href={`${activeChain?.blockExplorers?.default?.url}/tx/${fulfilledHash}`}
+                  href={`${chain.blockExplorers?.default?.url}/tx/${fulfilledHash}`}
                   target="_blank"
                 >
-                  View on {activeChain?.blockExplorers?.default?.name}:{' '}
+                  View on {chain.blockExplorers?.default?.name}:{' '}
                   {truncateAddress(fulfilledHash)}
                 </Anchor>
               ) : txSuccess && !fulfilledSuccess ? (

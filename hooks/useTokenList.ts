@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { useNetwork } from 'wagmi'
 import { chainDefaultTokens } from '../constants/chainDefaultTokens'
 import fetcher from '../utils/fetcher'
 import { Token } from '../types'
+import useSupportedNetwork from './useSupportedNetwork'
 
 /**
  *
@@ -19,8 +19,8 @@ import { Token } from '../types'
  * for future use.
  */
 function useTokenList() {
-  const { chain: activeChain } = useNetwork()
-  const defaultTokens = chainDefaultTokens[activeChain?.id || 1]
+  const { chain } = useSupportedNetwork()
+  const defaultTokens = chainDefaultTokens[chain.id]
   const [localStorageData, setLocalStorageData] = useState<
     { tokens: Token[] } | undefined
   >(undefined)
@@ -62,14 +62,14 @@ function useTokenList() {
 
     const filteredTokens = data.tokens.filter(
       (token) =>
-        token.chainId === (activeChain?.id || 1) &&
+        token.chainId === chain.id &&
         !defaultTokens.some(
           (defaultToken) => defaultToken.address === token.address
         )
     )
 
     return [...defaultTokens, ...filteredTokens]
-  }, [data, defaultTokens, activeChain])
+  }, [data, defaultTokens, chain])
 
   return {
     tokens,

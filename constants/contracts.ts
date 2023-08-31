@@ -26,8 +26,8 @@ const SOLVER: ChainIdToAddress = {
   5: '0x743dbd073d951bc1e7ee276eb79a285595993d63',
 }
 const SOLUTION_PROXY: ChainIdToAddress = {
-  1: '0x55dc25bffa85f85f0f68ee3433ea36a0c5bd4ac6',
-  5: '0x9c99a452d623cbeecc981461f96c8660565ffdf5',
+  1: '0x885857a1e82d5285f03b4bc562dbeace8921fac2',
+  5: '0xbdaac8d9627e17ad3a7ae34f98a604916f899628',
 }
 
 const WRAPPED_CONTRACTS: ChainIdToAddress = {

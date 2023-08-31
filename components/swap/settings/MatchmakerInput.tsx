@@ -2,9 +2,10 @@ import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Input, Text, Flex } from '../../primitives'
 import { isAddress, Address } from 'viem'
 import { MATCHMAKER } from '../../../constants/contracts'
-import { useEnsAddress, useEnsName, useNetwork } from 'wagmi'
+import { useEnsAddress, useEnsName } from 'wagmi'
 import { LoadingSpinner } from '../../common/LoadingSpinner'
 import { isENSName } from '../../../utils/ens'
+import { useSupportedNetwork } from '../../../hooks'
 
 type MatchmakerInputProps = {
   matchmaker: Address
@@ -16,7 +17,7 @@ export const MatchmakerInput: FC<MatchmakerInputProps> = ({
   setMatchmaker,
 }) => {
   const [input, setInput] = useState<string>(matchmaker)
-  const { chain: activeChain } = useNetwork()
+  const { chain } = useSupportedNetwork()
 
   const {} = useEnsName({
     address: input as Address,
@@ -53,7 +54,7 @@ export const MatchmakerInput: FC<MatchmakerInputProps> = ({
         }}
         onBlur={() => {
           if (!isAddress(matchmaker)) {
-            setMatchmaker(MATCHMAKER[activeChain?.id || 1])
+            setMatchmaker(MATCHMAKER[chain.id])
           }
         }}
         icon={isLoading ? <LoadingSpinner /> : null}

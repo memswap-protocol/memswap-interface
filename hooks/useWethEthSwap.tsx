@@ -1,11 +1,12 @@
 import { parseUnits } from 'ethers/lib/utils'
 import { WRAPPED_CONTRACTS } from '../constants/contracts'
 import { WETH_ABI } from '../constants/abis'
-import { useContractWrite, useNetwork, usePrepareContractWrite } from 'wagmi'
+import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { Token } from '../types'
 import { Anchor } from '../components/primitives'
 import { useToast } from './useToast'
 import { truncateAddress } from '../utils/truncate'
+import useSupportedNetwork from './useSupportedNetwork'
 
 type WethEthSwapType = {
   tokenIn?: Token
@@ -21,7 +22,7 @@ const useWethEthSwap = ({
   mode,
   enabled,
 }: WethEthSwapType) => {
-  const { chain: activeChain } = useNetwork()
+  const { chain } = useSupportedNetwork()
   const { toast } = useToast()
 
   const parsedAmountIn = amountIn
@@ -29,7 +30,7 @@ const useWethEthSwap = ({
     : undefined
 
   const { config } = usePrepareContractWrite({
-    address: WRAPPED_CONTRACTS[activeChain?.id || 1],
+    address: WRAPPED_CONTRACTS[chain.id],
     abi: WETH_ABI,
     functionName: mode === 'wrap' ? 'deposit' : 'withdraw',
     // @ts-ignore @TODO: infer correct types
@@ -37,7 +38,7 @@ const useWethEthSwap = ({
     // @ts-ignore
     value: mode === 'wrap' ? parsedAmountIn : undefined,
     enabled: enabled,
-    chainId: activeChain?.id,
+    chainId: chain.id,
   })
 
   const { write: handleWethEthSwap } = useContractWrite({
@@ -47,10 +48,10 @@ const useWethEthSwap = ({
         title: 'Swap transaction sent.',
         action: data?.hash ? (
           <Anchor
-            href={`${activeChain?.blockExplorers?.default?.url}/tx/${data?.hash}`}
+            href={`${chain.blockExplorers?.default?.url}/tx/${data?.hash}`}
             target="_blank"
           >
-            View on {activeChain?.blockExplorers?.default?.name}:{' '}
+            View on {chain.blockExplorers?.default?.name}:{' '}
             {truncateAddress(data?.hash)}
           </Anchor>
         ) : null,

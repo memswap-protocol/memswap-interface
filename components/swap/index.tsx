@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useBalance, useAccount, useNetwork } from 'wagmi'
+import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,6 +13,7 @@ import {
   useMounted,
   useTokenList,
   useQuote,
+  useSupportedNetwork,
 } from '../../hooks'
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
@@ -27,8 +28,8 @@ import { AlphaRouter } from '@uniswap/smart-order-router'
 const Swap = () => {
   const isMounted = useMounted()
   const router = useRouter()
-  const { chain } = useNetwork()
-  const defaultTokens = chainDefaultTokens[chain?.id === 5 ? 5 : 1]
+  const { chain } = useSupportedNetwork()
+  const defaultTokens = chainDefaultTokens[chain.id]
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
   const { address, isConnected } = useAccount({
     onConnect() {
