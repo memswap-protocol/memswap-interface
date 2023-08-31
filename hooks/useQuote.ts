@@ -6,10 +6,14 @@ import {
 } from '@uniswap/smart-order-router'
 import { Protocol } from '@uniswap/router-sdk'
 import { Token } from '../types'
-import { parseUnits } from 'viem'
+import { formatGwei, parseUnits } from 'viem'
 import { createUniswapToken, useIsEthToWethSwap } from '../utils/quote'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 import useSupportedNetwork from './useSupportedNetwork'
+import { hexToString, hexToNumber } from 'viem'
+
+// Approximation for gas used by swap logic
+const defaultGas = 200000n
 
 const useQuote = (
   router: AlphaRouter,
@@ -19,6 +23,7 @@ const useQuote = (
 ) => {
   const { chain } = useSupportedNetwork()
   const [quote, setQuote] = useState<string | undefined>()
+  const [estimatedGasUsed, setEstimatedGasUsed] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
@@ -37,6 +42,7 @@ const useQuote = (
     setIsError(false)
     setIsLoading(false)
     setQuote(undefined)
+    setEstimatedGasUsed(undefined)
   }, [])
 
   useEffect(() => {
@@ -63,10 +69,26 @@ const useQuote = (
           }
         )
 
-        const fetchedQuote = route?.quote?.toSignificant(8)
+        console.log(
+          'Estimated gas used: ',
+          route?.estimatedGasUsedQuoteToken.toSignificant(8)
+        )
+
+        console.log(route)
+
+        const fetchedQuote = Number(route?.quote?.toSignificant(8))
+        const fetchedEstimatedGasUsed = Number(
+          route?.estimatedGasUsedQuoteToken.toSignificant(8)
+        )
+        const totalEstimatedGasUsed =
+          Number(formatGwei(defaultGas, 'wei')) + fetchedEstimatedGasUsed
+        const totalQuote = fetchedQuote - totalEstimatedGasUsed
+
+        console.log('Total quote: ', totalQuote)
 
         if (!isCancelled) {
-          setQuote(fetchedQuote)
+          setQuote(route?.quote?.toSignificant(8))
+          setEstimatedGasUsed(fetchedEstimatedGasUsed?.toString())
           setIsLoading(false)
         }
       } catch (error) {
@@ -109,6 +131,7 @@ const useQuote = (
 
   return {
     quote,
+    estimatedGasUsed,
     isLoading,
     isError,
   }

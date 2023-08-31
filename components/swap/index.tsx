@@ -31,7 +31,7 @@ const Swap = () => {
   const { chain } = useSupportedNetwork()
   const defaultTokens = chainDefaultTokens[chain.id]
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
-  const { address, isConnected } = useAccount({
+  const { address } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {
         setTokenIn(defaultTokens[0])
@@ -111,7 +111,7 @@ const Swap = () => {
 
   const { data: tokenInBalance } = useBalance({
     chainId: chain?.id || 1,
-    address: address,
+    address: tokenIn ? address : undefined,
     watch: true,
     token:
       tokenIn?.address !== zeroAddress
@@ -122,7 +122,7 @@ const Swap = () => {
 
   const { data: tokenOutBalance } = useBalance({
     chainId: chain?.id || 1,
-    address: address,
+    address: tokenOut ? address : undefined,
     watch: true,
     token:
       tokenOut?.address !== zeroAddress
