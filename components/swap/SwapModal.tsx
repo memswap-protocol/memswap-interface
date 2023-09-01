@@ -444,6 +444,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     address: waitingForFulfillment ? memswapContract : undefined,
     abi: MEMSWAP_ABI,
     eventName: 'IntentSolved',
+    // @TODO: add timeout
     listener(log) {
       const eventIntentHash = log[0]?.args.intentHash
       if (eventIntentHash === intentHash) {
