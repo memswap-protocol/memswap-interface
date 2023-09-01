@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { SlippageInput } from './SlippageInput'
 import { DeadlineInput } from './DeadlineInput'
-import { Address } from 'viem'
-import { MatchmakerInput } from './MatchmakerInput'
 import { SwapMode } from '../../../types'
 
 type SettingsDropdownProps = {
@@ -15,8 +13,6 @@ type SettingsDropdownProps = {
   setSlippagePercentage: Dispatch<SetStateAction<string>>
   deadline: string
   setDeadline: Dispatch<SetStateAction<string>>
-  matchmaker: Address
-  setMatchmaker: Dispatch<SetStateAction<Address>>
 }
 
 export const SettingsDropdown: FC<SettingsDropdownProps> = ({
@@ -25,8 +21,6 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
   setSlippagePercentage,
   deadline,
   setDeadline,
-  matchmaker,
-  setMatchmaker,
 }) => {
   return (
     <Dropdown
@@ -48,12 +42,6 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
           setSlippagePercentage={setSlippagePercentage}
         />
         <DeadlineInput deadline={deadline} setDeadline={setDeadline} />
-        {swapMode === 'Rapid' || swapMode === 'Private' ? (
-          <MatchmakerInput
-            matchmaker={matchmaker}
-            setMatchmaker={setMatchmaker}
-          />
-        ) : null}
       </Flex>
     </Dropdown>
   )

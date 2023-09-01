@@ -18,7 +18,7 @@ import {
 import { formatDollar, formatNumber } from '../../utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
 import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
-import { MATCHMAKER, USDC_TOKENS } from '../../constants/contracts'
+import { USDC_TOKENS } from '../../constants/contracts'
 import { SwapMode, Token } from '../../types'
 import { ModeToggle } from './ModeToggle'
 import { SettingsDropdown } from './settings/SettingsDropdown'
@@ -63,9 +63,6 @@ const Swap = () => {
   const [amountOut, setAmountOut] = useState('')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
   const [deadline, setDeadline] = useState('5') // default 5 mins
-  const [matchmaker, setMatchmaker] = useState<Address>(
-    MATCHMAKER[chain?.id || 1]
-  )
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
 
   // Deep Link Query Parameters
@@ -181,8 +178,6 @@ const Swap = () => {
           setSlippagePercentage={setSlippagePercentage}
           deadline={deadline}
           setDeadline={setDeadline}
-          matchmaker={matchmaker}
-          setMatchmaker={setMatchmaker}
         />
       </Flex>
       <Flex
