@@ -2,6 +2,7 @@ import { Address } from 'viem'
 import { MEMSWAP } from '../constants/contracts'
 import { Intent } from '../types'
 import { _TypedDataEncoder } from '@ethersproject/hash'
+import axios from 'axios'
 
 // Need to use TypedDataEncoder from @ethersproject for now as viem's hashStruct function is not currently exported
 // See here for more info: https://github.com/wagmi-dev/viem/discussions/761
@@ -72,4 +73,23 @@ const getEIP712Types = () => ({
   ],
 })
 
-export { getIntentHash, getEIP712Domain, getEIP712Types }
+async function postPublicIntentToMatchmaker(intent: Intent, hash: Address) {
+  try {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/intents/public`,
+      {
+        intent,
+        approvalTxOrTxHash: hash,
+      }
+    )
+  } catch (e) {
+    console.error('Error submitting intent to public matchmaker api:', e)
+  }
+}
+
+export {
+  getIntentHash,
+  getEIP712Domain,
+  getEIP712Types,
+  postPublicIntentToMatchmaker,
+}

@@ -1,6 +1,12 @@
 import { FC, useEffect, useState } from 'react'
 import { Anchor, Box, Button, ErrorWell, Flex, Text } from '../primitives'
-import { erc20ABI, useAccount, useContractEvent, usePublicClient } from 'wagmi'
+import {
+  erc20ABI,
+  useAccount,
+  useContractEvent,
+  usePublicClient,
+  useWalletClient,
+} from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +16,7 @@ import {
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
+  postPublicIntentToMatchmaker,
 } from '../../utils/swap'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import {
@@ -39,11 +46,13 @@ import {
   MEMSWAP_WETH,
   WRAPPED_CONTRACTS,
 } from '../../constants/contracts'
-import { FetchBalanceResult, Intent, Token } from '../../types'
+import { FetchBalanceResult, Intent, SwapMode, Token } from '../../types'
+import axios from 'axios'
 
 enum SwapStep {
   Sign,
   MetamaskApproval,
+  PrivateModeUnsupportedWallet,
   Submit,
 }
 
@@ -56,6 +65,7 @@ type SwapModalProps = {
   amountOut: string
   slippagePercentage: string
   deadline: string
+  swapMode: SwapMode
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
 }
@@ -69,6 +79,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   amountOut,
   slippagePercentage,
   deadline,
+  swapMode,
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
@@ -79,6 +90,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   const { openConnectModal } = useConnectModal()
   const { toast } = useToast()
   const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
 
   // States
   const [open, setOpen] = useState(false)
@@ -123,9 +135,20 @@ export const SwapModal: FC<SwapModalProps> = ({
     if (!address) {
       throw Error('No wallet connected')
     }
+    if (!publicClient) {
+      throw Error('Missing public client')
+    }
+    if (!walletClient) {
+      throw Error('Missing wallet client')
+    }
     if (!tokenIn?.address || !tokenOut?.address) {
       throw Error('Missing tokenIn or tokenOut address')
     }
+    if (swapMode === 'Private' && isMetamaskWallet) {
+      setSwapStep(SwapStep.PrivateModeUnsupportedWallet)
+      return
+    }
+
     try {
       const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
       const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
@@ -143,11 +166,12 @@ export const SwapModal: FC<SwapModalProps> = ({
           : tokenIn?.address
 
       // Create Intent
+      // @ts-ignore
       const intent = {
         tokenIn: processedTokenInAddress,
         tokenOut: tokenOut.address,
         maker: address,
-        matchmaker: MATCHMAKER[chain.id] as Address,
+        matchmaker: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
         source: referrer ?? address,
         feeBps: 0,
         surplusBps: 0,
@@ -155,8 +179,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           .getBlock()
           .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
         isPartiallyFillable: false,
-        amountIn: parsedAmountIn,
-        endAmountOut: parsedEndAmountOut,
+        // @TODO: having amountIn and endAmountOut as strings conflicts with the abi types
+        amountIn: parsedAmountIn.toString(),
+        // @TODO: configure amount outs with slippage
+        endAmountOut: parsedEndAmountOut.toString(),
         startAmountBps: 0,
         expectedAmountBps: 0,
       } as Intent
@@ -222,7 +248,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       const combinedEndcodedData =
         encodedApprovalData + encodedIntentData.slice(2)
 
-      // Fetch allowance amount
+      // Fetch user's approved allowance for memswap on tokenIn contract
       const allowanceAmount = await readContract({
         address: processedTokenInAddress,
         abi: erc20ABI,
@@ -230,7 +256,9 @@ export const SwapModal: FC<SwapModalProps> = ({
         args: [address, memswapContract],
       })
 
-      // Generate intent hash and start listing for IntentSolved Event in useContractEvent hook
+      const alreadyHasApproval = allowanceAmount >= parsedAmountIn
+
+      // Generate intent hash and start listing for 'IntentSolved' Event in useContractEvent hook
       // The intent could be solved in the same block that it is submitted, so we need to start listening before
       // we submit the transaction
       const intentHash = getIntentHash(intent)
@@ -242,11 +270,45 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Handle transactions
       /////////////////////////////////////////////////////////////////////
 
-      // Scenario 1: User already has given approval greater than amountIn
-      // Call 'post' method on Memswap contract
-      if (allowanceAmount >= parsedAmountIn) {
+      // Scenario 1: Private order
+      // For private orders, submit a signed tx directly to the matchmaker's api
+      if (swapMode === 'Private') {
+        const provider = await connector?.getProvider()
+
+        // @TODO: verify data and value are correct values
+        const privateTxSignature = await provider.request({
+          method: 'eth_signTransaction',
+          params: [
+            {
+              to: processedTokenInAddress,
+              from: address,
+              data: alreadyHasApproval
+                ? encodedIntentData
+                : combinedEndcodedData,
+              value:
+                !alreadyHasApproval && approveMethod === 'depositAndApprove'
+                  ? Number(parsedAmountIn)
+                  : 0,
+              chain: chain,
+              nonce: await publicClient?.getTransactionCount({ address }),
+            },
+          ],
+        })
+
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/intents/private`,
+          {
+            intent,
+            approvalTxOrTxHash: privateTxSignature,
+          }
+        )
+      }
+
+      // Scenario 2: User already has given approval greater than the amountIn
+      else if (alreadyHasApproval) {
         setSwapStep(SwapStep.Submit)
 
+        // Otherwise, call 'post' method on Memswap contract
         const { hash } = await writeContract({
           address: memswapContract,
           abi: MEMSWAP_ABI,
@@ -265,10 +327,15 @@ export const SwapModal: FC<SwapModalProps> = ({
               console.log('Transaction replaced')
           },
         })
+
+        // @TODO: Should we be sending these concurrently?
+
+        // For faster distribution, also submit tx to matchmaker's api
+        await postPublicIntentToMatchmaker(intent, hash)
       }
 
-      // Scenario 2: User is using metamask wallet
-      // For metamask, an extra tx is required because the extension strips away any appended calldata
+      // Scenario 3: User is using metamask wallet
+      // For metamask, an extra tx is required because the wallet strips away any appended calldata
       // https://github.com/MetaMask/metamask-extension/issues/20439
       // 2 Separate transactions, 1 for approval, 1 to call 'post' method on Memswap contract
       else if (isMetamaskWallet) {
@@ -278,7 +345,7 @@ export const SwapModal: FC<SwapModalProps> = ({
           chainId: chain.id,
           to: processedTokenInAddress,
           account: address,
-          value: 0n,
+          value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
           data: encodedApprovalData,
         })
 
@@ -312,9 +379,12 @@ export const SwapModal: FC<SwapModalProps> = ({
               console.log('Transaction replaced')
           },
         })
+
+        // For faster distribution, also submit tx to matchmaker's api
+        await postPublicIntentToMatchmaker(intent, intentTransactionHash)
       }
 
-      // Scenario 3: Normal swap (user is has not given approval, is not using metamask wallet,
+      // Scenario 4: Normal swap (user has not already given approval, is not using metamask wallet,
       // is not wrapping/unwrapping ETH)
       // 1 transaction with the intent appended to the approval
       else {
@@ -337,6 +407,9 @@ export const SwapModal: FC<SwapModalProps> = ({
               console.log('Transaction replaced')
           },
         })
+
+        // For faster distribution, also submit tx to matchmaker's api
+        await postPublicIntentToMatchmaker(intent, hash)
       }
 
       setTxSuccess(true)
@@ -365,7 +438,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     enabled: isEthToWethSwap || isWethToEthSwap,
   })
 
-  // Listen for IntentSolved Event for submitted intent hash
+  // Listen for 'IntentSolved' Event for with the submitted intent hash
   const unwatch = useContractEvent({
     chainId: chain.id,
     address: waitingForFulfillment ? memswapContract : undefined,
@@ -443,6 +516,7 @@ export const SwapModal: FC<SwapModalProps> = ({
             !tokenOut ||
             isFetchingQuote ||
             errorFetchingQuote ||
+            !(Number(amountOut) > 0) ||
             Number(amountIn) === 0 ||
             !(
               Number(
@@ -550,6 +624,22 @@ export const SwapModal: FC<SwapModalProps> = ({
               </>
             )}
           </Button>
+        </Flex>
+      ) : null}
+      {swapStep === SwapStep.PrivateModeUnsupportedWallet ? (
+        <Flex
+          align="center"
+          direction="column"
+          css={{ width: '100%', gap: 24, pt: '5' }}
+        >
+          <Text style="h5">Please use a different wallet</Text>
+          <Text style="subtitle1" color="subtle" css={{ textAlign: 'center' }}>
+            Your wallet requires all transactions to be sent to the public
+            mempool. While your order can be kept private, the approval
+            transaction would be public, which can be used to infer your
+            intentions. Most other wallets (e.g. Rainbow) allow fully private
+            transactions.
+          </Text>
         </Flex>
       ) : null}
       {swapStep === SwapStep.Submit ? (

@@ -50,7 +50,7 @@ const Swap = () => {
 
   const alphaRouter = useMemo(() => {
     return new AlphaRouter({
-      chainId: chain?.id || 1,
+      chainId: chain.id,
       provider: provider,
     })
   }, [chain, provider])
@@ -362,6 +362,7 @@ const Swap = () => {
         referrer={deepLinkReferrer}
         slippagePercentage={slippagePercentage}
         deadline={deadline}
+        swapMode={swapMode}
         tokenInBalance={tokenInBalance}
         isFetchingQuote={isFetchingQuote}
         errorFetchingQuote={errorFetchingQuote}
