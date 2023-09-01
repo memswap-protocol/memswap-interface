@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { type ToastProps } from '../components/primitives/Toast'
 
+// The toast functionality code is adapted from https://twitter.com/fiveoutofnine.
+// You can check out the source code here: https://github.com/fiveoutofnine/www
+
 const TOAST_LIMIT = 3
 const TOAST_REMOVE_DELAY = 1000
 
