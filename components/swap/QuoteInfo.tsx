@@ -1,8 +1,8 @@
 import { FC } from 'react'
 import { Flex, Text } from '../primitives'
 import { LoadingSpinner } from '../common/LoadingSpinner'
-import { formatNumber } from '../../utils/numbers'
-import { Token } from '../../types'
+import { formatNumber } from '../../lib/utils/numbers'
+import { Token } from '../../lib/types'
 
 type QuoteInfoProps = {
   quotedAmountOut?: string

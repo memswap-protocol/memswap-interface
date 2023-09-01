@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { useRouter } from 'next/router'
-import { Token } from '../../types'
+import { Token } from '../../lib/types'
 
 const fuseSearchOptions = {
   includeScore: true,

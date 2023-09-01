@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Fuse from 'fuse.js'
 import { Address, isAddress } from 'viem'
-import { Token } from '../types'
+import { Token } from '../lib/types'
 
 const fuseDeepLinkOptions = {
   keys: ['address', 'symbol'],

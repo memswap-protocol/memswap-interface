@@ -11,13 +11,13 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Modal } from '../common/Modal'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { truncateAddress } from '../../utils/truncate'
+import { truncateAddress } from '../../lib/utils/truncate'
 import {
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
   postPublicIntentToMatchmaker,
-} from '../../utils/swap'
+} from '../../lib/utils/swap'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import {
   parseUnits,
@@ -39,14 +39,14 @@ import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './IntentInfo'
 import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
-import { MEMSWAP_ABI } from '../../constants/abis'
+import { MEMSWAP_ABI } from '../../lib/constants/abis'
 import {
   MATCHMAKER,
   MEMSWAP,
   MEMSWAP_WETH,
   WRAPPED_CONTRACTS,
-} from '../../constants/contracts'
-import { FetchBalanceResult, Intent, SwapMode, Token } from '../../types'
+} from '../../lib/constants/contracts'
+import { FetchBalanceResult, Intent, SwapMode, Token } from '../../lib/types'
 import axios from 'axios'
 
 enum SwapStep {
@@ -444,6 +444,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     address: waitingForFulfillment ? memswapContract : undefined,
     abi: MEMSWAP_ABI,
     eventName: 'IntentSolved',
+    // @TODO: add timeout
     listener(log) {
       const eventIntentHash = log[0]?.args.intentHash
       if (eventIntentHash === intentHash) {

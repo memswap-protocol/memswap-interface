@@ -1,11 +1,11 @@
 import { parseUnits } from 'ethers/lib/utils'
-import { WRAPPED_CONTRACTS } from '../constants/contracts'
-import { WETH_ABI } from '../constants/abis'
+import { WRAPPED_CONTRACTS } from '../lib/constants/contracts'
+import { WETH_ABI } from '../lib/constants/abis'
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
-import { Token } from '../types'
+import { Token } from '../lib/types'
 import { Anchor } from '../components/primitives'
 import { useToast } from './useToast'
-import { truncateAddress } from '../utils/truncate'
+import { truncateAddress } from '../lib/utils/truncate'
 import useSupportedNetwork from './useSupportedNetwork'
 
 type WethEthSwapType = {
