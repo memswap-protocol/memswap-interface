@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { SlippageInput } from './SlippageInput'
 import { DeadlineInput } from './DeadlineInput'
-import { SwapMode } from '../../../types'
+import { SwapMode } from '../../../lib/types'
 
 type SettingsDropdownProps = {
   swapMode: SwapMode

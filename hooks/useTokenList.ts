@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { chainDefaultTokens } from '../constants/chainDefaultTokens'
-import fetcher from '../utils/fetcher'
-import { Token } from '../types'
+import { chainDefaultTokens } from '../lib/constants/chainDefaultTokens'
+import fetcher from '../lib/utils/fetcher'
+import { Token } from '../lib/types'
 import useSupportedNetwork from './useSupportedNetwork'
 
 /**

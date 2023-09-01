@@ -5,9 +5,9 @@ import {
   SwapType,
 } from '@uniswap/smart-order-router'
 import { Protocol } from '@uniswap/router-sdk'
-import { Token } from '../types'
+import { Token } from '../lib/types'
 import { formatGwei, parseUnits } from 'viem'
-import { createUniswapToken, useIsEthToWethSwap } from '../utils/quote'
+import { createUniswapToken, useIsEthToWethSwap } from '../lib/utils/quote'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 import useSupportedNetwork from './useSupportedNetwork'
 

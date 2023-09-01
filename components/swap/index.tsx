@@ -15,14 +15,14 @@ import {
   useQuote,
   useSupportedNetwork,
 } from '../../hooks'
-import { formatDollar, formatNumber } from '../../utils/numbers'
+import { formatDollar, formatNumber } from '../../lib/utils/numbers'
 import { QuoteInfo } from './QuoteInfo'
-import { chainDefaultTokens } from '../../constants/chainDefaultTokens'
-import { USDC_TOKENS } from '../../constants/contracts'
-import { SwapMode, Token } from '../../types'
+import { chainDefaultTokens } from '../../lib/constants/chainDefaultTokens'
+import { USDC_TOKENS } from '../../lib/constants/contracts'
+import { SwapMode, Token } from '../../lib/types'
 import { ModeToggle } from './ModeToggle'
 import { SettingsDropdown } from './settings/SettingsDropdown'
-import { useEthersProvider } from '../../utils/ethersAdapter'
+import { useEthersProvider } from '../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 
 const Swap = () => {
