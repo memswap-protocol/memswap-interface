@@ -25,11 +25,6 @@ const useQuote = (
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const parsedAmountIn = parseUnits(
-    amountIn.toString(),
-    tokenIn?.decimals || 18
-  ).toString()
-
   const isEthToWethSwap = useIsEthToWethSwap(
     tokenIn?.address,
     tokenOut?.address,
@@ -50,8 +45,13 @@ const useQuote = (
         setIsLoading(true)
         setIsError(false)
 
-        const fromToken = createUniswapToken(tokenIn!, chain?.id || 1)
-        const toToken = createUniswapToken(tokenOut!, chain?.id || 1)
+        const parsedAmountIn = parseUnits(
+          amountIn.toString(),
+          tokenIn?.decimals || 18
+        ).toString()
+
+        const fromToken = createUniswapToken(tokenIn!, chain.id)
+        const toToken = createUniswapToken(tokenOut!, chain.id)
 
         const route = await router!.route(
           CurrencyAmount.fromRawAmount(fromToken, parsedAmountIn),
@@ -111,7 +111,6 @@ const useQuote = (
     tokenIn,
     tokenOut,
     amountIn,
-    parsedAmountIn,
     router,
     isEthToWethSwap,
     chain?.id,

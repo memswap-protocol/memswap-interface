@@ -6,22 +6,21 @@ type Intent = AbiParametersToPrimitiveTypes<
   ExtractAbiFunction<typeof MEMSWAP_ABI, 'validate'>['inputs']
 >['0'][0]
 
-// type Intent = {
-//   tokenIn: Address
-//   tokenOut: Address
-//   maker: Address
-//   matchmaker: Address
-//   source: Address
-//   feeBps: number
-//   surplusBps: number
-//   deadline: number
-//   isPartiallyFillable: boolean
-//   amountIn: string
-//   endAmountOut: string
-//   startAmountBps: number
-//   expectedAmountBps: number
-//   signature: Address
-// }
+type ApiIntent = {
+  id: Address
+  tokenIn: Address
+  tokenOut: Address
+  maker: Address
+  matchmaker: Address
+  deadline: number
+  isPartiallyFillable: boolean
+  amountIn: bigint
+  endAmountOut: bigint
+  events: string[]
+  isCancelled: boolean
+  isValidated: boolean
+  amountFilled: bigint
+}
 
 type Token = {
   chainId: number
@@ -41,4 +40,10 @@ type FetchBalanceResult = {
   value: bigint
 }
 
-export { type Intent, type Token, type SwapMode, type FetchBalanceResult }
+export {
+  type Intent,
+  type ApiIntent,
+  type Token,
+  type SwapMode,
+  type FetchBalanceResult,
+}

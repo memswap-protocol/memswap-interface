@@ -23,6 +23,7 @@ import {
   metaMaskWallet,
   rainbowWallet,
   walletConnectWallet,
+  phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets'
 import {
   AppModeProvider,
@@ -85,6 +86,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               chains: chainsConfig.chains,
             }),
             coinbaseWallet({ appName: 'MemSwap', chains: chainsConfig.chains }),
+            phantomWallet({ chains: chainsConfig.chains }),
             walletConnectWallet({
               projectId: WALLET_CONNECT_PROJECT_ID,
               chains: chainsConfig.chains,

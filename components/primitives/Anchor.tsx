@@ -1,6 +1,7 @@
+import Link from 'next/link'
 import { styled } from '../../styled-system/jsx'
 
-const Anchor = styled('a', {
+const Anchor = styled(Link, {
   base: {
     width: 'max-content',
     fontWeight: 500,

@@ -151,6 +151,22 @@ const tokens = {
     "value": "hsl(153, 67.0%, 28.5%)",
     "variable": "var(--colors-green11)"
   },
+  "colors.yellow9": {
+    "value": "hsl(53, 92.0%, 50.0%)",
+    "variable": "var(--colors-yellow9)"
+  },
+  "colors.yellow10": {
+    "value": "hsl(50, 100%, 48.5%)",
+    "variable": "var(--colors-yellow10)"
+  },
+  "colors.yellow11": {
+    "value": "hsl(42, 100%, 29.0%)",
+    "variable": "var(--colors-yellow11)"
+  },
+  "colors.yellow12": {
+    "value": "hsl(40, 55.0%, 13.5%)",
+    "variable": "var(--colors-yellow12)"
+  },
   "breakpoints.2xl": {
     "value": "1536px",
     "variable": "var(--breakpoints-2xl)"
