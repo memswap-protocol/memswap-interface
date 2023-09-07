@@ -11,6 +11,22 @@ enum Side {
   SELL,
 }
 
+type ApiIntent = {
+  id: Address
+  tokenIn: Address
+  tokenOut: Address
+  maker: Address
+  matchmaker: Address
+  deadline: number
+  isPartiallyFillable: boolean
+  amountIn: bigint
+  endAmountOut: bigint
+  events: string[]
+  isCancelled: boolean
+  isValidated: boolean
+  amountFilled: bigint
+}
+
 type Token = {
   chainId: number
   address: Address
@@ -73,6 +89,7 @@ export {
   type Side,
   type Token,
   type Collection,
+  type ApiIntent,
   type SwapMode,
   type FetchBalanceResult,
 }

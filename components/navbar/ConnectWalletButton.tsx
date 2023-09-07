@@ -35,6 +35,11 @@ export const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
         smallScreen: 'avatar',
         largeScreen: 'full',
       }}
+      chainStatus={{
+        smallScreen: 'icon',
+        largeScreen: 'icon',
+      }}
+      showBalance={false}
     />
   )
 }

@@ -38,6 +38,10 @@
   --colors-red11: hsl(358, 65.0%, 48.7%);
   --colors-green10: hsl(152, 57.5%, 37.6%);
   --colors-green11: hsl(153, 67.0%, 28.5%);
+  --colors-yellow9: hsl(53, 92.0%, 50.0%);
+  --colors-yellow10: hsl(50, 100%, 48.5%);
+  --colors-yellow11: hsl(42, 100%, 29.0%);
+  --colors-yellow12: hsl(40, 55.0%, 13.5%);
   --breakpoints-2xl: 1536px;
   --breakpoints-sm: 600px;
   --breakpoints-md: 900px;

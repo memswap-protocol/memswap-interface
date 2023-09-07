@@ -4,8 +4,10 @@ import { ConnectWalletButton } from './ConnectWalletButton'
 import Link from 'next/link'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMediaQuery } from 'usehooks-ts'
 
 const Navbar = () => {
+  const isSmallDevice = useMediaQuery('(max-width: 600px)')
   return (
     <Flex
       align="center"
@@ -31,7 +33,21 @@ const Navbar = () => {
     >
       <Flex align="center" css={{ gap: '5' }}>
         <Link href="/">
-          <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
+          {isSmallDevice ? (
+            <Image
+              src="/memswap-logo-small.svg"
+              alt="MemSwap"
+              width={33}
+              height={33}
+            />
+          ) : (
+            <Image
+              src="/memswap-logo.svg"
+              alt="MemSwap"
+              width={144}
+              height={22}
+            />
+          )}
         </Link>
         {/* @TODO: add links */}
         <Anchor
@@ -48,11 +64,16 @@ const Navbar = () => {
           </Flex>
         </Anchor>
       </Flex>
-      <ConnectWalletButton
-        css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
-      >
-        Connect
-      </ConnectWalletButton>
+      <Flex align="center" css={{ gap: '3', md: { gap: '5' } }}>
+        <Anchor href="/history" color="gray">
+          History
+        </Anchor>
+        <ConnectWalletButton
+          css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
+        >
+          Connect
+        </ConnectWalletButton>
+      </Flex>
     </Flex>
   )
 }

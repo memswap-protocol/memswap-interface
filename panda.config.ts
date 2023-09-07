@@ -1,5 +1,13 @@
 import { defineConfig } from '@pandacss/dev'
-import { slate, crimson, blackA, red, green, blue } from '@radix-ui/colors'
+import {
+  slate,
+  crimson,
+  blackA,
+  red,
+  green,
+  blue,
+  yellow,
+} from '@radix-ui/colors'
 
 export default defineConfig({
   // Whether to use css reset
@@ -85,6 +93,12 @@ export default defineConfig({
         // Green
         green10: { value: green.green10 },
         green11: { value: green.green11 },
+
+        // Yellow
+        yellow9: { value: yellow.yellow9 },
+        yellow10: { value: yellow.yellow10 },
+        yellow11: { value: yellow.yellow11 },
+        yellow12: { value: yellow.yellow12 },
       },
     },
     semanticTokens: {
