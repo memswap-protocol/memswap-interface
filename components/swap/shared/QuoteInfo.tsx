@@ -1,13 +1,13 @@
 import { FC } from 'react'
-import { Flex, Text } from '../primitives'
-import { LoadingSpinner } from '../common/LoadingSpinner'
-import { formatNumber } from '../../lib/utils/numbers'
-import { Token } from '../../lib/types'
+import { Flex, Text } from '../../primitives'
+import { LoadingSpinner } from '../../common/LoadingSpinner'
+import { formatNumber } from '../../../lib/utils/numbers'
+import { Collection, Token } from '../../../lib/types'
 
 type QuoteInfoProps = {
-  quotedAmountOut?: string
+  // quotedAmountOut?: string
   tokenIn?: Token
-  tokenOut?: Token
+  tokenOut?: Token | Collection
   amountIn: string
   amountOut: string
   isFetchingQuote: boolean
@@ -15,7 +15,6 @@ type QuoteInfoProps = {
 }
 
 export const QuoteInfo: FC<QuoteInfoProps> = ({
-  quotedAmountOut,
   tokenIn,
   tokenOut,
   amountIn,
@@ -23,10 +22,13 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
-  if (!quotedAmountOut && !isFetchingQuote && !errorFetchingQuote) {
+  if (
+    !tokenIn ||
+    !tokenOut ||
+    (!amountIn && !amountOut && (!isFetchingQuote || !errorFetchingQuote))
+  ) {
     return
   }
-
   const bestPrice = Number(amountOut) / Number(amountIn)
 
   return (
@@ -56,12 +58,14 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
         </Text>
       ) : null}
 
-      {!isFetchingQuote && !errorFetchingQuote && quotedAmountOut ? (
+      {!isFetchingQuote && !errorFetchingQuote ? (
         <Flex align="center" justify="between" css={{ gap: '4' }}>
           <Text style="body2">Best Price</Text>
-          <Text style="body2" color="subtle">
+          <Text style="body2" color="subtle" ellipsify>
             1 {tokenIn?.symbol} = {formatNumber(bestPrice, 8)}{' '}
-            {tokenOut?.symbol}
+            {tokenOut && 'symbol' in tokenOut
+              ? tokenOut?.symbol
+              : tokenOut?.name}
           </Text>
         </Flex>
       ) : null}

@@ -6,22 +6,10 @@ type Intent = AbiParametersToPrimitiveTypes<
   ExtractAbiFunction<typeof MEMSWAP_ABI, 'validate'>['inputs']
 >['0'][0]
 
-// type Intent = {
-//   tokenIn: Address
-//   tokenOut: Address
-//   maker: Address
-//   matchmaker: Address
-//   source: Address
-//   feeBps: number
-//   surplusBps: number
-//   deadline: number
-//   isPartiallyFillable: boolean
-//   amountIn: string
-//   endAmountOut: string
-//   startAmountBps: number
-//   expectedAmountBps: number
-//   signature: Address
-// }
+enum Side {
+  BUY,
+  SELL,
+}
 
 type Token = {
   chainId: number
@@ -30,6 +18,45 @@ type Token = {
   symbol: string
   decimals: number
   logoURI: string
+}
+
+type Collection = {
+  id?: string
+  name?: string
+  image?: string
+  tokenCount?: string
+  floorAsk?: {
+    id?: string | undefined
+    sourceDomain?: string | undefined
+    price?:
+      | {
+          currency?:
+            | {
+                contract?: string | undefined
+                name?: string | undefined
+                symbol?: string | undefined
+                decimals?: number | undefined
+              }
+            | undefined
+          amount?:
+            | {
+                raw?: string | undefined
+                decimal?: number | undefined
+                usd?: number | undefined
+                native?: number | undefined
+              }
+            | undefined
+          netAmount?:
+            | {
+                raw?: string | undefined
+                decimal?: number | undefined
+                usd?: number | undefined
+                native?: number | undefined
+              }
+            | undefined
+        }
+      | undefined
+  }
 }
 
 type SwapMode = 'Rapid' | 'Dutch' | 'Private'
@@ -41,4 +68,11 @@ type FetchBalanceResult = {
   value: bigint
 }
 
-export { type Intent, type Token, type SwapMode, type FetchBalanceResult }
+export {
+  type Intent,
+  type Side,
+  type Token,
+  type Collection,
+  type SwapMode,
+  type FetchBalanceResult,
+}

@@ -14,7 +14,7 @@ import useSupportedNetwork from './useSupportedNetwork'
 // Approximation for gas used by swap logic
 const defaultGas = 200000n
 
-const useQuote = (
+const useUniswapQuote = (
   router: AlphaRouter,
   amountIn: number,
   tokenIn?: Token,
@@ -62,7 +62,7 @@ const useQuote = (
             slippageTolerance: new Percent(5, 100),
           },
           {
-            protocols: [Protocol.V3],
+            protocols: [Protocol.V3, Protocol.V2],
           }
         )
 
@@ -125,4 +125,4 @@ const useQuote = (
   }
 }
 
-export default useQuote
+export default useUniswapQuote

@@ -1,10 +1,10 @@
 import { Dispatch, FC, SetStateAction } from 'react'
-import { ToggleGroupItem, ToggleGroupRoot } from '../primitives/ToggleGroup'
-import { Box, Text } from '../primitives'
+import { ToggleGroupItem, ToggleGroupRoot } from '../../primitives/ToggleGroup'
+import { Box, Text } from '../../primitives'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faHammer, faLock } from '@fortawesome/free-solid-svg-icons'
-import { SwapMode } from '../../lib/types'
-import Tooltip from '../primitives/Tooltip'
+import { SwapMode } from '../../../lib/types'
+import Tooltip from '../../primitives/Tooltip'
 
 type ModeToggleProps = {
   swapMode: SwapMode

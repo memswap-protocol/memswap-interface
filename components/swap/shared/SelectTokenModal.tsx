@@ -7,8 +7,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Text, Button, Flex, Input, Box } from '../primitives'
-import { Modal } from '../common/Modal'
+import { Text, Button, Flex, Input, Box, Img } from '../../primitives'
+import { Modal } from '../../common/Modal'
 import Fuse from 'fuse.js'
 import { FixedSizeList } from 'react-window'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,9 +16,9 @@ import {
   faChevronDown,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
-import { LoadingSpinner } from '../common/LoadingSpinner'
+import { LoadingSpinner } from '../../common/LoadingSpinner'
 import { useRouter } from 'next/router'
-import { Token } from '../../lib/types'
+import { Token } from '../../../lib/types'
 
 const fuseSearchOptions = {
   includeScore: true,
@@ -104,12 +104,12 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
           )
         }}
       >
-        <img
+        <Img
           src={currentToken?.logoURI || ''}
           alt={currentToken?.name || ''}
           width={24}
           height={24}
-          style={{
+          css={{
             aspectRatio: '1/1',
             borderRadius: '50%',
           }}
@@ -141,12 +141,12 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         >
           {token ? (
             <>
-              <img
+              <Img
                 src={token?.logoURI || ''}
                 alt={token?.name}
                 width={24}
                 height={24}
-                style={{
+                css={{
                   aspectRatio: '1/1',
                   borderRadius: '50%',
                 }}

@@ -1,5 +1,5 @@
-const fetcher = async (url: string) => {
-  const response = await fetch(url)
+const fetcher = async (url: string, headers?: HeadersInit) => {
+  const response = await fetch(url, { headers })
 
   if (!response.ok) {
     const errorData = await response.json()

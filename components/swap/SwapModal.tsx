@@ -37,7 +37,7 @@ import {
 } from '@wagmi/core'
 import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
-import { IntentInfo } from './IntentInfo'
+import { IntentInfo } from './token-swap/IntentInfo'
 import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
 import { MEMSWAP_ABI } from '../../lib/constants/abis'
 import {

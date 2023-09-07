@@ -2,9 +2,9 @@ import type { NextPage } from 'next'
 import { Flex } from '../components/primitives'
 import Layout from '../components/Layout'
 import { Head } from '../components/Head'
-import Swap from '../components/swap'
 import { FAQs } from '../components/faqs'
 import { Marketing } from '../components/marketing-info'
+import SwapWidget from '../components/swap'
 
 const Home: NextPage = () => {
   return (
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
           md: { py: '6' },
         }}
       >
-        <Swap />
+        <SwapWidget />
         <Marketing />
         <FAQs />
       </Flex>

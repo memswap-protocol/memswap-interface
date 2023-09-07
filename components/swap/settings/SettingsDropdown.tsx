@@ -8,7 +8,6 @@ import { DeadlineInput } from './DeadlineInput'
 import { SwapMode } from '../../../lib/types'
 
 type SettingsDropdownProps = {
-  swapMode: SwapMode
   slippagePercentage: string
   setSlippagePercentage: Dispatch<SetStateAction<string>>
   deadline: string
@@ -16,7 +15,6 @@ type SettingsDropdownProps = {
 }
 
 export const SettingsDropdown: FC<SettingsDropdownProps> = ({
-  swapMode,
   slippagePercentage,
   setSlippagePercentage,
   deadline,
