@@ -27,8 +27,26 @@ const GET_USER_INTENTS_QUERY = gql`
       orderDirection: "desc"
     ) {
       id
-      tokenIn
-      tokenOut
+      tokenIn {
+        id
+        isNative
+        isToken
+        chainId
+        decimals
+        symbol
+        name
+        address
+      }
+      tokenOut {
+        id
+        isNative
+        isToken
+        chainId
+        decimals
+        symbol
+        name
+        address
+      }
       maker
       matchmaker
       deadline
