@@ -3,14 +3,19 @@ import { MEMSWAP_ABI } from '../constants/abis'
 import { Address } from 'viem'
 import { paths } from '@reservoir0x/reservoir-sdk'
 
-// type Intent = AbiParametersToPrimitiveTypes<
+// type IntentERC20 = AbiParametersToPrimitiveTypes<
 //   ExtractAbiFunction<typeof MEMSWAP_ABI, 'post'>['inputs']
 // >['0'][0]
 
-type Intent = {
-  side: Side
-  tokenIn: string
-  tokenOut: string
+export enum Protocol {
+  ERC20,
+  ERC721,
+}
+
+type IntentERC20 = {
+  isBuy: boolean
+  buyToken: string
+  sellToken: string
   maker: string
   matchmaker: string
   source: string
@@ -24,13 +29,13 @@ type Intent = {
   endAmount: string
   startAmountBps: number
   expectedAmountBps: number
-  hasDynamicSignature: string //was string
+  hasDynamicSignature: boolean
   signature: string
 }
 
-export enum Side {
-  BUY,
-  SELL,
+type IntentERC721 = IntentERC20 & {
+  hasCriteria: boolean
+  tokenIdOrCriteria: string
 }
 
 type ApiIntent = {
@@ -72,7 +77,8 @@ type FetchBalanceResult = {
 }
 
 export {
-  type Intent,
+  type IntentERC20,
+  type IntentERC721,
   type Token,
   type Collection,
   type ApiIntent,

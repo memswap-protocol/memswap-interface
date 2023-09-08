@@ -4,9 +4,14 @@ import { Token } from '../types'
 export type ChainIdToAddress = { [chainId: number]: Address }
 
 // Protocol
-const MEMSWAP: ChainIdToAddress = {
+const MEMSWAP_ERC20: ChainIdToAddress = {
   1: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
-  5: '0x62e309adcf935d62f824081148798ef8a7466b66',
+  5: '0xd8c0e3287ba121925987baa85338b8a87574789e',
+}
+
+const MEMSWAP_ERC721: ChainIdToAddress = {
+  1: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
+  5: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
 }
 
 const MEMSWAP_WETH: ChainIdToAddress = {
@@ -57,7 +62,8 @@ const USDC_TOKENS: Record<number, Token> = {
 }
 
 export {
-  MEMSWAP,
+  MEMSWAP_ERC20,
+  MEMSWAP_ERC721,
   MEMSWAP_WETH,
   MATCHMAKER,
   SOLVER,

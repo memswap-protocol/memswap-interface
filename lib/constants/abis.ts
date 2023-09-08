@@ -1,5 +1,12 @@
 const MEMSWAP_ABI = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+  {
+    inputs: [
+      { internalType: 'address', name: 'permit2Address', type: 'address' },
+      { internalType: 'address', name: 'usdcAddress', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
   { inputs: [], name: 'AmountCheckFailed', type: 'error' },
   { inputs: [], name: 'AuthorizationAmountMismatch', type: 'error' },
   { inputs: [], name: 'AuthorizationIsExpired', type: 'error' },
@@ -51,22 +58,17 @@ const MEMSWAP_ABI = [
         name: 'intentHash',
         type: 'bytes32',
       },
-      {
-        indexed: false,
-        internalType: 'enum MemswapERC20.Side',
-        name: 'side',
-        type: 'uint8',
-      },
+      { indexed: false, internalType: 'bool', name: 'isBuy', type: 'bool' },
       {
         indexed: false,
         internalType: 'address',
-        name: 'tokenIn',
+        name: 'buyToken',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'address',
-        name: 'tokenOut',
+        name: 'sellToken',
         type: 'address',
       },
       {
@@ -84,13 +86,13 @@ const MEMSWAP_ABI = [
       {
         indexed: false,
         internalType: 'uint128',
-        name: 'amountIn',
+        name: 'buyAmount',
         type: 'uint128',
       },
       {
         indexed: false,
         internalType: 'uint128',
-        name: 'amountOut',
+        name: 'sellAmount',
         type: 'uint128',
       },
     ],
@@ -157,13 +159,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -212,13 +210,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -278,13 +272,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -336,16 +326,19 @@ const MEMSWAP_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'permit2',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -375,13 +368,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -411,13 +400,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -450,6 +435,19 @@ const MEMSWAP_ABI = [
         internalType: 'struct MemswapERC20.Solution',
         name: 'solution',
         type: 'tuple',
+      },
+      {
+        components: [
+          {
+            internalType: 'enum PermitExecutor.Kind',
+            name: 'kind',
+            type: 'uint8',
+          },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+        ],
+        internalType: 'struct PermitExecutor.Permit[]',
+        name: 'permits',
+        type: 'tuple[]',
       },
     ],
     name: 'solve',
@@ -461,13 +459,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -501,6 +495,19 @@ const MEMSWAP_ABI = [
         name: 'solution',
         type: 'tuple',
       },
+      {
+        components: [
+          {
+            internalType: 'enum PermitExecutor.Kind',
+            name: 'kind',
+            type: 'uint8',
+          },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+        ],
+        internalType: 'struct PermitExecutor.Permit[]',
+        name: 'permits',
+        type: 'tuple[]',
+      },
     ],
     name: 'solveWithOnChainAuthorizationCheck',
     outputs: [],
@@ -511,13 +518,9 @@ const MEMSWAP_ABI = [
     inputs: [
       {
         components: [
-          {
-            internalType: 'enum MemswapERC20.Side',
-            name: 'side',
-            type: 'uint8',
-          },
-          { internalType: 'address', name: 'tokenIn', type: 'address' },
-          { internalType: 'address', name: 'tokenOut', type: 'address' },
+          { internalType: 'bool', name: 'isBuy', type: 'bool' },
+          { internalType: 'address', name: 'buyToken', type: 'address' },
+          { internalType: 'address', name: 'sellToken', type: 'address' },
           { internalType: 'address', name: 'maker', type: 'address' },
           { internalType: 'address', name: 'matchmaker', type: 'address' },
           { internalType: 'address', name: 'source', type: 'address' },
@@ -577,10 +580,30 @@ const MEMSWAP_ABI = [
         name: 'auths',
         type: 'tuple[]',
       },
+      {
+        components: [
+          {
+            internalType: 'enum PermitExecutor.Kind',
+            name: 'kind',
+            type: 'uint8',
+          },
+          { internalType: 'bytes', name: 'data', type: 'bytes' },
+        ],
+        internalType: 'struct PermitExecutor.Permit[]',
+        name: 'permits',
+        type: 'tuple[]',
+      },
     ],
     name: 'solveWithSignatureAuthorizationCheck',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'usdc',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
     type: 'function',
   },
   { stateMutability: 'payable', type: 'receive' },

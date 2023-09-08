@@ -59,7 +59,7 @@ const useUniswapQuote = (
           TradeType.EXACT_INPUT,
           {
             type: SwapType.UNIVERSAL_ROUTER,
-            slippageTolerance: new Percent(5, 100),
+            slippageTolerance: new Percent(1, 100),
           },
           {
             protocols: [Protocol.V3, Protocol.V2],

@@ -19,7 +19,7 @@ import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
 import { chainDefaultTokens } from '../../../lib/constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
-import { SwapMode, Token } from '../../../lib/types'
+import { Protocol, SwapMode, Token } from '../../../lib/types'
 import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
@@ -332,6 +332,8 @@ const TokenSwap = () => {
       />
       <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
+        protocol={Protocol.ERC20}
+        isBuy={false}
         tokenIn={tokenIn}
         tokenOut={tokenOut}
         amountIn={amountIn}

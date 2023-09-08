@@ -13,6 +13,7 @@ import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { truncateAddress } from '../../lib/utils/truncate'
 import {
+  encodeIntentAbiParameters,
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
@@ -25,8 +26,6 @@ import {
   zeroAddress,
   encodeFunctionData,
   parseAbiItem,
-  encodeAbiParameters,
-  parseAbiParameters,
   Address,
   formatUnits,
 } from 'viem'
@@ -43,14 +42,16 @@ import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
 import { MEMSWAP_ABI } from '../../lib/constants/abis'
 import {
   MATCHMAKER,
-  MEMSWAP,
+  MEMSWAP_ERC20,
+  MEMSWAP_ERC721,
   MEMSWAP_WETH,
   WRAPPED_CONTRACTS,
 } from '../../lib/constants/contracts'
 import {
   FetchBalanceResult,
-  Intent,
-  Side,
+  IntentERC20,
+  IntentERC721,
+  Protocol,
   SwapMode,
   Token,
 } from '../../lib/types'
@@ -64,6 +65,8 @@ enum SwapStep {
 }
 
 type SwapModalProps = {
+  protocol: Protocol
+  isBuy: boolean
   tokenIn?: Token
   tokenOut?: Token
   tokenInBalance?: FetchBalanceResult
@@ -78,6 +81,8 @@ type SwapModalProps = {
 }
 
 export const SwapModal: FC<SwapModalProps> = ({
+  protocol,
+  isBuy,
   tokenIn,
   tokenOut,
   tokenInBalance,
@@ -114,7 +119,10 @@ export const SwapModal: FC<SwapModalProps> = ({
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
   // Conditional Variables
-  const memswapContract = MEMSWAP[chain.id]
+  const memswapContract =
+    protocol === Protocol.ERC20
+      ? MEMSWAP_ERC20[chain.id]
+      : MEMSWAP_ERC721[chain.id]
   const memswapWethContract = MEMSWAP_WETH[chain.id]
   const isMetamaskWallet = connector?.id === 'metaMask'
   const isEthToWethSwap =
@@ -173,11 +181,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           : tokenIn?.address
 
       // Create Intent
-      // @ts-ignore
-      const intent = {
-        side: Side.SELL,
-        tokenIn: processedTokenInAddress,
-        tokenOut: tokenOut.address,
+      const intent: IntentERC20 | IntentERC721 = {
+        isBuy: isBuy,
+        buyToken: processedTokenInAddress,
+        sellToken: tokenOut?.address,
         maker: address,
         matchmaker: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
         source: referrer ?? address,
@@ -187,39 +194,23 @@ export const SwapModal: FC<SwapModalProps> = ({
         endTime: await publicClient
           .getBlock()
           .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
-        nonce: 0, //@TODO: how to properly configure nonce?
+        nonce: '0',
         isPartiallyFillable: false,
-        amount: parsedAmountIn,
-        endAmount: parsedEndAmountOut,
-        startAmountBps: 5000, //@TODO: configure based on slippage
-        expectedAmountBps: 3000,
+        ...(protocol === Protocol.ERC721
+          ? { hasCriteria: false, tokenIdOrCriteria: 0 }
+          : {}),
+        amount: parsedAmountIn.toString(),
+        endAmount: parsedAmountOut.toString(),
+        startAmountBps: 1000,
+        expectedAmountBps: 500,
         hasDynamicSignature: false,
-      } as Intent
-
-      // @ts-ignore
-      // const intent = {
-      //   tokenIn: processedTokenInAddress,
-      //   tokenOut: tokenOut.address,
-      //   maker: address,
-      //   matchmaker: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
-      //   source: referrer ?? address,
-      //   feeBps: 0,
-      //   surplusBps: 0,
-      //   deadline: await publicClient
-      //     .getBlock()
-      //     .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
-      //   isPartiallyFillable: false,
-      //   // @TODO: having amountIn and endAmountOut as strings conflicts with the abi types
-      //   amountIn: parsedAmountIn.toString(),
-      //   // @TODO: configure amount outs with slippage
-      //   endAmountOut: parsedEndAmountOut.toString(),
-      //   startAmountBps: 0,
-      //   expectedAmountBps: 0,
-      // } as Intent
+        // Mock value to pass type checks
+        signature: '0x',
+      }
 
       intent.signature = await signTypedData({
-        domain: getEIP712Domain(chain.id),
-        types: getEIP712Types(),
+        domain: getEIP712Domain(protocol, chain.id),
+        types: getEIP712Types(protocol),
         message: intent,
         primaryType: 'Intent',
       })
@@ -239,49 +230,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         args: [memswapContract, parsedAmountIn],
       })
 
-      const encodedIntentData = encodeAbiParameters(
-        parseAbiParameters([
-          'uint8',
-          'address',
-          'address',
-          'address',
-          'address',
-          'address',
-          'uint16',
-          'uint16',
-          'uint32',
-          'uint32',
-          'uint256',
-          'bool',
-          'uint128',
-          'uint128',
-          'uint16',
-          'uint16',
-          'bool',
-          'bytes',
-        ]),
-        // @ts-ignore
-        [
-          intent.side,
-          intent.tokenIn,
-          intent.tokenOut,
-          intent.maker,
-          intent.matchmaker,
-          intent.source,
-          intent.feeBps,
-          intent.surplusBps,
-          intent.startTime,
-          intent.endTime,
-          intent.nonce,
-          intent.isPartiallyFillable,
-          intent.amount,
-          intent.endAmount,
-          intent.startAmountBps,
-          intent.expectedAmountBps,
-          intent.hasDynamicSignature,
-          (intent as any).signature,
-        ]
-      )
+      const encodedIntentData = encodeIntentAbiParameters(intent)
 
       const combinedEndcodedData =
         encodedApprovalData + encodedIntentData.slice(2)
