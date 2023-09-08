@@ -312,7 +312,8 @@ export const SwapModal: FC<SwapModalProps> = ({
           address: memswapContract,
           abi: MEMSWAP_ABI,
           functionName: 'post',
-          args: [intent],
+          // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
+          args: [[intent]],
           account: address,
           chainId: chain.id,
         })
@@ -365,7 +366,8 @@ export const SwapModal: FC<SwapModalProps> = ({
           address: memswapContract,
           abi: MEMSWAP_ABI,
           functionName: 'post',
-          args: [intent],
+          // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
+          args: [[intent]],
           account: address,
         })
 

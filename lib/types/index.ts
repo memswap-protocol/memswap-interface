@@ -14,11 +14,11 @@ export enum Protocol {
 
 type IntentERC20 = {
   isBuy: boolean
-  buyToken: string
-  sellToken: string
-  maker: string
-  matchmaker: string
-  source: string
+  buyToken: Address
+  sellToken: Address
+  maker: Address
+  matchmaker: Address
+  source: Address
   feeBps: number
   surplusBps: number
   startTime: number
@@ -30,7 +30,7 @@ type IntentERC20 = {
   startAmountBps: number
   expectedAmountBps: number
   hasDynamicSignature: boolean
-  signature: string
+  signature: Address
 }
 
 type IntentERC721 = IntentERC20 & {

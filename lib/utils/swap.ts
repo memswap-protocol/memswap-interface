@@ -3,6 +3,8 @@ import axios from 'axios'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import { IntentERC20, IntentERC721, Protocol } from '../types'
 import { MEMSWAP_ERC20, MEMSWAP_ERC721 } from '../constants/contracts'
+import { MEMSWAP_ABI } from '../constants/abis'
+import { defaultAbiCoder } from '@ethersproject/abi'
 
 const isERC721Intent = (intent: IntentERC20 | IntentERC721) =>
   'hasCriteria' in intent
