@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 import { Token } from '../types'
 
-type ChainIdToAddress = { [chainId: number]: Address }
+export type ChainIdToAddress = { [chainId: number]: Address }
 
 // Protocol
 const MEMSWAP: ChainIdToAddress = {

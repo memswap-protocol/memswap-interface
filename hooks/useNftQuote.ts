@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { zeroAddress } from 'viem'
 import axios from 'axios'
+import { paths } from '@reservoir0x/reservoir-sdk'
 
 const axiosFetcher = async (url: string, params: any) => {
   const { data } = await axios.post(url, params, {
@@ -46,7 +47,9 @@ const useNftQuote = (
     return null
   }, [baseApiUrl, amountOut, collection, options])
 
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error } = useSWR<
+    paths['/execute/buy/v7']['post']['responses']['200']['schema']
+  >(
     cacheKey,
     async ([url]: [string]) => {
       return await axiosFetcher(url, options)
@@ -59,7 +62,7 @@ const useNftQuote = (
 
   const totalQuote = useMemo(() => {
     if (!data) return 0
-    return data?.path?.reduce((total: number, path: any) => {
+    return data?.path?.reduce((total, path) => {
       return (
         total +
         Number(

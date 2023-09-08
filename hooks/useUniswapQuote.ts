@@ -66,9 +66,9 @@ const useUniswapQuote = (
           }
         )
 
-        const fetchedQuote = Number(route?.quote?.toSignificant(8))
+        const fetchedQuote = Number(route?.quote?.toExact())
         const fetchedEstimatedGasUsed = Number(
-          route?.estimatedGasUsedQuoteToken.toSignificant(8)
+          route?.estimatedGasUsedQuoteToken.toExact()
         )
 
         const totalEstimatedGasUsed =

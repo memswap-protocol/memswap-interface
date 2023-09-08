@@ -1,13 +1,4 @@
-import {
-  CSSProperties,
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { Dispatch, FC, SetStateAction, useMemo, useState } from 'react'
 import { Text, Button, Flex, Input, Box, Img } from '../../primitives'
 import { Modal } from '../../common/Modal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -24,6 +15,8 @@ import fetcher from '../../../lib/utils/fetcher'
 import { buildQueryString } from '../../../lib/utils/params'
 import { isAddress } from 'viem'
 import { formatNumber } from '../../../lib/utils/numbers'
+import { paths } from '@reservoir0x/reservoir-sdk'
+import useDefaultCollections from '../../../hooks/useDefaultCollections'
 
 type SelectCollectionModalProps = {
   tokenIn?: Token
@@ -41,6 +34,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [debouncedInput] = useDebounce(input, 500)
+  const defaultCollections = useDefaultCollections()
 
   const queryParams = useMemo(() => {
     if (isAddress(debouncedInput)) {
@@ -53,12 +47,14 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
       return buildQueryString({
         name: debouncedInput,
         displayCurrency: tokenIn?.address,
-        limit: 8,
+        limit: 6,
       })
     }
   }, [debouncedInput, tokenIn?.address])
 
-  const { data: results, isLoading } = useSWR(
+  const { data: results, isLoading } = useSWR<
+    paths['/collections/v6']['get']['responses']['200']['schema']
+  >(
     debouncedInput ? `${baseApiUrl}/collections/v6?${queryParams}` : null,
     (url: string) =>
       // We can't use a nextjs api as a proxy due to restrictions with ipfs deployments
@@ -67,6 +63,9 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
         'x-api-key': process.env.NEXT_PUBLIC_RESERVOIR_API_KEY || '',
       })
   )
+
+  const collectionsToDisplay =
+    results?.collections || (debouncedInput === '' ? defaultCollections : [])
 
   return (
     <Modal
@@ -80,6 +79,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
             flexShrink: 0,
             width: 'max-content',
             maxWidth: 200,
+            lineHeight: '20px',
           }}
         >
           {collection ? (
@@ -112,7 +112,14 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
     >
       <Flex
         direction="column"
-        css={{ width: '100%', height: '100%', gap: '3' }}
+        css={{
+          width: '100%',
+          height: '100%',
+          gap: '3',
+          md: {
+            width: 336,
+          },
+        }}
       >
         <Text style="h5">Select a collection</Text>
         <Input
@@ -126,15 +133,8 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
           onChange={(e) => setInput(e.target.value)}
         />
 
-        <Flex
-          direction="column"
-          css={{
-            minHeight: 400,
-            maxWidth: 500,
-            width: '100%',
-          }}
-        >
-          {results && results?.collections?.length > 0 ? (
+        <Flex direction="column" css={{ height: 400 }}>
+          {collectionsToDisplay && collectionsToDisplay?.length > 0 ? (
             <Flex direction="column" css={{ gap: '2' }}>
               <Flex justify="between">
                 <Text style="subtitle2" color="subtle">
@@ -149,7 +149,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
                 direction="column"
                 css={{ overflow: 'scroll', height: 400 }}
               >
-                {results?.collections?.map(
+                {collectionsToDisplay?.map(
                   (result: Collection, idx: number) => {
                     const isSelected = result?.id === collection?.id
                     return (
@@ -190,7 +190,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
                               {result?.name}
                             </Text>
                             <Text style="subtitle2" color="subtle">
-                              {formatNumber(result?.tokenCount)}
+                              {formatNumber(result?.tokenCount)} items
                             </Text>
                           </Flex>
                         </Flex>
@@ -211,12 +211,15 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
                 )}
               </Flex>
             </Flex>
-          ) : null}
-          {isLoading ? (
+          ) : isLoading ? (
             <Flex direction="column" align="center" css={{ py: '6' }}>
               <LoadingSpinner />
             </Flex>
-          ) : null}
+          ) : (
+            <Flex direction="column" align="center" css={{ py: '6' }}>
+              <Text style="subtitle1">No results found</Text>
+            </Flex>
+          )}
         </Flex>
       </Flex>
     </Modal>

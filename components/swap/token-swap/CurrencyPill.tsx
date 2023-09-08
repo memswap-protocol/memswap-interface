@@ -1,12 +1,23 @@
 import { FC } from 'react'
-import { Flex, Text } from '../../primitives'
-import { Token } from '../../../lib/types'
+import { Flex, Img, Text } from '../../primitives'
+import { Collection, Token } from '../../../lib/types'
 
 type Props = {
-  token?: Token
+  token?: Token | Collection
 }
 
 export const CurrencyPill: FC<Props> = ({ token }) => {
+  const isCollection = Boolean(token && 'id' in token)
+  const image = isCollection
+    ? (token as Collection).image
+    : (token as Token)?.logoURI
+  const altText = isCollection
+    ? (token as Collection).name
+    : (token as Token)?.name
+  const displayText = isCollection
+    ? (token as Collection).name
+    : (token as Token)?.symbol
+
   return (
     <Flex
       justify="between"
@@ -22,9 +33,9 @@ export const CurrencyPill: FC<Props> = ({ token }) => {
         border: '1px solid var(--borderColor)',
       }}
     >
-      <img
-        src={token?.logoURI || ''}
-        alt={token?.name}
+      <Img
+        src={image || ''}
+        alt={altText || ''}
         width={24}
         height={24}
         style={{
@@ -32,7 +43,7 @@ export const CurrencyPill: FC<Props> = ({ token }) => {
           borderRadius: '50%',
         }}
       />{' '}
-      <Text ellipsify>{token?.symbol}</Text>
+      <Text ellipsify>{displayText}</Text>
     </Flex>
   )
 }

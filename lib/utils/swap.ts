@@ -9,6 +9,8 @@ import axios from 'axios'
 const getIntentHash = (intent: Intent) =>
   _TypedDataEncoder.hashStruct('Intent', getEIP712Types(), intent)
 
+const now = () => Math.floor(Date.now() / 1000)
+
 const getEIP712Domain = (chainId: number) => ({
   name: 'Memswap',
   version: '1.0',
@@ -18,6 +20,10 @@ const getEIP712Domain = (chainId: number) => ({
 
 const getEIP712Types = () => ({
   Intent: [
+    {
+      name: 'side',
+      type: 'uint8',
+    },
     {
       name: 'tokenIn',
       type: 'address',
@@ -47,19 +53,27 @@ const getEIP712Types = () => ({
       type: 'uint16',
     },
     {
-      name: 'deadline',
+      name: 'startTime',
       type: 'uint32',
+    },
+    {
+      name: 'endTime',
+      type: 'uint32',
+    },
+    {
+      name: 'nonce',
+      type: 'uint256',
     },
     {
       name: 'isPartiallyFillable',
       type: 'bool',
     },
     {
-      name: 'amountIn',
+      name: 'amount',
       type: 'uint128',
     },
     {
-      name: 'endAmountOut',
+      name: 'endAmount',
       type: 'uint128',
     },
     {
@@ -69,6 +83,10 @@ const getEIP712Types = () => ({
     {
       name: 'expectedAmountBps',
       type: 'uint16',
+    },
+    {
+      name: 'hasDynamicSignature',
+      type: 'bool',
     },
   ],
 })
@@ -89,6 +107,7 @@ async function postPublicIntentToMatchmaker(intent: Intent, hash: Address) {
 
 export {
   getIntentHash,
+  now,
   getEIP712Domain,
   getEIP712Types,
   postPublicIntentToMatchmaker,

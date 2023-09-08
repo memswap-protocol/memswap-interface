@@ -4,11 +4,11 @@ import { formatNumber } from '../../../lib/utils/numbers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CurrencyPill } from './CurrencyPill'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { Token } from '../../../lib/types'
+import { Collection, Token } from '../../../lib/types'
 
 type IntentInfoProps = {
   tokenIn?: Token
-  tokenOut?: Token
+  tokenOut?: Token | Collection
   amountIn: string
   amountOut: string
 }

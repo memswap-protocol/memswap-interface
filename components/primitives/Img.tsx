@@ -25,8 +25,17 @@ const Img = ({ css, ...props }: ImgProps) => {
   }, [props.src])
 
   return imageBroken || !props.src ? (
-    <Flex css={{ ...css, background: 'gray3' }} justify="center" align="center">
-      <FontAwesomeIcon icon={faImage} size="2xl" />
+    <Flex
+      css={{
+        ...css,
+        background: 'gray3',
+        width: props.width,
+        height: props.height,
+      }}
+      justify="center"
+      align="center"
+    >
+      <FontAwesomeIcon icon={faImage} size="xl" />
     </Flex>
   ) : (
     <Image

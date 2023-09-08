@@ -1,12 +1,34 @@
 import { AbiParametersToPrimitiveTypes, ExtractAbiFunction } from 'abitype'
 import { MEMSWAP_ABI } from '../constants/abis'
 import { Address } from 'viem'
+import { paths } from '@reservoir0x/reservoir-sdk'
 
-type Intent = AbiParametersToPrimitiveTypes<
-  ExtractAbiFunction<typeof MEMSWAP_ABI, 'validate'>['inputs']
->['0'][0]
+// type Intent = AbiParametersToPrimitiveTypes<
+//   ExtractAbiFunction<typeof MEMSWAP_ABI, 'post'>['inputs']
+// >['0'][0]
 
-enum Side {
+type Intent = {
+  side: Side
+  tokenIn: string
+  tokenOut: string
+  maker: string
+  matchmaker: string
+  source: string
+  feeBps: number
+  surplusBps: number
+  startTime: number
+  endTime: number
+  nonce: string
+  isPartiallyFillable: boolean
+  amount: string
+  endAmount: string
+  startAmountBps: number
+  expectedAmountBps: number
+  hasDynamicSignature: string //was string
+  signature: string
+}
+
+export enum Side {
   BUY,
   SELL,
 }
@@ -36,44 +58,9 @@ type Token = {
   logoURI: string
 }
 
-type Collection = {
-  id?: string
-  name?: string
-  image?: string
-  tokenCount?: string
-  floorAsk?: {
-    id?: string | undefined
-    sourceDomain?: string | undefined
-    price?:
-      | {
-          currency?:
-            | {
-                contract?: string | undefined
-                name?: string | undefined
-                symbol?: string | undefined
-                decimals?: number | undefined
-              }
-            | undefined
-          amount?:
-            | {
-                raw?: string | undefined
-                decimal?: number | undefined
-                usd?: number | undefined
-                native?: number | undefined
-              }
-            | undefined
-          netAmount?:
-            | {
-                raw?: string | undefined
-                decimal?: number | undefined
-                usd?: number | undefined
-                native?: number | undefined
-              }
-            | undefined
-        }
-      | undefined
-  }
-}
+type Collection = NonNullable<
+  paths['/collections/v6']['get']['responses']['200']['schema']['collections']
+>[0]
 
 type SwapMode = 'Rapid' | 'Dutch' | 'Private'
 
@@ -86,7 +73,6 @@ type FetchBalanceResult = {
 
 export {
   type Intent,
-  type Side,
   type Token,
   type Collection,
   type ApiIntent,

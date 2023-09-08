@@ -16,6 +16,7 @@ import {
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
+  now,
   postPublicIntentToMatchmaker,
 } from '../../lib/utils/swap'
 import { _TypedDataEncoder } from '@ethersproject/hash'
@@ -46,7 +47,13 @@ import {
   MEMSWAP_WETH,
   WRAPPED_CONTRACTS,
 } from '../../lib/constants/contracts'
-import { FetchBalanceResult, Intent, SwapMode, Token } from '../../lib/types'
+import {
+  FetchBalanceResult,
+  Intent,
+  Side,
+  SwapMode,
+  Token,
+} from '../../lib/types'
 import axios from 'axios'
 
 enum SwapStep {
@@ -168,6 +175,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Create Intent
       // @ts-ignore
       const intent = {
+        side: Side.SELL,
         tokenIn: processedTokenInAddress,
         tokenOut: tokenOut.address,
         maker: address,
@@ -175,17 +183,39 @@ export const SwapModal: FC<SwapModalProps> = ({
         source: referrer ?? address,
         feeBps: 0,
         surplusBps: 0,
-        deadline: await publicClient
+        startTime: now(),
+        endTime: await publicClient
           .getBlock()
           .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
+        nonce: 0, //@TODO: how to properly configure nonce?
         isPartiallyFillable: false,
-        // @TODO: having amountIn and endAmountOut as strings conflicts with the abi types
-        amountIn: parsedAmountIn.toString(),
-        // @TODO: configure amount outs with slippage
-        endAmountOut: parsedEndAmountOut.toString(),
-        startAmountBps: 0,
-        expectedAmountBps: 0,
+        amount: parsedAmountIn,
+        endAmount: parsedEndAmountOut,
+        startAmountBps: 5000, //@TODO: configure based on slippage
+        expectedAmountBps: 3000,
+        hasDynamicSignature: false,
       } as Intent
+
+      // @ts-ignore
+      // const intent = {
+      //   tokenIn: processedTokenInAddress,
+      //   tokenOut: tokenOut.address,
+      //   maker: address,
+      //   matchmaker: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
+      //   source: referrer ?? address,
+      //   feeBps: 0,
+      //   surplusBps: 0,
+      //   deadline: await publicClient
+      //     .getBlock()
+      //     .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
+      //   isPartiallyFillable: false,
+      //   // @TODO: having amountIn and endAmountOut as strings conflicts with the abi types
+      //   amountIn: parsedAmountIn.toString(),
+      //   // @TODO: configure amount outs with slippage
+      //   endAmountOut: parsedEndAmountOut.toString(),
+      //   startAmountBps: 0,
+      //   expectedAmountBps: 0,
+      // } as Intent
 
       intent.signature = await signTypedData({
         domain: getEIP712Domain(chain.id),
@@ -211,6 +241,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       const encodedIntentData = encodeAbiParameters(
         parseAbiParameters([
+          'uint8',
           'address',
           'address',
           'address',
@@ -219,15 +250,19 @@ export const SwapModal: FC<SwapModalProps> = ({
           'uint16',
           'uint16',
           'uint32',
+          'uint32',
+          'uint256',
           'bool',
           'uint128',
           'uint128',
           'uint16',
           'uint16',
+          'bool',
           'bytes',
         ]),
         // @ts-ignore
         [
+          intent.side,
           intent.tokenIn,
           intent.tokenOut,
           intent.maker,
@@ -235,13 +270,16 @@ export const SwapModal: FC<SwapModalProps> = ({
           intent.source,
           intent.feeBps,
           intent.surplusBps,
-          intent.deadline,
+          intent.startTime,
+          intent.endTime,
+          intent.nonce,
           intent.isPartiallyFillable,
-          intent.amountIn,
-          intent.endAmountOut,
+          intent.amount,
+          intent.endAmount,
           intent.startAmountBps,
           intent.expectedAmountBps,
-          intent.signature,
+          intent.hasDynamicSignature,
+          (intent as any).signature,
         ]
       )
 
