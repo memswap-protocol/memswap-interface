@@ -165,6 +165,18 @@ export const SwapModal: FC<SwapModalProps> = ({
     }
 
     try {
+      // When isBuy = true:
+      // amount = buy amount
+      // endAmount = sell end amount
+      // startAmountBps = sell start amount bps
+      // expectedAmountBps = sell expected amount bps
+
+      // When isBuy = false:
+      // amount = sell amount
+      // endAmount = buy end amount
+      // startAmountBps = buy start amount bps
+      // expectedAmountBps = buy expected amount bps
+
       const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
       const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
 
