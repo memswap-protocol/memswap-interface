@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
@@ -19,7 +19,7 @@ import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
 import { chainDefaultTokens } from '../../../lib/constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
-import { Collection, SwapMode, Token } from '../../../lib/types'
+import { Collection, Protocol, SwapMode, Token } from '../../../lib/types'
 import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
@@ -27,9 +27,13 @@ import { SelectCollectionModal } from './SelectCollectionModal'
 import { SelectTokenModal } from '../shared/SelectTokenModal'
 import Tooltip from '../../primitives/Tooltip'
 
-const NFTSwap = () => {
+type NFTSwapProps = {
+  slippagePercentage: string
+  deadline: string
+}
+
+const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
   const isMounted = useMounted()
-  const router = useRouter()
   const { chain } = useSupportedNetwork()
   const defaultTokens = chainDefaultTokens[chain.id]
   const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
@@ -51,6 +55,22 @@ const NFTSwap = () => {
   const [amountOut, setAmountOut] = useState('1')
   const [debouncedAmountOut] = useDebounce(amountOut, 500)
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
+
+  // Deep Link Query Parameters
+  const { referrer: deepLinkReferrer } = useDeepLinkParams(tokenList)
+
+  const processedTokenOut: Token | undefined = useMemo(() => {
+    if (collection) {
+      return {
+        chainId: chain.id,
+        address: collection?.id! as Address,
+        name: collection?.name!,
+        symbol: collection?.name!,
+        decimals: 0,
+        logoURI: collection?.image!,
+      }
+    }
+  }, [collection])
 
   const {
     quote: amountInQuote,
@@ -241,10 +261,26 @@ const NFTSwap = () => {
         isFetchingQuote={isFetchingQuote}
         tokenIn={tokenIn}
         tokenOut={collection}
-        amountIn={amountInQuote}
+        amountIn={amountInQuote?.toString() || ''}
         amountOut={amountOut}
       />
+      {/* @TODO: fix prop types */}
       <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
+      <SwapModal
+        protocol={Protocol.ERC721}
+        isBuy={true}
+        tokenIn={tokenIn}
+        tokenOut={processedTokenOut}
+        amountIn={amountInQuote?.toString() || ''}
+        amountOut={amountOut}
+        referrer={deepLinkReferrer}
+        slippagePercentage={slippagePercentage}
+        deadline={deadline}
+        swapMode={swapMode}
+        tokenInBalance={tokenInBalance}
+        isFetchingQuote={isFetchingQuote}
+        errorFetchingQuote={errorFetchingQuote}
+      />
     </Flex>
   )
 }

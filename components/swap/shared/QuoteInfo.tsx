@@ -5,7 +5,6 @@ import { formatNumber } from '../../../lib/utils/numbers'
 import { Collection, Token } from '../../../lib/types'
 
 type QuoteInfoProps = {
-  // quotedAmountOut?: string
   tokenIn?: Token
   tokenOut?: Token | Collection
   amountIn: string

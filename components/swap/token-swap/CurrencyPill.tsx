@@ -25,6 +25,7 @@ export const CurrencyPill: FC<Props> = ({ token }) => {
         px: '3',
         py: '2',
         gap: '2',
+        maxWidth: 180,
         borderRadius: 99999,
         flexShrink: 0,
         width: 'max-content',

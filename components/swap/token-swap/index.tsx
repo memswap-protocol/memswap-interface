@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
@@ -24,7 +24,12 @@ import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 
-const TokenSwap = () => {
+type TokenSwapProps = {
+  slippagePercentage: string
+  deadline: string
+}
+
+const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   const isMounted = useMounted()
   const router = useRouter()
   const { chain } = useSupportedNetwork()
@@ -60,8 +65,6 @@ const TokenSwap = () => {
   const [amountIn, setAmountIn] = useState('')
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
   const [amountOut, setAmountOut] = useState('')
-  const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
-  const [deadline, setDeadline] = useState('5') // default 5 mins
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
 
   // Deep Link Query Parameters
@@ -333,6 +336,7 @@ const TokenSwap = () => {
       <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         protocol={Protocol.ERC20}
+        // @TODO: configure isBuy based on input last touched
         isBuy={false}
         tokenIn={tokenIn}
         tokenOut={tokenOut}

@@ -116,7 +116,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
           width: '100%',
           height: '100%',
           gap: '3',
-          md: {
+          sm: {
             width: 336,
           },
         }}

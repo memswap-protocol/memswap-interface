@@ -10,8 +10,8 @@ const MEMSWAP_ERC20: ChainIdToAddress = {
 }
 
 const MEMSWAP_ERC721: ChainIdToAddress = {
-  1: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
-  5: '0x63c9362a7bedc92dec83433c15d623fbd3e1e5a9',
+  1: '0xCC22E868f4E7fB16CDcBfc70DBdd2716c92f8862',
+  5: '0xCC22E868f4E7fB16CDcBfc70DBdd2716c92f8862',
 }
 
 const MEMSWAP_WETH: ChainIdToAddress = {

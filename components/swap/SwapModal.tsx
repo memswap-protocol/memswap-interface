@@ -48,6 +48,7 @@ import {
   WRAPPED_CONTRACTS,
 } from '../../lib/constants/contracts'
 import {
+  Collection,
   FetchBalanceResult,
   IntentERC20,
   IntentERC721,
@@ -125,6 +126,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       : MEMSWAP_ERC721[chain.id]
   const memswapWethContract = MEMSWAP_WETH[chain.id]
   const isMetamaskWallet = connector?.id === 'metaMask'
+
   const isEthToWethSwap =
     tokenIn?.address === zeroAddress &&
     tokenOut?.address === WRAPPED_CONTRACTS[chain.id]
@@ -165,6 +167,9 @@ export const SwapModal: FC<SwapModalProps> = ({
     }
 
     try {
+      const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
+      const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
+
       // When isBuy = true:
       // amount = buy amount
       // endAmount = sell end amount
@@ -177,8 +182,22 @@ export const SwapModal: FC<SwapModalProps> = ({
       // startAmountBps = buy start amount bps
       // expectedAmountBps = buy expected amount bps
 
-      const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
-      const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
+      let amount
+      let endAmount
+      let startAmountBps
+      let expectedAmountBps
+
+      if (isBuy) {
+        amount = parsedAmountOut
+        endAmount = parsedAmountIn
+        startAmountBps = 500
+        expectedAmountBps = 500
+      } else {
+        amount = parsedAmountIn
+        endAmount = parsedAmountOut
+        startAmountBps = 500
+        expectedAmountBps = 500
+      }
 
       const endAmountOut =
         Number(amountOut) * (1 - Number(slippagePercentage) / 100)
@@ -191,6 +210,9 @@ export const SwapModal: FC<SwapModalProps> = ({
         tokenIn?.address === zeroAddress
           ? memswapWethContract
           : tokenIn?.address
+
+      // const processedTokenOutAddress =
+      //   protocol === Protocol.ERC20 ? tokenOut?.address : tokenOut?.id
 
       // Create Intent
       const intent: IntentERC20 | IntentERC721 = {
@@ -211,17 +233,17 @@ export const SwapModal: FC<SwapModalProps> = ({
         ...(protocol === Protocol.ERC721
           ? { hasCriteria: false, tokenIdOrCriteria: 0 }
           : {}),
-        amount: parsedAmountIn.toString(),
-        endAmount: parsedAmountOut.toString(),
-        startAmountBps: 1000,
-        expectedAmountBps: 500,
+        amount: amount.toString(),
+        endAmount: endAmount.toString(),
+        startAmountBps: startAmountBps,
+        expectedAmountBps: expectedAmountBps,
         hasDynamicSignature: false,
         // Mock value to pass type checks
         signature: '0x',
       }
 
       intent.signature = await signTypedData({
-        domain: getEIP712Domain(protocol, chain.id),
+        domain: getEIP712Domain(chain.id, protocol),
         types: getEIP712Types(protocol),
         message: intent,
         primaryType: 'Intent',
