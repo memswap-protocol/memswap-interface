@@ -26,7 +26,7 @@ const useWethEthSwap = ({
   const { toast } = useToast()
 
   const parsedAmountIn = amountIn
-    ? parseUnits(amountIn, tokenIn?.decimals || 18)
+    ? Math.floor(Number(amountIn)).toString()
     : undefined
 
   const { config } = usePrepareContractWrite({

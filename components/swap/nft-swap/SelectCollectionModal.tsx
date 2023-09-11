@@ -152,6 +152,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
                 {collectionsToDisplay?.map(
                   (result: Collection, idx: number) => {
                     const isSelected = result?.id === collection?.id
+
                     return (
                       <Flex
                         key={idx}

@@ -65,7 +65,9 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   const [amountIn, setAmountIn] = useState('')
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
   const [amountOut, setAmountOut] = useState('')
+  const [debouncedAmountOut] = useDebounce(amountOut, 500)
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
+  const [isBuy, setIsBuy] = useState(false)
 
   // Deep Link Query Parameters
   const {
@@ -85,31 +87,63 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   }, [deepLinkTokenIn, deepLinkTokenOut, deepLinkReferrer])
 
   const {
-    quote,
+    quoteAmountIn,
+    quoteAmountOut,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useUniswapQuote(alphaRouter, Number(debouncedAmountIn), tokenIn, tokenOut)
-
-  const { quote: tokenInUSD } = useUniswapQuote(
+    setIsAutoUpdate,
+  } = useUniswapQuote(
     alphaRouter,
+    isBuy,
     Number(debouncedAmountIn),
+    Number(debouncedAmountOut),
     tokenIn,
-    USDC_TOKENS[chain?.id || 1]
-  )
-
-  const { quote: tokenOutUSD } = useUniswapQuote(
-    alphaRouter,
-    Number(amountOut),
-    tokenOut,
-    USDC_TOKENS[chain?.id || 1]
+    tokenOut
   )
 
   useEffect(() => {
-    setAmountOut(quote ?? '')
-  }, [quote])
+    if (!isFetchingQuote && !errorFetchingQuote) {
+      setIsAutoUpdate(true)
+      setAmountIn(quoteAmountIn ?? '')
+    }
+  }, [quoteAmountIn])
+
+  useEffect(() => {
+    if (!isFetchingQuote && !errorFetchingQuote) {
+      setIsAutoUpdate(true)
+      setAmountOut(quoteAmountOut ?? '')
+    }
+  }, [quoteAmountOut])
+
+  console.log('quoteAmountOut: ', quoteAmountOut)
+
+  // useEffect(() => {
+  //   if (!isFetchingQuote && !errorFetchingQuote) {
+  //     setIsAutoUpdate(true)
+  //     setAmountOut(quoteAmountOut ?? '')
+  //   }
+  // }, [quoteAmountOut])
+
+  // const { quote: tokenInUSD } = useUniswapQuote(
+  //   alphaRouter,
+  //   Number(debouncedAmountIn),
+  //   tokenIn,
+  //   USDC_TOKENS[chain.id]
+  // )
+
+  // const { quote: tokenOutUSD } = useUniswapQuote(
+  //   alphaRouter,
+  //   Number(amountOut),
+  //   tokenOut,
+  //   USDC_TOKENS[chain.id]
+  // )
+
+  // useEffect(() => {
+  //   setAmountOut(quote ?? '')
+  // }, [quote])
 
   const { data: tokenInBalance } = useBalance({
-    chainId: chain?.id || 1,
+    chainId: chain.id,
     address: tokenIn ? address : undefined,
     watch: true,
     token:
@@ -120,7 +154,7 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   })
 
   const { data: tokenOutBalance } = useBalance({
-    chainId: chain?.id || 1,
+    chainId: chain.id,
     address: tokenOut ? address : undefined,
     watch: true,
     token:
@@ -195,7 +229,8 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
               inputMode="decimal"
               autoComplete="off"
               autoCorrect="off"
-              pattern="^[0-9]*[.]?[0-9]*$"
+              pattern="^[0-9]+(\.[0-9]*)?$"
+              ellipsify
               size="large"
               css={{
                 backgroundColor: 'transparent',
@@ -209,15 +244,17 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
                 const regex = /^[0-9]+(\.[0-9]*)?$/
 
                 if (regex.test(inputValue) || inputValue === '') {
+                  setIsAutoUpdate(false)
                   setAmountIn(inputValue)
+                  setIsBuy(false)
                 }
               }}
             />
-            {tokenInUSD ? (
+            {/* {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null}
+            ) : null} */}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
@@ -278,23 +315,36 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
           <Flex direction="column" align="start" css={{ gap: '2' }}>
             <Input
               type="text"
-              disabled={true}
               placeholder="0"
+              inputMode="decimal"
+              autoComplete="off"
+              autoCorrect="off"
+              pattern="^[0-9]+(\.[0-9]*)?$"
               size="large"
               ellipsify
               css={{
                 backgroundColor: 'transparent',
-                p: 0,
                 borderRadius: 0,
-                _focus: { boxShadow: 'none' },
+                p: 0,
+                _focus: { boxShadow: 'none', outline: 'none' },
               }}
-              value={formatNumber(amountOut, 8)}
+              value={amountOut}
+              onChange={(e) => {
+                const inputValue = e.target.value
+                const regex = /^[0-9]+(\.[0-9]*)?$/
+
+                if (regex.test(inputValue) || inputValue === '') {
+                  setIsAutoUpdate(false)
+                  setAmountOut(inputValue)
+                  setIsBuy(true)
+                }
+              }}
             />
-            {tokenOutUSD ? (
+            {/* {tokenOutUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenOutUSD))}
               </Text>
-            ) : null}
+            ) : null} */}
           </Flex>
 
           <Flex
@@ -336,8 +386,7 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
       <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         protocol={Protocol.ERC20}
-        // @TODO: configure isBuy based on input last touched
-        isBuy={false}
+        isBuy={isBuy}
         tokenIn={tokenIn}
         tokenOut={tokenOut}
         amountIn={amountIn}

@@ -78,15 +78,15 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
     isError: errorFetchingQuote,
   } = useNftQuote(tokenIn, collection, Number(amountOut))
 
-  const { quote: tokenInUSD } = useUniswapQuote(
-    alphaRouter,
-    Number(amountIn),
-    tokenIn,
-    USDC_TOKENS[chain?.id || 1]
-  )
+  // const { quote: tokenInUSD } = useUniswapQuote(
+  //   alphaRouter,
+  //   Number(amountIn),
+  //   tokenIn,
+  //   USDC_TOKENS[chain.id]
+  // )
 
   const { data: tokenInBalance } = useBalance({
-    chainId: chain?.id || 1,
+    chainId: chain.id,
     address: tokenIn ? address : undefined,
     watch: true,
     token:
@@ -145,11 +145,11 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
               }}
               value={amountInQuote}
             />
-            {tokenInUSD ? (
+            {/* {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null}
+            ) : null} */}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
