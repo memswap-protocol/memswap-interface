@@ -14,6 +14,18 @@ import useSupportedNetwork from './useSupportedNetwork'
 // Approximation for gas used by swap logic
 const defaultGas = 200000n
 
+/**
+ * useUniswapQuote - A React hook for fetching and managing quotes from uniswap's smart order router.
+ *
+ * @param {AlphaRouter} router - The Uniswap AlphaRouter to route the trade.
+ * @param {boolean} isBuy - A flag indicating if the trade is a buy or sell.
+ * @param {number} amountIn - The input amount for the trade.
+ * @param {number} amountOut - The output amount for the trade.
+ * @param {Token} [tokenIn] - The input token.
+ * @param {Token} [tokenOut] - The output token.
+ *
+ **/
+
 const useUniswapQuote = (
   router: AlphaRouter,
   isBuy: boolean,
@@ -23,11 +35,11 @@ const useUniswapQuote = (
   tokenOut?: Token
 ) => {
   const { chain } = useSupportedNetwork()
-  const [quoteAmountIn, setQuoteAmountIn] = useState<string | undefined>()
-  const [quoteAmountOut, setQuoteAmountOut] = useState<string | undefined>()
+  const [quote, setQuote] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
-  const [isAutoUpdate, setIsAutoUpdate] = useState(false)
+  const [isAutoUpdate, setIsAutoUpdate] = useState(false) // Used to ignore an automatic refresh that could be triggered by amountIn or amountOut
+  const [shouldRefresh, setShouldRefresh] = useState(false) // Setter to trigger a manual quote refresh
 
   const isEthToWethSwap = useIsEthToWethSwap(
     tokenIn?.address,
@@ -53,8 +65,6 @@ const useUniswapQuote = (
 
         let route
 
-        console.log('fetching quote')
-
         if (isBuy) {
           const parsedAmountOut = parseUnits(
             amountOut.toString(),
@@ -79,8 +89,6 @@ const useUniswapQuote = (
             tokenIn?.decimals || 18
           ).toString()
 
-          console.log(parsedAmountIn, fromToken, toToken)
-
           route = await router!.route(
             CurrencyAmount.fromRawAmount(fromToken, parsedAmountIn),
             toToken,
@@ -95,24 +103,24 @@ const useUniswapQuote = (
           )
         }
 
+        if (
+          !route?.quote?.toExact() ||
+          !route?.estimatedGasUsedQuoteToken.toExact()
+        ) {
+          throw new Error('Missing quote or estimated gas information')
+        }
+
         const fetchedQuote = Number(route?.quote?.toExact())
         const fetchedEstimatedGasUsed = Number(
           route?.estimatedGasUsedQuoteToken.toExact()
         )
 
-        console.log(fetchedQuote)
-
         const totalEstimatedGasUsed =
           Number(formatGwei(defaultGas, 'wei')) + fetchedEstimatedGasUsed
-
         const totalQuote = Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
 
         if (!isCancelled) {
-          if (isBuy) {
-            setQuoteAmountIn(totalQuote.toString())
-          } else {
-            setQuoteAmountOut(totalQuote.toString())
-          }
+          setQuote(totalQuote.toString())
           setIsLoading(false)
         }
       } catch (error) {
@@ -124,34 +132,35 @@ const useUniswapQuote = (
       }
     }
 
-    if (isBuy && !amountOut) {
-      setQuoteAmountIn('')
-      return
-    }
-
-    if (!isBuy && !amountIn) {
-      setQuoteAmountOut('')
+    if ((isBuy && !amountOut) || (!isBuy && !amountIn)) {
+      setQuote('')
       return
     }
 
     if (isEthToWethSwap || tokenIn?.address === tokenOut?.address) {
       resetState()
       if (isBuy) {
-        setQuoteAmountIn(amountOut ? amountOut.toString() : undefined)
+        setQuote(amountOut ? amountOut.toString() : undefined)
       } else {
-        setQuoteAmountOut(amountIn ? amountIn.toString() : undefined)
+        setQuote(amountIn ? amountIn.toString() : undefined)
       }
-      return
-    }
-
-    if (isAutoUpdate) {
-      setIsAutoUpdate(false)
       return
     }
 
     // If the required conditions are not met, reset state.
     if (!tokenIn || !tokenOut || !router) {
       resetState()
+      return
+    }
+
+    if (shouldRefresh) {
+      fetchQuote()
+      setShouldRefresh(false) // Reset it back to false
+      return
+    }
+
+    if (isAutoUpdate) {
+      setIsAutoUpdate(false)
       return
     }
 
@@ -166,6 +175,7 @@ const useUniswapQuote = (
     tokenOut,
     amountIn,
     amountOut,
+    shouldRefresh,
     router,
     isEthToWethSwap,
     chain?.id,
@@ -173,11 +183,11 @@ const useUniswapQuote = (
   ])
 
   return {
-    quoteAmountIn,
-    quoteAmountOut,
+    quote,
     isLoading,
     isError,
     setIsAutoUpdate,
+    setShouldRefresh,
   }
 }
 

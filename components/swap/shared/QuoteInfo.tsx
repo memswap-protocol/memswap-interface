@@ -61,7 +61,7 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
         <Flex align="center" justify="between" css={{ gap: '4' }}>
           <Text style="body2">Best Price</Text>
           <Text style="body2" color="subtle" ellipsify>
-            1 {tokenIn?.symbol} = {formatNumber(bestPrice, 8)}{' '}
+            1 {tokenIn?.symbol} = {bestPrice ? formatNumber(bestPrice, 8) : 0}{' '}
             {tokenOut && 'symbol' in tokenOut
               ? tokenOut?.symbol
               : tokenOut?.name}

@@ -500,15 +500,19 @@ export const SwapModal: FC<SwapModalProps> = ({
       return 'Select a token'
     }
     if (
+      !isBuy &&
       Number(amountIn) >
-      Number(
-        formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
-      )
+        Number(
+          formatUnits(
+            tokenInBalance?.value || 0n,
+            tokenInBalance?.decimals || 18
+          )
+        )
     ) {
       return 'Insufficient Balance'
     }
     if (!amountIn) {
-      return `Enter ${tokenIn?.symbol} amount`
+      return `Enter an amount`
     }
     if (tokenIn?.symbol === 'ETH' && tokenOut?.symbol === 'WETH') {
       return 'Wrap'
@@ -543,6 +547,7 @@ export const SwapModal: FC<SwapModalProps> = ({
             !(Number(amountOut) > 0) ||
             Number(amountIn) === 0 ||
             !(
+              !isBuy &&
               Number(
                 formatUnits(
                   tokenInBalance?.value || 0n,

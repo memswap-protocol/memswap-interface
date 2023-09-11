@@ -87,11 +87,11 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   }, [deepLinkTokenIn, deepLinkTokenOut, deepLinkReferrer])
 
   const {
-    quoteAmountIn,
-    quoteAmountOut,
+    quote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
     setIsAutoUpdate,
+    setShouldRefresh,
   } = useUniswapQuote(
     alphaRouter,
     isBuy,
@@ -104,43 +104,36 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
   useEffect(() => {
     if (!isFetchingQuote && !errorFetchingQuote) {
       setIsAutoUpdate(true)
-      setAmountIn(quoteAmountIn ?? '')
+      if (isBuy) {
+        setAmountIn(quote ?? '')
+      } else {
+        setAmountOut(quote ?? '')
+      }
     }
-  }, [quoteAmountIn])
+  }, [quote])
 
+  // Refresh quote when tokenIn or tokenOut changes
   useEffect(() => {
-    if (!isFetchingQuote && !errorFetchingQuote) {
-      setIsAutoUpdate(true)
-      setAmountOut(quoteAmountOut ?? '')
-    }
-  }, [quoteAmountOut])
+    setShouldRefresh(true)
+  }, [tokenIn, tokenOut])
 
-  console.log('quoteAmountOut: ', quoteAmountOut)
+  const { quote: tokenInUSD } = useUniswapQuote(
+    alphaRouter,
+    false,
+    Number(debouncedAmountIn),
+    0,
+    tokenIn,
+    USDC_TOKENS[chain.id]
+  )
 
-  // useEffect(() => {
-  //   if (!isFetchingQuote && !errorFetchingQuote) {
-  //     setIsAutoUpdate(true)
-  //     setAmountOut(quoteAmountOut ?? '')
-  //   }
-  // }, [quoteAmountOut])
-
-  // const { quote: tokenInUSD } = useUniswapQuote(
-  //   alphaRouter,
-  //   Number(debouncedAmountIn),
-  //   tokenIn,
-  //   USDC_TOKENS[chain.id]
-  // )
-
-  // const { quote: tokenOutUSD } = useUniswapQuote(
-  //   alphaRouter,
-  //   Number(amountOut),
-  //   tokenOut,
-  //   USDC_TOKENS[chain.id]
-  // )
-
-  // useEffect(() => {
-  //   setAmountOut(quote ?? '')
-  // }, [quote])
+  const { quote: tokenOutUSD } = useUniswapQuote(
+    alphaRouter,
+    false,
+    Number(debouncedAmountOut),
+    0,
+    tokenOut,
+    USDC_TOKENS[chain.id]
+  )
 
   const { data: tokenInBalance } = useBalance({
     chainId: chain.id,
@@ -250,11 +243,11 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
                 }
               }}
             />
-            {/* {tokenInUSD ? (
+            {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null} */}
+            ) : null}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
@@ -340,11 +333,11 @@ const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
                 }
               }}
             />
-            {/* {tokenOutUSD ? (
+            {tokenOutUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenOutUSD))}
               </Text>
-            ) : null} */}
+            ) : null}
           </Flex>
 
           <Flex
