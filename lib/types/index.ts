@@ -64,7 +64,7 @@ type Token = {
 }
 
 type Collection = NonNullable<
-  paths['/collections/v6']['get']['responses']['200']['schema']['collections']
+  paths['/collections/v7']['get']['responses']['200']['schema']['collections']
 >[0]
 
 type SwapMode = 'Rapid' | 'Dutch' | 'Private'

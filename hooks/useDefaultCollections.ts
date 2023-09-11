@@ -14,13 +14,13 @@ const useDefaultCollections = () => {
   const defaultCollections = chainDefaultCollections[chain.id]
 
   const queryParams = useMemo(() => {
-    return buildQueryString({ contracts: defaultCollections, limit: 6 })
+    return buildQueryString({ contract: defaultCollections, limit: 6 })
   }, [chain])
 
   const { data: results } = useSWR<
-    paths['/collections/v6']['get']['responses']['200']['schema']
+    paths['/collections/v7']['get']['responses']['200']['schema']
   >(
-    `${baseApiUrl}/collections/v6?${queryParams}`,
+    `${baseApiUrl}/collections/v7?${queryParams}`,
     (url: string) =>
       // We can't use a nextjs api as a proxy due to restrictions with ipfs deployments
       // Protect the api key by setting an allowist domain instead

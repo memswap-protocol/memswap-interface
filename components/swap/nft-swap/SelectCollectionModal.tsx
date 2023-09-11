@@ -53,9 +53,9 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
   }, [debouncedInput, tokenIn?.address])
 
   const { data: results, isLoading } = useSWR<
-    paths['/collections/v6']['get']['responses']['200']['schema']
+    paths['/collections/v7']['get']['responses']['200']['schema']
   >(
-    debouncedInput ? `${baseApiUrl}/collections/v6?${queryParams}` : null,
+    debouncedInput ? `${baseApiUrl}/collections/v7?${queryParams}` : null,
     (url: string) =>
       // We can't use a nextjs api as a proxy due to restrictions with ipfs deployments
       // Protect the api key by setting an allowist domain instead

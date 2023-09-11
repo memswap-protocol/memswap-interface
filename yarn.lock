@@ -2042,10 +2042,10 @@
     qrcode "1.5.0"
     react-remove-scroll "2.5.4"
 
-"@reservoir0x/reservoir-sdk@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@reservoir0x/reservoir-sdk/-/reservoir-sdk-1.4.1.tgz#9e4e2d87fd5bb6ea35bf60a8e206b0134cb1e53c"
-  integrity sha512-rn2uO4UT9JyV+G394+l1wjcBuCc7muODrVwFShc/kgFDFxWLKFQwRywf612maB7X1vcdCAJpvgg814x3627/8g==
+"@reservoir0x/reservoir-sdk@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@reservoir0x/reservoir-sdk/-/reservoir-sdk-1.4.2.tgz#eff0919cf72647f90cfeac7166e173fdef6a8120"
+  integrity sha512-5pYWmz8XnzX/GyMKAJsbN3IZQmvvb51thlNZ99+QuF3I6U4UGnki53KOy1vIiRYrHy4AEWc9KAOfR3cJL7CD9g==
   dependencies:
     axios "^0.27.2"
 
