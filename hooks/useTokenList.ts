@@ -15,7 +15,7 @@ import useSupportedNetwork from './useSupportedNetwork'
  * Upon the initial load, the hook checks for any pre-existing token list data in local storage.
  * If found, it uses that data to avoid unnecessary network requests.
  *
- * Otherwise, it fetches the list and stores the fetched data in local
+ * Otherwise, it fetches the list and stores the fetched data in local storage
  * for future use.
  */
 function useTokenList() {

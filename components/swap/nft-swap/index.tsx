@@ -59,7 +59,7 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
   // Deep Link Query Parameters
   const { referrer: deepLinkReferrer } = useDeepLinkParams(tokenList)
 
-  const processedTokenOut: Token | undefined = useMemo(() => {
+  const collectionAsTokenOut: Token | undefined = useMemo(() => {
     if (collection) {
       return {
         chainId: chain.id,
@@ -270,7 +270,7 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
         protocol={Protocol.ERC721}
         isBuy={true}
         tokenIn={tokenIn}
-        tokenOut={processedTokenOut}
+        tokenOut={collectionAsTokenOut}
         amountIn={amountInQuote?.toString() || ''}
         amountOut={amountOut}
         referrer={deepLinkReferrer}
