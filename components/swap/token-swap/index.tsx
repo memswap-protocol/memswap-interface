@@ -11,13 +11,11 @@ import { SwapModal } from '../SwapModal'
 import {
   useDeepLinkParams,
   useMounted,
-  useTokenList,
   useUniswapQuote,
   useSupportedNetwork,
 } from '../../../hooks'
 import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
-import { chainDefaultTokens } from '../../../lib/constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
 import { Protocol, SwapMode, Token } from '../../../lib/types'
 import { ModeToggle } from '../shared/ModeToggle'
@@ -27,14 +25,21 @@ import { AlphaRouter } from '@uniswap/smart-order-router'
 type TokenSwapProps = {
   slippagePercentage: string
   deadline: string
+  tokenList: Token[]
+  loadingTokenList: boolean
+  defaultTokens: Token[]
 }
 
-const TokenSwap: FC<TokenSwapProps> = ({ slippagePercentage, deadline }) => {
+const TokenSwap: FC<TokenSwapProps> = ({
+  slippagePercentage,
+  deadline,
+  tokenList,
+  loadingTokenList,
+  defaultTokens,
+}) => {
   const isMounted = useMounted()
   const router = useRouter()
   const { chain } = useSupportedNetwork()
-  const defaultTokens = chainDefaultTokens[chain.id]
-  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
   const { address } = useAccount({
     onConnect() {
       if (chain?.id !== 1) {

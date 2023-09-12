@@ -5,8 +5,17 @@ import * as Tabs from '@radix-ui/react-tabs'
 import { SettingsDropdown } from './settings/SettingsDropdown'
 import TokenSwap from './token-swap'
 import NFTSwap from './nft-swap'
+import { chainDefaultTokens } from '../../lib/constants/chainDefaultTokens'
+import { useSupportedNetwork, useTokenList } from '../../hooks'
+import useDefaultCollections from '../../hooks/useDefaultCollections'
 
 const SwapWidget = () => {
+  // Global configuration
+  const { chain } = useSupportedNetwork()
+  const defaultTokens = chainDefaultTokens[chain.id]
+  const defaultCollections = useDefaultCollections()
+  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
+
   // Global states
   const [tabValue, setTabValue] = useState('tokens')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
@@ -42,12 +51,19 @@ const SwapWidget = () => {
           <TokenSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
+            tokenList={tokenList}
+            loadingTokenList={loadingTokenList}
+            defaultTokens={defaultTokens}
           />
         </TabsContent>
         <TabsContent value="nfts">
           <NFTSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
+            tokenList={tokenList}
+            loadingTokenList={loadingTokenList}
+            defaultTokens={defaultTokens}
+            defaultCollections={defaultCollections}
           />
         </TabsContent>
       </Tabs.Root>

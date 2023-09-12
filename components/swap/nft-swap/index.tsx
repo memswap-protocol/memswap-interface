@@ -1,5 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
+import { FC, useMemo, useState } from 'react'
 import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
@@ -10,14 +9,12 @@ import { SwapModal } from '../SwapModal'
 import {
   useDeepLinkParams,
   useMounted,
-  useTokenList,
   useUniswapQuote,
   useSupportedNetwork,
   useNftQuote,
 } from '../../../hooks'
 import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
-import { chainDefaultTokens } from '../../../lib/constants/chainDefaultTokens'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
 import { Collection, Protocol, SwapMode, Token } from '../../../lib/types'
 import { ModeToggle } from '../shared/ModeToggle'
@@ -30,13 +27,22 @@ import Tooltip from '../../primitives/Tooltip'
 type NFTSwapProps = {
   slippagePercentage: string
   deadline: string
+  tokenList: Token[]
+  loadingTokenList: boolean
+  defaultTokens: Token[]
+  defaultCollections?: Collection[]
 }
 
-const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
+const NFTSwap: FC<NFTSwapProps> = ({
+  slippagePercentage,
+  deadline,
+  tokenList,
+  loadingTokenList,
+  defaultTokens,
+  defaultCollections,
+}) => {
   const isMounted = useMounted()
   const { chain } = useSupportedNetwork()
-  const defaultTokens = chainDefaultTokens[chain.id]
-  const { tokens: tokenList, loading: loadingTokenList } = useTokenList()
   const { address } = useAccount()
 
   const provider = useEthersProvider()
@@ -50,7 +56,9 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
 
   // Intent states
   const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
-  const [collection, setCollection] = useState<Collection | undefined>()
+  const [collection, setCollection] = useState<Collection | undefined>(
+    defaultCollections?.[0]
+  )
   const [amountOut, setAmountOut] = useState('1')
   const [debouncedAmountOut] = useDebounce(amountOut, 500)
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
@@ -256,6 +264,7 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
               tokenIn={tokenIn}
               collection={collection}
               setCollection={setCollection}
+              defaultCollections={defaultCollections}
             />
           </Flex>
         </Flex>

@@ -1,4 +1,11 @@
-import { Dispatch, FC, SetStateAction, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react'
 import { Text, Button, Flex, Input, Box, Img } from '../../primitives'
 import { Modal } from '../../common/Modal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,19 +29,20 @@ type SelectCollectionModalProps = {
   tokenIn?: Token
   collection?: Collection
   setCollection: Dispatch<SetStateAction<Collection | undefined>>
+  defaultCollections?: Collection[]
 }
 
 export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
   tokenIn,
   collection,
   setCollection,
+  defaultCollections,
 }) => {
   const { chain } = useSupportedNetwork()
   const baseApiUrl = useReservoirBaseApiUrl(chain)
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [debouncedInput] = useDebounce(input, 500)
-  const defaultCollections = useDefaultCollections()
 
   const queryParams = useMemo(() => {
     if (isAddress(debouncedInput)) {
