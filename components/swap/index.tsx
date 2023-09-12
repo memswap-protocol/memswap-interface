@@ -8,7 +8,7 @@ import NFTSwap from './nft-swap'
 
 const SwapWidget = () => {
   // Global states
-  const [tabValue, setTabValue] = useState('nft')
+  const [tabValue, setTabValue] = useState('tokens')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
   const [deadline, setDeadline] = useState('5') // default 5 mins
 
@@ -28,8 +28,8 @@ const SwapWidget = () => {
       <Tabs.Root value={tabValue} onValueChange={(value) => setTabValue(value)}>
         <Flex justify="between" align="center" css={{ gap: '4', mb: '3' }}>
           <TabsList>
-            <TabsTrigger value="nft">NFT</TabsTrigger>
-            <TabsTrigger value="token">Token</TabsTrigger>
+            <TabsTrigger value="tokens">Tokens</TabsTrigger>
+            <TabsTrigger value="nfts">NFTs</TabsTrigger>
           </TabsList>
           <SettingsDropdown
             slippagePercentage={slippagePercentage}
@@ -38,14 +38,14 @@ const SwapWidget = () => {
             setDeadline={setDeadline}
           />
         </Flex>
-        <TabsContent value="nft">
-          <NFTSwap
+        <TabsContent value="tokens">
+          <TokenSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
           />
         </TabsContent>
-        <TabsContent value="token">
-          <TokenSwap
+        <TabsContent value="nfts">
+          <NFTSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
           />
