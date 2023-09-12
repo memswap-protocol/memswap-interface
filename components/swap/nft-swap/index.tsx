@@ -135,6 +135,7 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
               type="text"
               placeholder="0"
               disabled={true}
+              ellipsify
               inputMode="decimal"
               autoComplete="off"
               autoCorrect="off"

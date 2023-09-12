@@ -59,7 +59,9 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
 
       {!isFetchingQuote && !errorFetchingQuote ? (
         <Flex align="center" justify="between" css={{ gap: '4' }}>
-          <Text style="body2">Best Price</Text>
+          <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
+            Best Price
+          </Text>
           <Text style="body2" color="subtle" ellipsify>
             1 {tokenIn?.symbol} = {bestPrice ? formatNumber(bestPrice, 8) : 0}{' '}
             {tokenOut && 'symbol' in tokenOut

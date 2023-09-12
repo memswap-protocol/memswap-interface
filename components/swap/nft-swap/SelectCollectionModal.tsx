@@ -140,7 +140,10 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
           onChange={(e) => setInput(e.target.value)}
         />
 
-        <Flex direction="column" css={{ height: 400 }}>
+        <Flex
+          direction="column"
+          css={{ height: 400, maxWidth: 268, sm: { maxWidth: '100%' } }}
+        >
           {collectionsToDisplay && collectionsToDisplay?.length > 0 ? (
             <Flex direction="column" css={{ gap: '2' }}>
               <Flex justify="between">
