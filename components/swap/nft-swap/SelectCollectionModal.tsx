@@ -44,6 +44,12 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
   const [input, setInput] = useState('')
   const [debouncedInput] = useDebounce(input, 500)
 
+  useEffect(() => {
+    if (!open) {
+      setInput('')
+    }
+  }, [open])
+
   const queryParams = useMemo(() => {
     if (isAddress(debouncedInput)) {
       return buildQueryString({

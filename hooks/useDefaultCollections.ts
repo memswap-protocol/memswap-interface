@@ -6,6 +6,7 @@ import { chainDefaultCollections } from '../lib/constants/chainDefaultCollection
 import { useMemo } from 'react'
 import { buildQueryString } from '../lib/utils/params'
 import { paths } from '@reservoir0x/reservoir-sdk'
+import { zeroAddress } from 'viem'
 
 const useDefaultCollections = () => {
   const { chain } = useSupportedNetwork()
@@ -14,7 +15,11 @@ const useDefaultCollections = () => {
   const defaultCollections = chainDefaultCollections[chain.id]
 
   const queryParams = useMemo(() => {
-    return buildQueryString({ contract: defaultCollections, limit: 6 })
+    return buildQueryString({
+      contract: defaultCollections,
+      displayCurrency: zeroAddress,
+      limit: 6,
+    })
   }, [chain])
 
   const { data: results } = useSWR<
