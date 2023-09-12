@@ -40,17 +40,24 @@ type IntentERC721 = IntentERC20 & {
 
 type ApiIntent = {
   id: Address
-  tokenIn: Address
-  tokenOut: Address
+  isBuy: boolean
+  buyToken: Address
+  sellToken: Address
   maker: Address
   matchmaker: Address
-  deadline: number
+  source: Address
+  feeBps: number
+  surplusBps: number
+  startTime: number
+  endTime: number
   isPartiallyFillable: boolean
-  amountIn: bigint
-  endAmountOut: bigint
-  events: string[]
+  amount: bigint
+  endAmount: bigint
+  startAmountBps: number
+  expectedAmountBps: number
   isCancelled: boolean
-  isValidated: boolean
+  isPreValidated: boolean
+  events: string[]
   amountFilled: bigint
 }
 

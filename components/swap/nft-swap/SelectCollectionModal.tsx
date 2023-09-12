@@ -108,7 +108,9 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
       onOpenChange={(openChange) => {
         setOpen(openChange)
       }}
-      contentCss={{ overflow: 'hidden' }}
+      contentCss={{
+        overflow: 'hidden',
+      }}
     >
       <Flex
         direction="column"
@@ -129,7 +131,12 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Box>
           }
-          css={{ mb: '1' }}
+          css={{
+            mb: '1',
+            _placeholder: {
+              textOverflow: 'ellipsis',
+            },
+          }}
           onChange={(e) => setInput(e.target.value)}
         />
 

@@ -16,24 +16,36 @@ type OrderStatus = 'pending' | 'cancelled' | 'expired' | 'completed'
 
 const statusToUI = {
   pending: {
-    icon: faClock,
     text: 'Pending',
-    color: 'yellow10',
+    icon: (
+      <Box css={{ color: 'yellow10' }}>
+        <FontAwesomeIcon icon={faClock} />
+      </Box>
+    ),
   },
   cancelled: {
-    icon: faCircleXmark,
     text: 'Cancelled',
-    color: 'red10',
+    icon: (
+      <Box css={{ color: 'red10' }}>
+        <FontAwesomeIcon icon={faCircleXmark} />
+      </Box>
+    ),
   },
   expired: {
-    icon: faClock,
     text: 'Expired',
-    color: 'gray9',
+    icon: (
+      <Box css={{ color: 'gray9' }}>
+        <FontAwesomeIcon icon={faClock} />
+      </Box>
+    ),
   },
   completed: {
-    icon: faCircleCheck,
     text: 'Completed',
-    color: 'green10',
+    icon: (
+      <Box css={{ color: 'green10' }}>
+        <FontAwesomeIcon icon={faCircleCheck} />
+      </Box>
+    ),
   },
 }
 
@@ -42,11 +54,11 @@ export const OrderStatus: FC<OrderStatusProps> = ({ intent }) => {
 
   if (intent.isCancelled) {
     orderStatus = 'cancelled'
-  } else if (intent.isValidated) {
+  } else if (intent.isPreValidated) {
     orderStatus = 'completed'
   }
   // Get the current Unix timestamp in seconds - UTC time
-  else if (Math.floor(Date.now() / 1000) >= intent.deadline) {
+  else if (Math.floor(Date.now() / 1000) >= intent.endTime) {
     orderStatus = 'expired'
   } else {
     orderStatus = 'pending'
@@ -56,9 +68,7 @@ export const OrderStatus: FC<OrderStatusProps> = ({ intent }) => {
 
   return (
     <Flex align="center" css={{ gap: '2' }}>
-      <Box css={{ color: ui.color }}>
-        <FontAwesomeIcon icon={ui.icon} />
-      </Box>
+      {ui.icon}
       <Text style="subtitle2">{ui.text}</Text>
     </Flex>
   )

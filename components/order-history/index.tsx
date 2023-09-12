@@ -2,12 +2,15 @@ import useSWR from 'swr'
 import { request, gql } from 'graphql-request'
 import { useAccount } from 'wagmi'
 import { ApiIntent } from '../../lib/types'
-import { Flex, Text } from '../primitives'
+import { Box, Flex, Text } from '../primitives'
 import { Grid, GridItem } from '../primitives/Grid'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { OrderStatus } from './OrderStatus'
 import { Deadline } from './Deadline'
 import { useMounted } from '../../hooks'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { formatUnits } from 'viem'
 
 type IntentHistoryResponse = {
   intents: ApiIntent[]
@@ -23,11 +26,12 @@ const GET_USER_INTENTS_QUERY = gql`
   query GetUserIntents($maker: String!) {
     intents(
       where: { maker: $maker }
-      orderBy: "deadline"
+      orderBy: "startTime"
       orderDirection: "desc"
     ) {
       id
-      tokenIn {
+      isBuy
+      sellToken {
         id
         isNative
         isToken
@@ -37,7 +41,7 @@ const GET_USER_INTENTS_QUERY = gql`
         name
         address
       }
-      tokenOut {
+      buyToken {
         id
         isNative
         isToken
@@ -49,13 +53,19 @@ const GET_USER_INTENTS_QUERY = gql`
       }
       maker
       matchmaker
-      deadline
+      source
+      feeBps
+      surplusBps
+      startTime
+      endTime
       isPartiallyFillable
-      amountIn
-      endAmountOut
-      events
+      amount
+      endAmount
+      startAmountBps
+      expectedAmountBps
       isCancelled
-      isValidated
+      isPreValidated
+      events
       amountFilled
     }
   }
@@ -122,12 +132,29 @@ const UserOrderHistory = () => {
                   borderBottomColor: 'gray6',
                 }}
               >
-                <GridItem></GridItem>
-
                 <GridItem>
-                  <Deadline deadline={intent.deadline} />
+                  <Flex align="center" css={{ gap: '2' }}>
+                    <Text style="subtitle2" ellipsify>
+                      {formatUnits(intent.amount, intent.sellToken.decimals)}{' '}
+                      {intent.buyToken.symbol}
+                    </Text>
+                    <Box>
+                      <FontAwesomeIcon icon={faArrowRight} />
+                    </Box>
+                    <Text style="subtitle2" ellipsify>
+                      {formatUnits(intent.endAmount, intent.buyToken.decimals)}{' '}
+                      {intent.buyToken.symbol}
+                    </Text>
+                  </Flex>
                 </GridItem>
-                <GridItem></GridItem>
+                <GridItem>
+                  <Deadline deadline={intent.endTime} />
+                </GridItem>
+                <GridItem>
+                  <Text style="subtitle2" ellipsify>
+                    {formatUnits(intent.endAmount, intent.buyToken.decimals)}
+                  </Text>
+                </GridItem>
                 <GridItem key={intent.id}>
                   <OrderStatus intent={intent} />
                 </GridItem>

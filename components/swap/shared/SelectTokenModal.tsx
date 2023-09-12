@@ -179,7 +179,12 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Box>
           }
-          css={{ mb: '1' }}
+          css={{
+            mb: '1',
+            _placeholder: {
+              textOverflow: 'ellipsis',
+            },
+          }}
           onChange={(e) => handleSearch(e)}
         />
         {loadingTokenList ? (
