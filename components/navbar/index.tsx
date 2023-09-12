@@ -1,4 +1,4 @@
-import { Anchor, Flex, Box } from '../primitives'
+import { Anchor, Flex, Box, Text } from '../primitives'
 import Image from 'next/image'
 import { ConnectWalletButton } from './ConnectWalletButton'
 import Link from 'next/link'
@@ -32,42 +32,60 @@ const Navbar = () => {
       }}
     >
       <Flex align="center" css={{ gap: '5' }}>
-        <Link href="/">
-          {isSmallDevice ? (
-            <Image
-              src="/memswap-logo-small.svg"
-              alt="MemSwap"
-              width={33}
-              height={33}
-            />
-          ) : (
-            <Image
-              src="/memswap-logo.svg"
-              alt="MemSwap"
-              width={144}
-              height={22}
-            />
-          )}
-        </Link>
+        <Flex align="center" css={{ gap: '2' }}>
+          <Link href="/">
+            {isSmallDevice ? (
+              <Image
+                src="/mobile-logo.svg"
+                alt="MemSwap"
+                width={50}
+                height={31}
+              />
+            ) : (
+              <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
+            )}
+          </Link>
+          {!isSmallDevice ? (
+            <Text
+              style="subtitle3"
+              css={{
+                backgroundColor: 'primary9',
+                color: 'white',
+                py: '1',
+                px: '2',
+                borderRadius: 100,
+              }}
+            >
+              ALPHA
+            </Text>
+          ) : null}
+        </Flex>
         {/* @TODO: add links */}
-        <Anchor
-          href=""
-          target="_blank"
-          color="gray"
-          css={{ display: 'none', md: { display: 'block' } }}
-        >
-          <Flex align="center" css={{ gap: '2' }}>
-            Docs
-            <Box css={{ color: 'gray11' }}>
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </Box>
-          </Flex>
-        </Anchor>
+        <Flex align="center" css={{ gap: '5' }}>
+          {!isSmallDevice ? (
+            <Anchor href="/" color="gray">
+              Swap
+            </Anchor>
+          ) : null}
+          <Anchor href="/history" color="gray">
+            History
+          </Anchor>
+          <Anchor
+            href=""
+            target="_blank"
+            color="gray"
+            css={{ display: 'none', md: { display: 'block' } }}
+          >
+            <Flex align="center" css={{ gap: '2' }}>
+              Docs
+              <Box css={{ color: 'gray11' }}>
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+              </Box>
+            </Flex>
+          </Anchor>
+        </Flex>
       </Flex>
       <Flex align="center" css={{ gap: '3', md: { gap: '5' } }}>
-        <Anchor href="/history" color="gray">
-          History
-        </Anchor>
         <ConnectWalletButton
           css={{ fontSize: 14, fontWeight: 500, px: '3', py: '3' }}
         >

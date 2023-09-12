@@ -39,7 +39,7 @@ export const CurrencyPill: FC<Props> = ({ token }) => {
         alt={altText || ''}
         width={24}
         height={24}
-        style={{
+        css={{
           aspectRatio: '1/1',
           borderRadius: '50%',
         }}

@@ -39,7 +39,7 @@ import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './token-swap/IntentInfo'
 import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
-import { MEMSWAP_ABI } from '../../lib/constants/abis'
+import { MEMSWAP_ERC20_ABI } from '../../lib/constants/abis'
 import {
   MATCHMAKER,
   MEMSWAP_ERC20,
@@ -119,6 +119,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
   // Conditional Variables
+  const memswapAbi = MEMSWAP_ERC20_ABI
   const memswapContract =
     protocol === Protocol.ERC20
       ? MEMSWAP_ERC20[chain.id]
@@ -189,13 +190,13 @@ export const SwapModal: FC<SwapModalProps> = ({
       if (isBuy) {
         amount = parsedAmountOut
         endAmount = parsedAmountIn
-        startAmountBps = 500
-        expectedAmountBps = 500
+        startAmountBps = Number(slippagePercentage) * 100
+        expectedAmountBps = Number(slippagePercentage) * 100
       } else {
         amount = parsedAmountIn
         endAmount = parsedAmountOut
-        startAmountBps = 500
-        expectedAmountBps = 500
+        startAmountBps = Number(slippagePercentage) * 100
+        expectedAmountBps = Number(slippagePercentage) * 100
       }
 
       const processedTokenInAddress =
@@ -209,7 +210,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         buyToken: processedTokenInAddress,
         sellToken: tokenOut?.address,
         maker: address,
-        matchmaker: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
+        solver: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
         source: referrer ?? address,
         feeBps: 0,
         surplusBps: 0,
@@ -219,14 +220,14 @@ export const SwapModal: FC<SwapModalProps> = ({
           .then((b) => Number(b!.timestamp) + Number(deadline) * 60),
         nonce: '0',
         isPartiallyFillable: false,
+        isSmartOrder: false,
         ...(protocol === Protocol.ERC721
-          ? { hasCriteria: false, tokenIdOrCriteria: 0 }
+          ? { isCriteriaOrder: false, tokenIdOrCriteria: '0' }
           : {}),
         amount: amount.toString(),
-        endAmount: endAmount.toString(),
+        expectedAmount: endAmount.toString(),
         startAmountBps: startAmountBps,
-        expectedAmountBps: expectedAmountBps,
-        hasDynamicSignature: false,
+        endAmountBps: expectedAmountBps,
         // Mock value to pass type checks
         signature: '0x',
       }
@@ -321,7 +322,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         // Otherwise, call 'post' method on Memswap contract
         const { hash } = await writeContract({
           address: memswapContract,
-          abi: MEMSWAP_ABI,
+          abi: memswapAbi,
           functionName: 'post',
           // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
           args: [[intent]],
@@ -375,7 +376,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         const { hash: intentTransactionHash } = await writeContract({
           chainId: chain.id,
           address: memswapContract,
-          abi: MEMSWAP_ABI,
+          abi: memswapAbi,
           functionName: 'post',
           // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
           args: [[intent]],
@@ -454,7 +455,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   const unwatch = useContractEvent({
     chainId: chain.id,
     address: waitingForFulfillment ? memswapContract : undefined,
-    abi: MEMSWAP_ABI,
+    abi: memswapAbi,
     eventName: 'IntentSolved',
     // @TODO: add timeout
     listener(log) {
@@ -534,16 +535,16 @@ export const SwapModal: FC<SwapModalProps> = ({
             isFetchingQuote ||
             errorFetchingQuote ||
             !(Number(amountOut) > 0) ||
-            Number(amountIn) === 0 ||
-            !(
-              !isBuy &&
-              Number(
-                formatUnits(
-                  tokenInBalance?.value || 0n,
-                  tokenInBalance?.decimals || 18
-                )
-              ) >= Number(amountIn)
-            )
+            Number(amountIn) === 0
+        // !(
+        //   !isBuy &&
+        //   Number(
+        //     formatUnits(
+        //       tokenInBalance?.value || 0n,
+        //       tokenInBalance?.decimals || 18
+        //     )
+        //   ) >= Number(amountIn)
+        // )
       }
     >
       {getButtonText()}

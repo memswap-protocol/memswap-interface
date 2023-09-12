@@ -3,11 +3,11 @@ import axios from 'axios'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import { IntentERC20, IntentERC721, Protocol } from '../types'
 import { MEMSWAP_ERC20, MEMSWAP_ERC721 } from '../constants/contracts'
-import { MEMSWAP_ABI } from '../constants/abis'
+import { MEMSWAP_ERC20_ABI } from '../constants/abis'
 import { defaultAbiCoder } from '@ethersproject/abi'
 
 const isERC721Intent = (intent: IntentERC20 | IntentERC721) =>
-  'hasCriteria' in intent
+  'isCriteriaOrder' in intent
 
 // Need to use TypedDataEncoder from @ethersproject for now as viem's hashStruct function is not currently exported
 // See here for more info: https://github.com/wagmi-dev/viem/discussions/761
@@ -49,7 +49,7 @@ const getEIP712Types = (protocol: Protocol) => ({
       type: 'address',
     },
     {
-      name: 'matchmaker',
+      name: 'solver',
       type: 'address',
     },
     {
@@ -80,10 +80,14 @@ const getEIP712Types = (protocol: Protocol) => ({
       name: 'isPartiallyFillable',
       type: 'bool',
     },
+    {
+      name: 'isSmartOrder',
+      type: 'bool',
+    },
     ...(protocol === Protocol.ERC721
       ? [
           {
-            name: 'hasCriteria',
+            name: 'isCriteriaOrder',
             type: 'bool',
           },
           {
@@ -97,7 +101,7 @@ const getEIP712Types = (protocol: Protocol) => ({
       type: 'uint128',
     },
     {
-      name: 'endAmount',
+      name: 'expectedAmount',
       type: 'uint128',
     },
     {
@@ -105,17 +109,14 @@ const getEIP712Types = (protocol: Protocol) => ({
       type: 'uint16',
     },
     {
-      name: 'expectedAmountBps',
+      name: 'endAmountBps',
       type: 'uint16',
-    },
-    {
-      name: 'hasDynamicSignature',
-      type: 'bool',
     },
   ],
 })
 
 const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
+  console.log(isERC721Intent(intent))
   return encodeAbiParameters(
     parseAbiParameters([
       'bool',
@@ -130,12 +131,12 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       'uint32',
       'uint256',
       'bool',
-      ...(isERC721Intent(intent) ? ['bool', 'uint128'] : []),
-      'uint128',
-      'uint128',
-      'uint16',
-      'uint16',
       'bool',
+      ...(isERC721Intent(intent) ? ['bool', 'uint256'] : []),
+      'uint128',
+      'uint128',
+      'uint16',
+      'uint16',
       'bytes',
     ]),
     // @ts-ignore
@@ -144,7 +145,7 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       intent.buyToken,
       intent.sellToken,
       intent.maker,
-      intent.matchmaker,
+      intent.solver,
       intent.source,
       intent.feeBps,
       intent.surplusBps,
@@ -152,14 +153,14 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       intent.endTime,
       intent.nonce,
       intent.isPartiallyFillable,
-      ...('hasCriteria' in intent
-        ? [intent.hasCriteria, intent.tokenIdOrCriteria]
+      intent.isSmartOrder,
+      ...('isCriteriaOrder' in intent
+        ? [intent.isCriteriaOrder, intent.tokenIdOrCriteria]
         : []),
       intent.amount,
-      intent.endAmount,
+      intent.expectedAmount,
       intent.startAmountBps,
-      intent.expectedAmountBps,
-      intent.hasDynamicSignature,
+      intent.endAmountBps,
       intent.signature,
     ]
   )

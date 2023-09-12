@@ -1,11 +1,11 @@
 import { AbiParametersToPrimitiveTypes, ExtractAbiFunction } from 'abitype'
-import { MEMSWAP_ABI } from '../constants/abis'
+import { MEMSWAP_ERC20_ABI } from '../constants/abis'
 import { Address } from 'viem'
 import { paths } from '@reservoir0x/reservoir-sdk'
 import { Token as UniswapToken } from '@uniswap/sdk-core'
 
 // type IntentERC20 = AbiParametersToPrimitiveTypes<
-//   ExtractAbiFunction<typeof MEMSWAP_ABI, 'post'>['inputs']
+//   ExtractAbiFunction<typeof MEMSWAP_ERC20_ABI, 'post'>['inputs']
 // >['0'][0]
 
 export enum Protocol {
@@ -18,7 +18,7 @@ type IntentERC20 = {
   buyToken: Address
   sellToken: Address
   maker: Address
-  matchmaker: Address
+  solver: Address
   source: Address
   feeBps: number
   surplusBps: number
@@ -26,16 +26,16 @@ type IntentERC20 = {
   endTime: number
   nonce: string
   isPartiallyFillable: boolean
+  isSmartOrder: boolean
   amount: string
-  endAmount: string
+  expectedAmount: string
   startAmountBps: number
-  expectedAmountBps: number
-  hasDynamicSignature: boolean
+  endAmountBps: number
   signature: Address
 }
 
 type IntentERC721 = IntentERC20 & {
-  hasCriteria: boolean
+  isCriteriaOrder: boolean
   tokenIdOrCriteria: string
 }
 
