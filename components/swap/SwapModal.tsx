@@ -48,7 +48,6 @@ import {
   WRAPPED_CONTRACTS,
 } from '../../lib/constants/contracts'
 import {
-  Collection,
   FetchBalanceResult,
   IntentERC20,
   IntentERC721,
@@ -199,20 +198,10 @@ export const SwapModal: FC<SwapModalProps> = ({
         expectedAmountBps = 500
       }
 
-      const endAmountOut =
-        Number(amountOut) * (1 - Number(slippagePercentage) / 100)
-      const parsedEndAmountOut = parseUnits(
-        endAmountOut.toString(),
-        tokenOut?.decimals || 18
-      )
-
       const processedTokenInAddress =
         tokenIn?.address === zeroAddress
           ? memswapWethContract
           : tokenIn?.address
-
-      // const processedTokenOutAddress =
-      //   protocol === Protocol.ERC20 ? tokenOut?.address : tokenOut?.id
 
       // Create Intent
       const intent: IntentERC20 | IntentERC721 = {

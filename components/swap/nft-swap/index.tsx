@@ -51,7 +51,6 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
   // Intent states
   const [tokenIn, setTokenIn] = useState<Token | undefined>(defaultTokens[0])
   const [collection, setCollection] = useState<Collection | undefined>()
-  const [amountIn, setAmountIn] = useState('')
   const [amountOut, setAmountOut] = useState('1')
   const [debouncedAmountOut] = useDebounce(amountOut, 500)
   const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
@@ -70,20 +69,24 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
         logoURI: collection?.image!,
       }
     }
-  }, [collection])
+  }, [collection, chain])
 
   const {
     quote: amountInQuote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
-  } = useNftQuote(tokenIn, collection, Number(amountOut))
+  } = useNftQuote(tokenIn, collection, Number(debouncedAmountOut))
 
-  // const { quote: tokenInUSD } = useUniswapQuote(
-  //   alphaRouter,
-  //   Number(amountIn),
-  //   tokenIn,
-  //   USDC_TOKENS[chain.id]
-  // )
+  const amountIn = amountInQuote?.toString() || ''
+
+  const { quote: tokenInUSD } = useUniswapQuote(
+    alphaRouter,
+    false,
+    Number(amountIn),
+    0,
+    tokenIn,
+    USDC_TOKENS[chain.id]
+  )
 
   const { data: tokenInBalance } = useBalance({
     chainId: chain.id,
@@ -145,11 +148,11 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
               }}
               value={amountInQuote}
             />
-            {/* {tokenInUSD ? (
+            {tokenInUSD ? (
               <Text style="subtitle2" color="subtle">
                 {formatDollar(Number(tokenInUSD))}
               </Text>
-            ) : null} */}
+            ) : null}
           </Flex>
           <Flex direction="column" align="end" css={{ gap: '2' }}>
             <SelectTokenModal
@@ -261,18 +264,17 @@ const NFTSwap: FC<NFTSwapProps> = ({ slippagePercentage, deadline }) => {
         isFetchingQuote={isFetchingQuote}
         tokenIn={tokenIn}
         tokenOut={collection}
-        amountIn={amountInQuote?.toString() || ''}
-        amountOut={amountOut}
+        amountIn={amountIn}
+        amountOut={debouncedAmountOut}
       />
-      {/* @TODO: fix prop types */}
       <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         protocol={Protocol.ERC721}
         isBuy={true}
         tokenIn={tokenIn}
         tokenOut={collectionAsTokenOut}
-        amountIn={amountInQuote?.toString() || ''}
-        amountOut={amountOut}
+        amountIn={amountIn}
+        amountOut={debouncedAmountOut}
         referrer={deepLinkReferrer}
         slippagePercentage={slippagePercentage}
         deadline={deadline}

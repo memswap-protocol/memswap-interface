@@ -2,6 +2,7 @@ import { AbiParametersToPrimitiveTypes, ExtractAbiFunction } from 'abitype'
 import { MEMSWAP_ABI } from '../constants/abis'
 import { Address } from 'viem'
 import { paths } from '@reservoir0x/reservoir-sdk'
+import { Token as UniswapToken } from '@uniswap/sdk-core'
 
 // type IntentERC20 = AbiParametersToPrimitiveTypes<
 //   ExtractAbiFunction<typeof MEMSWAP_ABI, 'post'>['inputs']
@@ -41,8 +42,8 @@ type IntentERC721 = IntentERC20 & {
 type ApiIntent = {
   id: Address
   isBuy: boolean
-  buyToken: Address
-  sellToken: Address
+  buyToken: UniswapToken
+  sellToken: UniswapToken
   maker: Address
   matchmaker: Address
   source: Address
