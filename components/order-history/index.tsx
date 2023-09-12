@@ -135,24 +135,27 @@ const UserOrderHistory = () => {
                 <GridItem>
                   <Flex align="center" css={{ gap: '2' }}>
                     <Text style="subtitle2" ellipsify>
-                      {formatUnits(intent.amount, intent.sellToken.decimals)}{' '}
-                      {intent.buyToken.symbol}
+                      {formatUnits(intent?.amount, intent?.sellToken?.decimals)}{' '}
+                      {intent?.buyToken?.symbol}
                     </Text>
                     <Box>
                       <FontAwesomeIcon icon={faArrowRight} />
                     </Box>
                     <Text style="subtitle2" ellipsify>
-                      {formatUnits(intent.endAmount, intent.buyToken.decimals)}{' '}
-                      {intent.buyToken.symbol}
+                      {formatUnits(
+                        intent?.endAmount,
+                        intent?.buyToken?.decimals
+                      )}{' '}
+                      {intent?.buyToken?.symbol}
                     </Text>
                   </Flex>
                 </GridItem>
                 <GridItem>
-                  <Deadline deadline={intent.endTime} />
+                  <Deadline deadline={intent?.endTime} />
                 </GridItem>
                 <GridItem>
                   <Text style="subtitle2" ellipsify>
-                    {formatUnits(intent.endAmount, intent.buyToken.decimals)}
+                    {formatUnits(intent?.endAmount, intent?.buyToken?.decimals)}
                   </Text>
                 </GridItem>
                 <GridItem key={intent.id}>

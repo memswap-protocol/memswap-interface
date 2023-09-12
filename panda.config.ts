@@ -25,7 +25,7 @@ export default defineConfig({
   conditions: {
     extend: {
       typeNumber: '&[type=number]',
-      placeholder: '&[placeholder]',
+      placeholder_parent: '&[placeholder]',
       spinButtons: '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button',
       data_state_active: '&[data-state="active"]',
       data_state_open: '&[data-state="open"]',

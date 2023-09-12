@@ -90,6 +90,7 @@ export type Conditions = {
 	"_horizontal": string
 	"_vertical": string
 	"_typeNumber": string
+	"_placeholder_parent": string
 	"_spinButtons": string
 	"_data_state_active": string
 	"_data_state_open": string

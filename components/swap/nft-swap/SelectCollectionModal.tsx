@@ -133,7 +133,7 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
           }
           css={{
             mb: '1',
-            _placeholder: {
+            _placeholder_parent: {
               textOverflow: 'ellipsis',
             },
           }}

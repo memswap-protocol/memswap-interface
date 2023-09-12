@@ -14,7 +14,7 @@ type Props = {
  * @param description - The description of the page.
  */
 export const Head: FC<Props> = ({
-  ogImage = '',
+  ogImage = 'og-image.png',
   title = 'MemSwap',
   description = 'A Decentralized “Intents-based” Protocol for Efficient and Transparent Token Swaps Leveraging the Ethereum Mempool',
 }) => {

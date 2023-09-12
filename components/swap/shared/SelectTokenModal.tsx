@@ -181,7 +181,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
           }
           css={{
             mb: '1',
-            _placeholder: {
+            _placeholder_parent: {
               textOverflow: 'ellipsis',
             },
           }}
