@@ -19,9 +19,9 @@ export const HighFeesWarning = () => {
         gap: '4',
       }}
     >
-      <Box css={{ color: 'red10' }}>
-        <FontAwesomeIcon icon={faTriangleExclamation} />
-      </Box>
+      <Flex css={{ color: 'red10' }}>
+        <FontAwesomeIcon icon={faTriangleExclamation} size="1x" />
+      </Flex>
       <Text style="subtitle2">Fees exceed 30% of the swap amount</Text>
     </Flex>
   )
