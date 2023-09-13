@@ -379,7 +379,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
         </Flex>
       </Flex>
 
-      <Flex align="center" css={{ gap: '5' }}>
+      <Flex align="center" css={{ gap: '3', sm: { gap: '5' } }}>
         <Anchor href="" target="_blank" color="gray">
           <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
             Swap Mode

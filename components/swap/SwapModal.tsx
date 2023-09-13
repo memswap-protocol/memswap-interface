@@ -232,9 +232,9 @@ export const SwapModal: FC<SwapModalProps> = ({
           ? { isCriteriaOrder: false, tokenIdOrCriteria: '0' }
           : {}),
         amount: amount.toString(),
-        expectedAmount: endAmount.toString(),
+        endAmount: endAmount.toString(),
         startAmountBps: startAmountBps,
-        endAmountBps: expectedAmountBps,
+        expectedAmountBps: expectedAmountBps,
         // Mock value to pass type checks
         signature: '0x',
       }
@@ -313,8 +313,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           ],
         })
 
+        const protocolRoute = protocol === Protocol.ERC721 ? 'erc721' : 'erc20'
+
         await axios.post(
-          `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/intents/private`,
+          `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/${protocolRoute}/intents/private`,
           {
             intent,
             approvalTxOrTxHash: privateTxSignature,

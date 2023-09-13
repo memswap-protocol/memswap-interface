@@ -28,9 +28,9 @@ type IntentERC20 = {
   isPartiallyFillable: boolean
   isSmartOrder: boolean
   amount: string
-  expectedAmount: string
+  endAmount: string
   startAmountBps: number
-  endAmountBps: number
+  expectedAmountBps: number
   signature: Address
 }
 

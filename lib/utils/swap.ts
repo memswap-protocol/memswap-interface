@@ -101,7 +101,7 @@ const getEIP712Types = (protocol: Protocol) => ({
       type: 'uint128',
     },
     {
-      name: 'expectedAmount',
+      name: 'endAmount',
       type: 'uint128',
     },
     {
@@ -109,14 +109,13 @@ const getEIP712Types = (protocol: Protocol) => ({
       type: 'uint16',
     },
     {
-      name: 'endAmountBps',
+      name: 'expectedAmountBps',
       type: 'uint16',
     },
   ],
 })
 
 const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
-  console.log(isERC721Intent(intent))
   return encodeAbiParameters(
     parseAbiParameters([
       'bool',
@@ -158,9 +157,9 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
         ? [intent.isCriteriaOrder, intent.tokenIdOrCriteria]
         : []),
       intent.amount,
-      intent.expectedAmount,
+      intent.endAmount,
       intent.startAmountBps,
-      intent.endAmountBps,
+      intent.expectedAmountBps,
       intent.signature,
     ]
   )
@@ -171,8 +170,9 @@ async function postPublicIntentToMatchmaker(
   hash: Address
 ) {
   try {
+    const protocol = isERC721Intent(intent) ? 'erc721' : 'erc20'
     await axios.post(
-      `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/intents/public`,
+      `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/${protocol}/intents/public`,
       {
         intent,
         approvalTxOrTxHash: hash,

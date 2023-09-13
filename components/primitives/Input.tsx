@@ -27,7 +27,7 @@ const StyledInput = styled('input', {
       outline: 'none',
     },
     _disabled: {
-      color: 'gray9',
+      cursor: 'not-allowed',
     },
     _spinButtons: {
       WebkitAppearance: 'none',
