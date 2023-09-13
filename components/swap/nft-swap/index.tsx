@@ -90,7 +90,7 @@ const NFTSwap: FC<NFTSwapProps> = ({
 
   const amountIn = amountInQuote?.toString() || ''
 
-  const { quote: tokenInUSD } = useUniswapQuote(
+  const { rawQuote: tokenInUSD } = useUniswapQuote(
     alphaRouter,
     false,
     Number(amountIn),

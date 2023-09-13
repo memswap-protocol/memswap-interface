@@ -474,7 +474,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     eventName: 'IntentSolved',
     // @TODO: add timeout
     listener(log) {
-      const eventIntentHash = log[0]?.args.intentHash
+      const eventIntentHash = log[0]?.args?.intentHash
       if (eventIntentHash === intentHash) {
         unwatch?.()
         toast({
