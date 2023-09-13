@@ -2,11 +2,11 @@ import { FC } from 'react'
 import { Flex, Img, Text } from '../../primitives'
 import { Collection, Token } from '../../../lib/types'
 
-type Props = {
+type CurrencyPillProps = {
   token?: Token | Collection
 }
 
-export const CurrencyPill: FC<Props> = ({ token }) => {
+export const CurrencyPill: FC<CurrencyPillProps> = ({ token }) => {
   const isCollection = Boolean(token && 'id' in token)
   const image = isCollection
     ? (token as Collection).image

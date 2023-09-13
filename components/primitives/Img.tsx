@@ -35,7 +35,7 @@ const Img = ({ css, ...props }: ImgProps) => {
       justify="center"
       align="center"
     >
-      <FontAwesomeIcon icon={faImage} size="xl" />
+      <FontAwesomeIcon icon={faImage} />
     </Flex>
   ) : (
     <Image

@@ -65,7 +65,7 @@ function formatBN(
   const amountToFormat =
     typeof amount === 'number'
       ? amount
-      : +formatUnits(BigInt(amount), decimals || 18)
+      : +formatUnits(BigInt(amount), decimals ?? 18)
 
   if (amountToFormat === 0) {
     return amountToFormat

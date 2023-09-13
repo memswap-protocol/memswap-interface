@@ -39,13 +39,25 @@ type IntentERC721 = IntentERC20 & {
   tokenIdOrCriteria: string
 }
 
+type ApiCurrency = {
+  id: string
+  isNative: boolean
+  isToken: boolean
+  chainId: number
+  decimals: number
+  symbol: string
+  name: string
+  address: Address
+  icon: string
+}
+
 type ApiIntent = {
   id: Address
   isBuy: boolean
-  buyToken: UniswapToken
-  sellToken: UniswapToken
+  buyToken: ApiCurrency
+  sellToken: ApiCurrency
   maker: Address
-  matchmaker: Address
+  solver: Address
   source: Address
   feeBps: number
   surplusBps: number

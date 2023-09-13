@@ -172,8 +172,8 @@ export const SwapModal: FC<SwapModalProps> = ({
     }
 
     try {
-      const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals || 18)
-      const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals || 18)
+      const parsedAmountIn = parseUnits(amountIn, tokenIn?.decimals ?? 18)
+      const parsedAmountOut = parseUnits(amountOut, tokenOut?.decimals ?? 18)
 
       // When isBuy = true:
       // amount = buy amount
@@ -501,7 +501,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const isBalanceInsufficient =
     Number(
-      formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
+      formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals ?? 18)
     ) < Number(amountIn)
 
   function getButtonText() {

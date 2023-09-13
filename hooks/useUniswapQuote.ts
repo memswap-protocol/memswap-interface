@@ -74,7 +74,7 @@ const useUniswapQuote = (
         if (isBuy) {
           const parsedAmountOut = parseUnits(
             amountOut.toString(),
-            tokenOut?.decimals || 18
+            tokenOut?.decimals ?? 18
           ).toString()
 
           route = await router!.route(
@@ -92,7 +92,7 @@ const useUniswapQuote = (
         } else {
           const parsedAmountIn = parseUnits(
             amountIn.toString(),
-            tokenIn?.decimals || 18
+            tokenIn?.decimals ?? 18
           ).toString()
 
           route = await router!.route(

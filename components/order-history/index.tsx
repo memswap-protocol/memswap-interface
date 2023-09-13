@@ -1,8 +1,9 @@
 import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { request, gql } from 'graphql-request'
 import { useAccount } from 'wagmi'
 import { ApiIntent } from '../../lib/types'
-import { Box, Flex, Text } from '../primitives'
+import { Box, Flex, Text, Img, Switch } from '../primitives'
 import { Grid, GridItem } from '../primitives/Grid'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { OrderStatus } from './OrderStatus'
@@ -11,6 +12,10 @@ import { useMounted } from '../../hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { formatUnits } from 'viem'
+import { formatNumber } from '../../lib/utils/numbers'
+import { useEffect, useRef, useState } from 'react'
+import { useIntersectionObserver } from 'usehooks-ts'
+import { truncateAddress } from '../../lib/utils/truncate'
 
 type IntentHistoryResponse = {
   intents: ApiIntent[]
@@ -23,11 +28,13 @@ const intentHistoryFetcher = (
   request('https://memswap-backend-goerli.up.railway.app', query, variables)
 
 const GET_USER_INTENTS_QUERY = gql`
-  query GetUserIntents($maker: String!) {
+  query GetUserIntents($maker: String, $first: Int!, $skip: Int!) {
     intents(
       where: { maker: $maker }
-      orderBy: "startTime"
+      orderBy: "endTime"
       orderDirection: "desc"
+      first: $first
+      skip: $skip
     ) {
       id
       isBuy
@@ -40,6 +47,7 @@ const GET_USER_INTENTS_QUERY = gql`
         symbol
         name
         address
+        icon
       }
       buyToken {
         id
@@ -50,9 +58,10 @@ const GET_USER_INTENTS_QUERY = gql`
         symbol
         name
         address
+        icon
       }
       maker
-      matchmaker
+      solver
       source
       feeBps
       surplusBps
@@ -71,19 +80,50 @@ const GET_USER_INTENTS_QUERY = gql`
   }
 `
 
-const tableHeaders = ['Swap', 'Deadline', 'Min Amount', 'Status']
+const ITEMS_PER_PAGE = 12
+
+const tableHeaders = ['Swap', 'Maker', 'Deadline', 'Status']
 
 const UserOrderHistory = () => {
   const { address } = useAccount()
   const isMounted = useMounted()
+  const loadMoreRef = useRef<HTMLDivElement>(null)
+  const loadMoreObserver = useIntersectionObserver(loadMoreRef, {})
+  const [showOnlyMyIntents, setShowOnlyMyIntents] = useState(false)
 
-  const { data, error } = useSWR<IntentHistoryResponse>(
-    address ? [GET_USER_INTENTS_QUERY, { maker: address }] : null,
-    ([query, variables]: [string, { maker: string }]) =>
-      intentHistoryFetcher(query, variables)
-  )
+  const getKey = (
+    pageIndex: number,
+    previousPageData: IntentHistoryResponse | null
+  ): [string, { maker?: string; first: number; skip: number }] | null => {
+    if (previousPageData && !previousPageData.intents.length) return null
+    return [
+      GET_USER_INTENTS_QUERY,
+      {
+        maker: showOnlyMyIntents ? address : undefined,
+        first: ITEMS_PER_PAGE,
+        skip: pageIndex * ITEMS_PER_PAGE,
+      },
+    ]
+  }
 
-  const intents = data?.intents ?? []
+  const { data, size, setSize, error, isValidating } =
+    useSWRInfinite<IntentHistoryResponse>(
+      getKey,
+      ([query, variables]: [string, { maker: string }]) =>
+        intentHistoryFetcher(query, variables)
+    )
+
+  const hasNextPage =
+    data && data?.[data.length - 1]?.intents?.length >= ITEMS_PER_PAGE
+
+  useEffect(() => {
+    const isVisible = !!loadMoreObserver?.isIntersecting
+    if (isVisible && hasNextPage) {
+      setSize(size + 1)
+    }
+  }, [loadMoreObserver?.isIntersecting])
+
+  const intents = data?.flatMap((page) => page.intents) ?? []
 
   return (
     <Flex
@@ -97,9 +137,20 @@ const UserOrderHistory = () => {
         pt: 24,
       }}
     >
-      <Text style="h5" css={{ px: 24 }}>
-        Swap History
-      </Text>
+      <Flex justify="between" align="center" css={{ px: 24 }}>
+        <Text style="h5">Swap History</Text>
+        {address ? (
+          <Flex align="center" css={{ gap: '2' }}>
+            <Text style="subtitle2">Only my history</Text>
+            <Switch
+              checked={showOnlyMyIntents}
+              onCheckedChange={(checked) => {
+                setShowOnlyMyIntents(checked)
+              }}
+            />
+          </Flex>
+        ) : null}
+      </Flex>
 
       <Flex
         direction="column"
@@ -126,51 +177,103 @@ const UserOrderHistory = () => {
           ))}
         </Grid>
 
-        {intents.length > 0
-          ? intents.map((intent, idx) => (
-              <Grid
-                key={idx}
-                css={{
-                  gridTemplateColumns: 'repeat(4, minmax(200px, 1fr))',
-                  width: 'min-content',
-                  md: { width: '100%' },
-                  borderBottom: '1px solid',
-                  borderBottomColor: 'gray6',
-                  _last: { borderBottom: 'none' },
-                }}
-              >
-                <GridItem>
-                  <Flex align="center" css={{ gap: '2' }}>
-                    <Text style="subtitle2" ellipsify>
-                      {formatUnits(intent?.amount, intent?.sellToken?.decimals)}{' '}
-                      {intent?.buyToken?.symbol}
+        {intents.length > 0 ? (
+          <Flex direction="column">
+            {intents.map((intent, idx) => {
+              const amount = intent.isBuy
+                ? formatUnits(intent.amount, intent?.buyToken?.decimals)
+                : formatUnits(intent.amount, intent?.sellToken?.decimals)
+
+              const endAmount = intent.isBuy
+                ? formatUnits(intent.endAmount, intent?.sellToken?.decimals)
+                : formatUnits(intent.endAmount, intent?.buyToken?.decimals)
+
+              const formattedAmount = formatNumber(amount, 6)
+              const formattedEndAmount = formatNumber(endAmount, 6)
+
+              const paidAmount = intent.isBuy
+                ? formattedEndAmount
+                : formattedAmount
+              const receivedAmount = intent.isBuy
+                ? formattedAmount
+                : formattedEndAmount
+
+              return (
+                <Grid
+                  key={idx}
+                  css={{
+                    gridTemplateColumns: 'repeat(4, minmax(200px, 1fr))',
+                    width: 'min-content',
+                    md: { width: '100%' },
+                    borderBottom: '1px solid',
+                    borderBottomColor: 'gray6',
+                    _last: { borderBottom: 'none' },
+                  }}
+                >
+                  <GridItem>
+                    <Flex align="center" css={{ gap: '2' }}>
+                      <Text style="subtitle2" ellipsify>
+                        {paidAmount}
+                      </Text>
+                      {intent.sellToken.icon ? (
+                        <Img
+                          src={intent.sellToken.icon}
+                          alt={intent.sellToken.symbol}
+                          width={16}
+                          height={16}
+                          css={{
+                            aspectRatio: '1/1',
+                            borderRadius: '50%',
+                          }}
+                        />
+                      ) : (
+                        <Text style="subtitle2">{intent.sellToken.symbol}</Text>
+                      )}
+                      <Box>
+                        <FontAwesomeIcon icon={faArrowRight} />
+                      </Box>
+                      <Text style="subtitle2" ellipsify>
+                        {receivedAmount}
+                      </Text>
+                      {intent.buyToken.icon ? (
+                        <Img
+                          src={intent.buyToken.icon}
+                          alt={intent.buyToken.symbol}
+                          width={16}
+                          height={16}
+                          css={{
+                            aspectRatio: '1/1',
+                            borderRadius: '50%',
+                          }}
+                        />
+                      ) : (
+                        <Text style="subtitle2">{intent.buyToken.symbol}</Text>
+                      )}
+                    </Flex>
+                  </GridItem>
+                  <GridItem>
+                    <Text style="subtitle2">
+                      {truncateAddress(intent.maker)}
                     </Text>
-                    <Box>
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Box>
-                    <Text style="subtitle2" ellipsify>
-                      {formatUnits(
-                        intent?.endAmount,
-                        intent?.buyToken?.decimals
-                      )}{' '}
-                      {intent?.buyToken?.symbol}
-                    </Text>
-                  </Flex>
-                </GridItem>
-                <GridItem>
-                  <Deadline deadline={intent?.endTime} />
-                </GridItem>
-                <GridItem>
-                  <Text style="subtitle2" ellipsify>
-                    {formatUnits(intent?.endAmount, intent?.buyToken?.decimals)}
-                  </Text>
-                </GridItem>
-                <GridItem key={intent.id}>
-                  <OrderStatus intent={intent} />
-                </GridItem>
-              </Grid>
-            ))
-          : null}
+                  </GridItem>
+                  <GridItem>
+                    <Deadline deadline={intent?.endTime} />
+                  </GridItem>
+                  <GridItem key={intent.id}>
+                    <OrderStatus intent={intent} />
+                  </GridItem>
+                </Grid>
+              )
+            })}
+
+            {isValidating && (
+              <Flex align="center" justify="center" css={{ py: '5' }}>
+                <LoadingSpinner />
+              </Flex>
+            )}
+          </Flex>
+        ) : null}
+        <Box ref={loadMoreRef}></Box>
       </Flex>
 
       {intents.length === 0 && (
@@ -180,7 +283,7 @@ const UserOrderHistory = () => {
               Connect your wallet to view order history
             </Text>
           ) : null}
-          {data && intents.length === 0 ? (
+          {address && data && intents.length === 0 ? (
             <Text style="subtitle1" css={{ textAlign: 'center' }}>
               No order history found
             </Text>
