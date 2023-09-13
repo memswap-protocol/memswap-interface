@@ -16,6 +16,7 @@ const ToggleGroupItem = styled(ToggleGroupPrimitive.Item, {
     all: 'unset',
     cursor: 'pointer',
     height: 40,
+    px: '3',
     width: '100%',
     display: 'flex',
     gap: '2',

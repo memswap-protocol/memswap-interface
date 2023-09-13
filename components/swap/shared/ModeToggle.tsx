@@ -32,7 +32,7 @@ const modes = [
 ]
 
 export const ModeToggle: FC<ModeToggleProps> = ({ swapMode, setSwapMode }) => {
-  const isSmallDevice = useMediaQuery('(max-width: 600px)')
+  const isSmallDevice = useMediaQuery('(max-width: 500px)')
 
   return (
     <ToggleGroupRoot
@@ -44,7 +44,14 @@ export const ModeToggle: FC<ModeToggleProps> = ({ swapMode, setSwapMode }) => {
       }}
     >
       {modes.map((mode) => (
-        <ToggleGroupItem value={mode.value} key={mode.value}>
+        <ToggleGroupItem
+          value={mode.value}
+          key={mode.value}
+          css={{
+            maxWidth: swapMode === mode.value ? '100%' : 60,
+            bp500: { maxWidth: '100%' },
+          }}
+        >
           <>
             <Box css={{ color: 'gray9' }}>
               <FontAwesomeIcon icon={mode.icon} />
