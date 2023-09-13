@@ -535,16 +535,16 @@ export const SwapModal: FC<SwapModalProps> = ({
             isFetchingQuote ||
             errorFetchingQuote ||
             !(Number(amountOut) > 0) ||
-            Number(amountIn) === 0
-        // !(
-        //   !isBuy &&
-        //   Number(
-        //     formatUnits(
-        //       tokenInBalance?.value || 0n,
-        //       tokenInBalance?.decimals || 18
-        //     )
-        //   ) >= Number(amountIn)
-        // )
+            Number(amountIn) === 0 ||
+            !(
+              !isBuy &&
+              Number(
+                formatUnits(
+                  tokenInBalance?.value || 0n,
+                  tokenInBalance?.decimals || 18
+                )
+              ) >= Number(amountIn)
+            )
       }
     >
       {getButtonText()}

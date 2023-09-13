@@ -3,8 +3,11 @@ import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Button, Flex, Text, Input } from '../../primitives'
+import {
+  faArrowUpRightFromSquare,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons'
+import { Button, Flex, Text, Input, Anchor, Box } from '../../primitives'
 import { SwapModal } from '../SwapModal'
 import {
   useDeepLinkParams,
@@ -269,6 +272,20 @@ const NFTSwap: FC<NFTSwapProps> = ({
           </Flex>
         </Flex>
       </Flex>
+
+      <Flex align="center" css={{ gap: '5' }}>
+        <Anchor href="" target="_blank" color="gray">
+          <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
+            Swap Mode
+            <Box
+              css={{ color: 'primary9', _groupHover: { color: 'primary10' } }}
+            >
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+        <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
+      </Flex>
       <QuoteInfo
         errorFetchingQuote={errorFetchingQuote}
         isFetchingQuote={isFetchingQuote}
@@ -277,7 +294,6 @@ const NFTSwap: FC<NFTSwapProps> = ({
         amountIn={amountIn}
         amountOut={debouncedAmountOut}
       />
-      <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         protocol={Protocol.ERC721}
         isBuy={true}

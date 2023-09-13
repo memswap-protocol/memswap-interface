@@ -25,16 +25,6 @@ const MATCHMAKER: ChainIdToAddress = {
   5: '0xf4f6df97aa065758c70e6fb7d938ec392dda98e0',
 }
 
-// Solver
-const SOLVER: ChainIdToAddress = {
-  1: '0x743dbd073d951bc1e7ee276eb79a285595993d63',
-  5: '0x743dbd073d951bc1e7ee276eb79a285595993d63',
-}
-const SOLUTION_PROXY: ChainIdToAddress = {
-  1: '0x885857a1e82d5285f03b4bc562dbeace8921fac2',
-  5: '0xbdaac8d9627e17ad3a7ae34f98a604916f899628',
-}
-
 const WRAPPED_CONTRACTS: ChainIdToAddress = {
   1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', //mainnet
   5: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', //goerli
@@ -66,8 +56,6 @@ export {
   MEMSWAP_ERC721,
   MEMSWAP_WETH,
   MATCHMAKER,
-  SOLVER,
-  SOLUTION_PROXY,
   WRAPPED_CONTRACTS,
   USDC_TOKENS,
 }

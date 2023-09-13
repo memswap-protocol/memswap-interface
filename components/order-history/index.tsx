@@ -101,7 +101,13 @@ const UserOrderHistory = () => {
         Swap History
       </Text>
 
-      <Flex direction="column" css={{ overflowX: 'auto', width: '100%' }}>
+      <Flex
+        direction="column"
+        css={{
+          overflowX: 'auto',
+          width: '100%',
+        }}
+      >
         <Grid
           css={{
             gridTemplateColumns: 'repeat(4, minmax(200px, 1fr))',
@@ -130,6 +136,7 @@ const UserOrderHistory = () => {
                   md: { width: '100%' },
                   borderBottom: '1px solid',
                   borderBottomColor: 'gray6',
+                  _last: { borderBottom: 'none' },
                 }}
               >
                 <GridItem>

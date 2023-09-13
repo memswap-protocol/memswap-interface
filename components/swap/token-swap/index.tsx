@@ -4,8 +4,11 @@ import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Button, Flex, Text, Input } from '../../primitives'
+import {
+  faArrowUpRightFromSquare,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons'
+import { Button, Flex, Text, Input, Anchor, Box } from '../../primitives'
 import { SelectTokenModal } from '../shared/SelectTokenModal'
 import { SwapModal } from '../SwapModal'
 import {
@@ -373,6 +376,20 @@ const TokenSwap: FC<TokenSwapProps> = ({
           </Flex>
         </Flex>
       </Flex>
+
+      <Flex align="center" css={{ gap: '5' }}>
+        <Anchor href="" target="_blank" color="gray">
+          <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
+            Swap Mode
+            <Box
+              css={{ color: 'primary9', _groupHover: { color: 'primary10' } }}
+            >
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+        <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
+      </Flex>
       <QuoteInfo
         errorFetchingQuote={errorFetchingQuote}
         isFetchingQuote={isFetchingQuote}
@@ -381,7 +398,6 @@ const TokenSwap: FC<TokenSwapProps> = ({
         amountIn={amountIn}
         amountOut={amountOut}
       />
-      <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       <SwapModal
         protocol={Protocol.ERC20}
         isBuy={isBuy}

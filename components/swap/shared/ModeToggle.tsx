@@ -42,30 +42,14 @@ export const ModeToggle: FC<ModeToggleProps> = ({ swapMode, setSwapMode }) => {
       }}
     >
       {modes.map((mode) => (
-        <Tooltip
-          key={mode.value}
-          content={
-            <Text
-              style="subtitle3"
-              color="subtle"
-              css={{ maxWidth: 220, display: 'inline-block' }}
-            >
-              {mode.tooltip}
-            </Text>
-          }
-          side="top"
-        >
-          <Box css={{ width: '100%' }}>
-            <ToggleGroupItem value={mode.value}>
-              <>
-                <Box css={{ color: 'gray9' }}>
-                  <FontAwesomeIcon icon={mode.icon} />
-                </Box>
-                {mode.value}
-              </>
-            </ToggleGroupItem>
-          </Box>
-        </Tooltip>
+        <ToggleGroupItem value={mode.value} key={mode.value}>
+          <>
+            <Box css={{ color: 'gray9' }}>
+              <FontAwesomeIcon icon={mode.icon} />
+            </Box>
+            {mode.value}
+          </>
+        </ToggleGroupItem>
       ))}
     </ToggleGroupRoot>
   )
