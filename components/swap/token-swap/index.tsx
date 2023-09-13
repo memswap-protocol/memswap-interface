@@ -24,6 +24,7 @@ import { Protocol, SwapMode, Token } from '../../../lib/types'
 import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
+import { HighFeesWarning } from './HighFeesWarning'
 
 type TokenSwapProps = {
   slippagePercentage: string
@@ -98,6 +99,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     quote,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
+    isHighGasFee,
     setIsAutoUpdate,
     setShouldRefresh,
   } = useUniswapQuote(
@@ -398,6 +400,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
         amountIn={amountIn}
         amountOut={amountOut}
       />
+      {isHighGasFee ? <HighFeesWarning /> : null}
       <SwapModal
         protocol={Protocol.ERC20}
         isBuy={isBuy}

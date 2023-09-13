@@ -88,6 +88,8 @@ export default defineConfig({
 
         // Red
         red2: { value: red.red2 },
+        red5: { value: red.red5 },
+        red6: { value: red.red6 },
         red10: { value: red.red10 },
         red11: { value: red.red11 },
 

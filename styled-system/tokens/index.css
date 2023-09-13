@@ -34,6 +34,8 @@
   --colors-black-a10: hsla(0, 0%, 0%, 0.478);
   --colors-blue12: hsl(211, 100%, 15.0%);
   --colors-red2: hsl(359, 100%, 98.6%);
+  --colors-red5: hsl(360, 90.2%, 91.9%);
+  --colors-red6: hsl(360, 81.7%, 87.8%);
   --colors-red10: hsl(358, 69.4%, 55.2%);
   --colors-red11: hsl(358, 65.0%, 48.7%);
   --colors-green10: hsl(152, 57.5%, 37.6%);

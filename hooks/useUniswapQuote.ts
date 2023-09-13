@@ -38,6 +38,7 @@ const useUniswapQuote = (
   const [quote, setQuote] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
+  const [isHighGasFee, setIsHighGasFee] = useState(false)
   const [isAutoUpdate, setIsAutoUpdate] = useState(false) // Used to ignore an automatic refresh that could be triggered by amountIn or amountOut
   const [shouldRefresh, setShouldRefresh] = useState(false) // Setter to trigger a manual quote refresh
 
@@ -122,6 +123,10 @@ const useUniswapQuote = (
         if (!isCancelled) {
           setQuote(totalQuote.toString())
           setIsLoading(false)
+
+          // Check if the gas fees exceed 30% of the total quote
+          const gasFeePercentage = (totalEstimatedGasUsed / totalQuote) * 100
+          setIsHighGasFee(gasFeePercentage > 30)
         }
       } catch (error) {
         console.error(error)
@@ -186,6 +191,7 @@ const useUniswapQuote = (
     quote,
     isLoading,
     isError,
+    isHighGasFee,
     setIsAutoUpdate,
     setShouldRefresh,
   }
