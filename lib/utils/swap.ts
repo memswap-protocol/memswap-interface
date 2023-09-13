@@ -187,6 +187,7 @@ async function postPublicIntentToMatchmaker(
 }
 
 export {
+  isERC721Intent,
   getIntentHash,
   now,
   getEIP712Domain,

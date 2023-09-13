@@ -17,6 +17,7 @@ import {
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
+  isERC721Intent,
   now,
   postPublicIntentToMatchmaker,
 } from '../../lib/utils/swap'
@@ -333,6 +334,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         // Otherwise, call 'post' method on Memswap contract
         const { hash } = await writeContract({
           address: memswapContract,
+          // @ts-ignore @TODO
           abi: memswapAbi,
           functionName: 'post',
           // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
@@ -387,6 +389,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         const { hash: intentTransactionHash } = await writeContract({
           chainId: chain.id,
           address: memswapContract,
+          // @ts-ignore @TODO
           abi: memswapAbi,
           functionName: 'post',
           // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
