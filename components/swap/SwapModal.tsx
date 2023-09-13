@@ -17,7 +17,6 @@ import {
   getEIP712Domain,
   getEIP712Types,
   getIntentHash,
-  isERC721Intent,
   now,
   postPublicIntentToMatchmaker,
 } from '../../lib/utils/swap'
@@ -359,18 +358,18 @@ export const SwapModal: FC<SwapModalProps> = ({
         await postPublicIntentToMatchmaker(chain.id, intent, hash)
       }
 
-      // Scenario 3: User is using metamask wallet
+      // Scenario 3: User is using metamask wallet and approve method = approve
       // For metamask, an extra tx is required because the wallet strips away any appended calldata
       // https://github.com/MetaMask/metamask-extension/issues/20439
       // 2 Separate transactions, 1 for approval, 1 to call 'post' method on Memswap contract
-      else if (isMetamaskWallet) {
+      else if (isMetamaskWallet && approveMethod === 'approve') {
         setSwapStep(SwapStep.MetamaskApproval)
 
         const { hash: approvalHash } = await sendTransaction({
           chainId: chain.id,
           to: processedTokenInAddress,
           account: address,
-          value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
+          value: 0n,
           data: encodedApprovalData,
         })
 
