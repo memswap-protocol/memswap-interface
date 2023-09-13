@@ -70,6 +70,7 @@ type SwapModalProps = {
   tokenIn?: Token
   tokenOut?: Token
   tokenInBalance?: FetchBalanceResult
+  tokenOutBalance?: FetchBalanceResult
   referrer?: Address
   amountIn: string
   amountOut: string
@@ -86,6 +87,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   tokenIn,
   tokenOut,
   tokenInBalance,
+  tokenOutBalance,
   referrer,
   amountIn,
   amountOut,
@@ -214,8 +216,8 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Create Intent
       const intent: IntentERC20 | IntentERC721 = {
         isBuy: isBuy,
-        buyToken: processedTokenInAddress,
-        sellToken: tokenOut?.address,
+        buyToken: tokenOut?.address,
+        sellToken: processedTokenInAddress,
         maker: address,
         solver: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
         source: referrer ?? address,
@@ -491,6 +493,17 @@ export const SwapModal: FC<SwapModalProps> = ({
     },
   })
 
+  const isBalanceInsufficient = isBuy
+    ? Number(
+        formatUnits(
+          tokenOutBalance?.value || 0n,
+          tokenOutBalance?.decimals || 18
+        )
+      ) < Number(amountOut)
+    : Number(
+        formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
+      ) < Number(amountIn)
+
   function getButtonText() {
     if (isDisconnected || isConnecting) {
       return 'Connect Wallet'
@@ -498,16 +511,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     if (!tokenOut || !tokenIn) {
       return 'Select a token'
     }
-    if (
-      !isBuy &&
-      Number(amountIn) >
-        Number(
-          formatUnits(
-            tokenInBalance?.value || 0n,
-            tokenInBalance?.decimals || 18
-          )
-        )
-    ) {
+    if (isBalanceInsufficient) {
       return 'Insufficient Balance'
     }
     if (!amountIn) {
@@ -545,15 +549,7 @@ export const SwapModal: FC<SwapModalProps> = ({
             errorFetchingQuote ||
             !(Number(amountOut) > 0) ||
             Number(amountIn) === 0 ||
-            !(
-              !isBuy &&
-              Number(
-                formatUnits(
-                  tokenInBalance?.value || 0n,
-                  tokenInBalance?.decimals || 18
-                )
-              ) >= Number(amountIn)
-            )
+            isBalanceInsufficient
       }
     >
       {getButtonText()}

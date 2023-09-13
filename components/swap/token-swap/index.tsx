@@ -413,6 +413,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
         deadline={deadline}
         swapMode={swapMode}
         tokenInBalance={tokenInBalance}
+        tokenOutBalance={tokenOutBalance}
         isFetchingQuote={isFetchingQuote}
         errorFetchingQuote={errorFetchingQuote}
       />
