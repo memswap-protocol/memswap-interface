@@ -1,10 +1,10 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { ToggleGroupItem, ToggleGroupRoot } from '../../primitives/ToggleGroup'
-import { Box, Text } from '../../primitives'
+import { Box } from '../../primitives'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faHammer, faLock } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faGavel, faLock } from '@fortawesome/free-solid-svg-icons'
 import { SwapMode } from '../../../lib/types'
-import Tooltip from '../../primitives/Tooltip'
+import { useMediaQuery } from 'usehooks-ts'
 
 type ModeToggleProps = {
   swapMode: SwapMode
@@ -19,7 +19,7 @@ const modes = [
   },
   {
     value: 'Dutch',
-    icon: faHammer,
+    icon: faGavel,
     tooltip:
       'Decentralized Solvers compete to fill your order as the price slowly decreases',
   },
@@ -32,6 +32,8 @@ const modes = [
 ]
 
 export const ModeToggle: FC<ModeToggleProps> = ({ swapMode, setSwapMode }) => {
+  const isSmallDevice = useMediaQuery('(max-width: 600px)')
+
   return (
     <ToggleGroupRoot
       type="single"
@@ -47,7 +49,8 @@ export const ModeToggle: FC<ModeToggleProps> = ({ swapMode, setSwapMode }) => {
             <Box css={{ color: 'gray9' }}>
               <FontAwesomeIcon icon={mode.icon} />
             </Box>
-            {mode.value}
+
+            {!isSmallDevice || swapMode === mode.value ? mode.value : null}
           </>
         </ToggleGroupItem>
       ))}
