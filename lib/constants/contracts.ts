@@ -30,6 +30,12 @@ const WRAPPED_CONTRACTS: ChainIdToAddress = {
   5: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', //goerli
 }
 
+// Matchmaker Api
+const MATCHMAKER_API: { [chainId: number]: string } = {
+  1: 'https://matchmaker-ethereum.up.railway.app',
+  5: 'https://matchmaker-goerli.up.railway.app',
+}
+
 const USDC_TOKENS: Record<number, Token> = {
   1: {
     chainId: 1,
@@ -57,5 +63,6 @@ export {
   MEMSWAP_WETH,
   MATCHMAKER,
   WRAPPED_CONTRACTS,
+  MATCHMAKER_API,
   USDC_TOKENS,
 }

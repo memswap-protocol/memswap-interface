@@ -2,7 +2,11 @@ import { Address, encodeAbiParameters, parseAbiParameters } from 'viem'
 import axios from 'axios'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import { IntentERC20, IntentERC721, Protocol } from '../types'
-import { MEMSWAP_ERC20, MEMSWAP_ERC721 } from '../constants/contracts'
+import {
+  MATCHMAKER_API,
+  MEMSWAP_ERC20,
+  MEMSWAP_ERC721,
+} from '../constants/contracts'
 import { MEMSWAP_ERC20_ABI } from '../constants/abis'
 import { defaultAbiCoder } from '@ethersproject/abi'
 
@@ -166,18 +170,17 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
 }
 
 async function postPublicIntentToMatchmaker(
+  chainId: number,
   intent: IntentERC20 | IntentERC721,
   hash: Address
 ) {
   try {
+    const matchmakerApi = MATCHMAKER_API[chainId]
     const protocol = isERC721Intent(intent) ? 'erc721' : 'erc20'
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/${protocol}/intents/public`,
-      {
-        intent,
-        approvalTxOrTxHash: hash,
-      }
-    )
+    await axios.post(`${matchmakerApi}/${protocol}/intents/public`, {
+      intent,
+      approvalTxOrTxHash: hash,
+    })
   } catch (e) {
     console.error('Error submitting intent to public matchmaker api:', e)
   }

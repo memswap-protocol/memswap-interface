@@ -39,9 +39,10 @@ import { useToast } from '../../hooks/useToast'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { IntentInfo } from './token-swap/IntentInfo'
 import { useMounted, useSupportedNetwork, useWethEthSwap } from '../../hooks'
-import { MEMSWAP_ERC20_ABI } from '../../lib/constants/abis'
+import { MEMSWAP_ERC20_ABI, MEMSWAP_ERC721_ABI } from '../../lib/constants/abis'
 import {
   MATCHMAKER,
+  MATCHMAKER_API,
   MEMSWAP_ERC20,
   MEMSWAP_ERC721,
   MEMSWAP_WETH,
@@ -121,12 +122,14 @@ export const SwapModal: FC<SwapModalProps> = ({
   const [intentHash, setIntentHash] = useState<string | undefined>()
 
   // Conditional Variables
-  const memswapAbi = MEMSWAP_ERC20_ABI
+  const memswapAbi =
+    protocol === Protocol.ERC20 ? MEMSWAP_ERC20_ABI : MEMSWAP_ERC721_ABI
   const memswapContract =
     protocol === Protocol.ERC20
       ? MEMSWAP_ERC20[chain.id]
       : MEMSWAP_ERC721[chain.id]
   const memswapWethContract = MEMSWAP_WETH[chain.id]
+  const matchmakerApi = MATCHMAKER_API[chain.id]
   const isMetamaskWallet = connector?.id === 'metaMask'
 
   const isEthToWethSwap =
@@ -317,13 +320,10 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         const protocolRoute = protocol === Protocol.ERC721 ? 'erc721' : 'erc20'
 
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_MATCHMAKER_BASE_URL}/${protocolRoute}/intents/private`,
-          {
-            intent,
-            approvalTxOrTxHash: privateTxSignature,
-          }
-        )
+        await axios.post(`${matchmakerApi}/${protocolRoute}/intents/private`, {
+          intent,
+          approvalTxOrTxHash: privateTxSignature,
+        })
       }
 
       // Scenario 2: User already has given approval greater than the amountIn
@@ -354,7 +354,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         // @TODO: Should we be sending these concurrently?
 
         // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(intent, hash)
+        await postPublicIntentToMatchmaker(chain.id, intent, hash)
       }
 
       // Scenario 3: User is using metamask wallet
@@ -405,7 +405,11 @@ export const SwapModal: FC<SwapModalProps> = ({
         })
 
         // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(intent, intentTransactionHash)
+        await postPublicIntentToMatchmaker(
+          chain.id,
+          intent,
+          intentTransactionHash
+        )
       }
 
       // Scenario 4: Normal swap (user has not already given approval, is not using metamask wallet,
@@ -433,7 +437,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         })
 
         // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(intent, hash)
+        await postPublicIntentToMatchmaker(chain.id, intent, hash)
       }
 
       setTxSuccess(true)
