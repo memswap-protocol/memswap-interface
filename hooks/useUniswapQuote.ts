@@ -35,7 +35,11 @@ const useUniswapQuote = (
   tokenOut?: Token
 ) => {
   const { chain } = useSupportedNetwork()
-  const [quote, setQuote] = useState<string | undefined>()
+  const [totalQuote, setTotalQuote] = useState<string | undefined>()
+  const [rawQuote, setRawQuote] = useState<string | undefined>()
+  const [totalEstimatedFees, setTotalEstimatedFees] = useState<
+    string | undefined
+  >()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const [isHighGasFee, setIsHighGasFee] = useState(false)
@@ -122,7 +126,9 @@ const useUniswapQuote = (
         const totalQuote = Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
 
         if (!isCancelled) {
-          setQuote(totalQuote.toString())
+          setTotalQuote(totalQuote.toString())
+          setRawQuote(fetchedQuote.toString())
+          setTotalEstimatedFees(totalEstimatedGasUsed.toString())
           setIsLoading(false)
 
           // Check if the gas fees exceed 30% of the total quote
@@ -140,17 +146,22 @@ const useUniswapQuote = (
 
     if ((isBuy && !amountOut) || (!isBuy && !amountIn)) {
       resetState()
-      setQuote('')
+      setTotalQuote('')
+      setRawQuote('')
+      setTotalEstimatedFees('')
       return
     }
 
     if (isEthToWethSwap || tokenIn?.address === tokenOut?.address) {
       resetState()
       if (isBuy) {
-        setQuote(amountOut ? amountOut.toString() : undefined)
+        setTotalQuote(amountOut ? amountOut.toString() : undefined)
+        setRawQuote(amountOut ? amountOut.toString() : undefined)
       } else {
-        setQuote(amountIn ? amountIn.toString() : undefined)
+        setTotalQuote(amountIn ? amountIn.toString() : undefined)
+        setRawQuote(amountIn ? amountIn.toString() : undefined)
       }
+      setTotalEstimatedFees('')
       return
     }
 
@@ -191,7 +202,9 @@ const useUniswapQuote = (
   ])
 
   return {
-    quote,
+    totalQuote,
+    rawQuote,
+    totalEstimatedFees,
     isLoading,
     isError,
     isHighGasFee,

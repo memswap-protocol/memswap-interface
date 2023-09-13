@@ -96,7 +96,9 @@ const TokenSwap: FC<TokenSwapProps> = ({
   }, [deepLinkTokenIn, deepLinkTokenOut, deepLinkReferrer])
 
   const {
-    quote,
+    totalQuote,
+    rawQuote,
+    totalEstimatedFees,
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
     isHighGasFee,
@@ -115,19 +117,19 @@ const TokenSwap: FC<TokenSwapProps> = ({
     if (!isFetchingQuote && !errorFetchingQuote) {
       setIsAutoUpdate(true)
       if (isBuy) {
-        setAmountIn(quote ?? '')
+        setAmountIn(totalQuote ?? '')
       } else {
-        setAmountOut(quote ?? '')
+        setAmountOut(totalQuote ?? '')
       }
     }
-  }, [quote])
+  }, [totalQuote])
 
   // Refresh quote when tokenIn or tokenOut changes
   useEffect(() => {
     setShouldRefresh(true)
   }, [tokenIn, tokenOut])
 
-  const { quote: tokenInUSD } = useUniswapQuote(
+  const { rawQuote: tokenInUSD } = useUniswapQuote(
     alphaRouter,
     false,
     Number(debouncedAmountIn),
@@ -136,7 +138,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     USDC_TOKENS[chain.id]
   )
 
-  const { quote: tokenOutUSD } = useUniswapQuote(
+  const { rawQuote: tokenOutUSD } = useUniswapQuote(
     alphaRouter,
     false,
     Number(debouncedAmountOut),
@@ -399,6 +401,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
         tokenOut={tokenOut}
         amountIn={amountIn}
         amountOut={amountOut}
+        totalEstimatedFees={totalEstimatedFees}
       />
       {isHighGasFee ? <HighFeesWarning /> : null}
       <SwapModal

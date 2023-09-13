@@ -497,16 +497,10 @@ export const SwapModal: FC<SwapModalProps> = ({
     },
   })
 
-  const isBalanceInsufficient = isBuy
-    ? Number(
-        formatUnits(
-          tokenOutBalance?.value || 0n,
-          tokenOutBalance?.decimals || 18
-        )
-      ) < Number(amountOut)
-    : Number(
-        formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
-      ) < Number(amountIn)
+  const isBalanceInsufficient =
+    Number(
+      formatUnits(tokenInBalance?.value || 0n, tokenInBalance?.decimals || 18)
+    ) < Number(amountIn)
 
   function getButtonText() {
     if (isDisconnected || isConnecting) {

@@ -9,6 +9,7 @@ type QuoteInfoProps = {
   tokenOut?: Token | Collection
   amountIn: string
   amountOut: string
+  totalEstimatedFees?: string
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
 }
@@ -18,6 +19,7 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
   tokenOut,
   amountIn,
   amountOut,
+  totalEstimatedFees,
   isFetchingQuote,
   errorFetchingQuote,
 }) => {
@@ -28,13 +30,15 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
   ) {
     return
   }
-  const bestPrice = Number(amountOut) / Number(amountIn)
+  const bestPrice =
+    (Number(amountOut) + Number(totalEstimatedFees)) / Number(amountIn)
 
   return (
     <Flex
       direction="column"
       css={{
         p: '4',
+        gap: '2',
         sm: {
           px: 24,
           py: '4',
@@ -58,17 +62,32 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
       ) : null}
 
       {!isFetchingQuote && !errorFetchingQuote ? (
-        <Flex align="center" justify="between" css={{ gap: '4' }}>
-          <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
-            Best Price
-          </Text>
-          <Text style="body2" color="subtle" ellipsify>
-            1 {tokenIn?.symbol} = {bestPrice ? formatNumber(bestPrice, 8) : 0}{' '}
-            {tokenOut && 'symbol' in tokenOut
-              ? tokenOut?.symbol
-              : tokenOut?.name}
-          </Text>
-        </Flex>
+        <>
+          <Flex align="center" justify="between" css={{ gap: '4' }}>
+            <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
+              Best Price
+            </Text>
+            <Text style="body2" color="subtle" ellipsify>
+              1 {tokenIn?.symbol} = {bestPrice ? formatNumber(bestPrice, 8) : 0}{' '}
+              {tokenOut && 'symbol' in tokenOut
+                ? tokenOut?.symbol
+                : tokenOut?.name}
+            </Text>
+          </Flex>
+          {totalEstimatedFees ? (
+            <Flex align="center" justify="between" css={{ gap: '4' }}>
+              <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
+                Total Estimated Fees
+              </Text>
+              <Text style="body2" color="subtle" ellipsify>
+                ~ {totalEstimatedFees}{' '}
+                {tokenOut && 'symbol' in tokenOut
+                  ? tokenOut?.symbol
+                  : tokenOut?.name}
+              </Text>
+            </Flex>
+          ) : null}
+        </>
       ) : null}
     </Flex>
   )
