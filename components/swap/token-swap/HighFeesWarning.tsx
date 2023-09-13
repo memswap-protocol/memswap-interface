@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Flex, Text } from '../../primitives'
+import { Flex, Text } from '../../primitives'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 
 export const HighFeesWarning = () => {

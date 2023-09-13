@@ -49,8 +49,9 @@ const useUniswapQuote = (
   )
 
   const resetState = useCallback(() => {
-    setIsError(false)
     setIsLoading(false)
+    setIsError(false)
+    setIsHighGasFee(false)
   }, [])
 
   useEffect(() => {
@@ -138,6 +139,7 @@ const useUniswapQuote = (
     }
 
     if ((isBuy && !amountOut) || (!isBuy && !amountIn)) {
+      resetState()
       setQuote('')
       return
     }
@@ -159,6 +161,7 @@ const useUniswapQuote = (
     }
 
     if (shouldRefresh) {
+      resetState()
       fetchQuote()
       setShouldRefresh(false) // Reset it back to false
       return
