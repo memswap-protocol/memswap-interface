@@ -184,19 +184,26 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       let amount
       let endAmount
-      let startAmountBps
-      let expectedAmountBps
 
       if (isBuy) {
         amount = parsedAmountOut
         endAmount = parsedAmountIn
-        startAmountBps = Number(slippagePercentage) * 100
-        expectedAmountBps = Number(slippagePercentage) * 100
       } else {
         amount = parsedAmountIn
         endAmount = parsedAmountOut
-        startAmountBps = Number(slippagePercentage) * 100
-        expectedAmountBps = Number(slippagePercentage) * 100
+      }
+
+      let startAmountBps
+      let expectedAmountBps
+
+      const slippageAmountBps = Number(slippagePercentage) * 100
+
+      if (swapMode === 'Dutch') {
+        startAmountBps = slippageAmountBps
+        expectedAmountBps = slippageAmountBps
+      } else {
+        startAmountBps = 0
+        expectedAmountBps = slippageAmountBps
       }
 
       const processedTokenInAddress =
