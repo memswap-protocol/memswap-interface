@@ -1,4 +1,3 @@
-import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 import { request, gql } from 'graphql-request'
 import { useAccount } from 'wagmi'
