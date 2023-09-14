@@ -170,7 +170,7 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
 async function postPublicIntentToMatchmaker(
   chainId: number,
   intent: IntentERC20 | IntentERC721,
-  approvalTxOrTxHash: Address
+  approvalTxOrTxHash?: Address
 ) {
   try {
     const matchmakerApi = MATCHMAKER_API[chainId]

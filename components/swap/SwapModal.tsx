@@ -331,6 +331,9 @@ export const SwapModal: FC<SwapModalProps> = ({
       else if (alreadyHasApproval) {
         setSwapStep(SwapStep.Submit)
 
+        // Can send the intent directly since the approval is already in place
+        await postPublicIntentToMatchmaker(chain.id, intent)
+
         // Otherwise, call 'post' method on Memswap contract
         const { hash } = await writeContract({
           address: memswapContract,
@@ -344,36 +347,6 @@ export const SwapModal: FC<SwapModalProps> = ({
         })
 
         setTxHash(hash)
-
-        // For faster distribution, also submit tx to matchmaker's api
-        try {
-          const tx = await publicClient.getTransaction({ hash })
-          const serializedTx = serializeTransaction(
-            {
-              type: tx.type,
-              chainId: tx.chainId,
-              gas: tx.gas,
-              nonce: tx.nonce,
-              to: tx.to || undefined,
-              value: tx.value,
-              maxFeePerGas: tx.maxFeePerGas,
-              maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
-              accessList: tx.accessList,
-              data: tx.input,
-            },
-            {
-              v: tx.v,
-              r: tx.r,
-              s: tx.s,
-            }
-          )
-
-          // First, attempt to send the full tx data to the matchmaker
-          await postPublicIntentToMatchmaker(chain.id, intent, serializedTx)
-        } catch {
-          // If the above failed, only send the tx hash to the matchmaker
-          await postPublicIntentToMatchmaker(chain.id, intent, hash)
-        }
 
         await publicClient.waitForTransactionReceipt({
           hash,
