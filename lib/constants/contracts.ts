@@ -36,6 +36,12 @@ const MATCHMAKER_API: { [chainId: number]: string } = {
   5: 'https://matchmaker-goerli.up.railway.app',
 }
 
+// Ponder Api
+const MEMSWAP_API: { [chainId: number]: string } = {
+  1: 'https://memswap-backend-mainnet.up.railway.app',
+  5: 'https://memswap-backend-goerli.up.railway.app',
+}
+
 const USDC_TOKENS: Record<number, Token> = {
   1: {
     chainId: 1,
@@ -64,5 +70,6 @@ export {
   MATCHMAKER,
   WRAPPED_CONTRACTS,
   MATCHMAKER_API,
+  MEMSWAP_API,
   USDC_TOKENS,
 }

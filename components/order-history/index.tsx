@@ -7,7 +7,7 @@ import { Grid, GridItem } from '../primitives/Grid'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { OrderStatus } from './OrderStatus'
 import { Deadline } from './Deadline'
-import { useMounted } from '../../hooks'
+import { useMounted, useSupportedNetwork } from '../../hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { formatUnits } from 'viem'
@@ -15,16 +15,18 @@ import { formatNumber } from '../../lib/utils/numbers'
 import { useEffect, useRef, useState } from 'react'
 import { useIntersectionObserver } from 'usehooks-ts'
 import { truncateAddress } from '../../lib/utils/truncate'
+import { MEMSWAP_API } from '../../lib/constants/contracts'
 
 type IntentHistoryResponse = {
   intents: ApiIntent[]
 }
 
 const intentHistoryFetcher = (
+  chainId: number,
   query: string,
   variables: { maker: string }
 ): Promise<IntentHistoryResponse> =>
-  request('https://memswap-backend-goerli.up.railway.app', query, variables)
+  request(MEMSWAP_API[chainId], query, variables)
 
 const GET_USER_INTENTS_QUERY = gql`
   query GetUserIntents($maker: String, $first: Int!, $skip: Int!) {
@@ -85,6 +87,7 @@ const tableHeaders = ['Swap', 'Maker', 'Deadline', 'Status']
 
 const UserOrderHistory = () => {
   const { address } = useAccount()
+  const { chain } = useSupportedNetwork()
   const isMounted = useMounted()
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const loadMoreObserver = useIntersectionObserver(loadMoreRef, {})
@@ -96,6 +99,7 @@ const UserOrderHistory = () => {
   ): [string, { maker?: string; first: number; skip: number }] | null => {
     if (previousPageData && !previousPageData.intents.length) return null
     return [
+      chain.id,
       GET_USER_INTENTS_QUERY,
       {
         maker: showOnlyMyIntents ? address : undefined,
@@ -108,8 +112,8 @@ const UserOrderHistory = () => {
   const { data, size, setSize, error, isValidating } =
     useSWRInfinite<IntentHistoryResponse>(
       getKey,
-      ([query, variables]: [string, { maker: string }]) =>
-        intentHistoryFetcher(query, variables)
+      ([chainId, query, variables]: [number, string, { maker: string }]) =>
+        intentHistoryFetcher(chainId, query, variables)
     )
 
   const hasNextPage =
