@@ -235,7 +235,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         isPartiallyFillable: false,
         isSmartOrder: false,
         ...(protocol === Protocol.ERC721
-          ? { isCriteriaOrder: false, tokenIdOrCriteria: '0' }
+          ? { isCriteriaOrder: true, tokenIdOrCriteria: '0' }
           : {}),
         amount: amount.toString(),
         endAmount: endAmount.toString(),
