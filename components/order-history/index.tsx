@@ -96,7 +96,9 @@ const UserOrderHistory = () => {
   const getKey = (
     pageIndex: number,
     previousPageData: IntentHistoryResponse | null
-  ): [string, { maker?: string; first: number; skip: number }] | null => {
+  ):
+    | [number, string, { maker?: string; first: number; skip: number }]
+    | null => {
     if (previousPageData && !previousPageData.intents.length) return null
     return [
       chain.id,
