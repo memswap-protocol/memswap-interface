@@ -131,7 +131,11 @@ const useUniswapQuote = (
         // Adjust the estimated gas used by 10% just in case
         totalEstimatedGasUsed += totalEstimatedGasUsed / 10
 
-        const totalQuote = Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
+        const totalQuote = isBuy
+          ? // For buy orders, adjust the quote up
+            fetchedQuote + totalEstimatedGasUsed
+          : // For sell orders, adjust the quote down
+            Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
 
         if (!isCancelled) {
           setTotalQuote(totalQuote.toString())
