@@ -28,6 +28,7 @@ import {
   parseAbiItem,
   Address,
   formatUnits,
+  serializeTransaction,
 } from 'viem'
 import {
   signTypedData,
@@ -344,19 +345,44 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         setTxHash(hash)
 
+        // For faster distribution, also submit tx to matchmaker's api
+        try {
+          const tx = await publicClient.getTransaction({ hash })
+          const serializedTx = serializeTransaction(
+            {
+              type: tx.type,
+              chainId: tx.chainId,
+              gas: tx.gas,
+              nonce: tx.nonce,
+              to: tx.to || undefined,
+              value: tx.value,
+              maxFeePerGas: tx.maxFeePerGas,
+              maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+              accessList: tx.accessList,
+              data: tx.input,
+            },
+            {
+              v: tx.v,
+              r: tx.r,
+              s: tx.s,
+            }
+          )
+
+          // First, attempt to send the full tx data to the matchmaker
+          await postPublicIntentToMatchmaker(chain.id, intent, serializedTx)
+        } catch {
+          // If the above failed, only send the tx hash to the matchmaker
+          await postPublicIntentToMatchmaker(chain.id, intent, hash)
+        }
+
         await publicClient.waitForTransactionReceipt({
-          hash: hash,
+          hash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
               console.log('Transaction replaced')
           },
           confirmations: 0,
         })
-
-        // @TODO: Should we be sending these concurrently?
-
-        // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(chain.id, intent, hash)
       }
 
       // Scenario 3: User is using metamask wallet and approve method = approve
@@ -400,6 +426,42 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         setTxHash(intentTransactionHash)
 
+        // For faster distribution, also submit tx to matchmaker's api
+        try {
+          const tx = await publicClient.getTransaction({
+            hash: intentTransactionHash,
+          })
+          const serializedTx = serializeTransaction(
+            {
+              type: tx.type,
+              chainId: tx.chainId,
+              gas: tx.gas,
+              nonce: tx.nonce,
+              to: tx.to || undefined,
+              value: tx.value,
+              maxFeePerGas: tx.maxFeePerGas,
+              maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+              accessList: tx.accessList,
+              data: tx.input,
+            },
+            {
+              v: tx.v,
+              r: tx.r,
+              s: tx.s,
+            }
+          )
+
+          // First, attempt to send the full tx data to the matchmaker
+          await postPublicIntentToMatchmaker(chain.id, intent, serializedTx)
+        } catch {
+          // If the above failed, only send the tx hash to the matchmaker
+          await postPublicIntentToMatchmaker(
+            chain.id,
+            intent,
+            intentTransactionHash
+          )
+        }
+
         await publicClient.waitForTransactionReceipt({
           hash: intentTransactionHash,
           onReplaced: (replacement) => {
@@ -408,13 +470,6 @@ export const SwapModal: FC<SwapModalProps> = ({
           },
           confirmations: 0,
         })
-
-        // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(
-          chain.id,
-          intent,
-          intentTransactionHash
-        )
       }
 
       // Scenario 4: Normal swap (user has not already given approval, is not using metamask wallet,
@@ -433,17 +488,44 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         setTxHash(hash)
 
+        // For faster distribution, also submit tx to matchmaker's api
+        try {
+          const tx = await publicClient.getTransaction({ hash })
+          const serializedTx = serializeTransaction(
+            {
+              type: tx.type,
+              chainId: tx.chainId,
+              gas: tx.gas,
+              nonce: tx.nonce,
+              to: tx.to || undefined,
+              value: tx.value,
+              maxFeePerGas: tx.maxFeePerGas,
+              maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+              accessList: tx.accessList,
+              data: tx.input,
+            },
+            {
+              v: tx.v,
+              r: tx.r,
+              s: tx.s,
+            }
+          )
+
+          // First, attempt to send the full tx data to the matchmaker
+          await postPublicIntentToMatchmaker(chain.id, intent, serializedTx)
+        } catch {
+          // If the above failed, only send the tx hash to the matchmaker
+          await postPublicIntentToMatchmaker(chain.id, intent, hash)
+        }
+
         await publicClient.waitForTransactionReceipt({
-          hash: hash,
+          hash,
           onReplaced: (replacement) => {
             setTxHash(replacement?.transaction?.hash),
               console.log('Transaction replaced')
           },
           confirmations: 0,
         })
-
-        // For faster distribution, also submit tx to matchmaker's api
-        await postPublicIntentToMatchmaker(chain.id, intent, hash)
       }
 
       setTxSuccess(true)

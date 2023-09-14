@@ -170,14 +170,14 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
 async function postPublicIntentToMatchmaker(
   chainId: number,
   intent: IntentERC20 | IntentERC721,
-  hash: Address
+  approvalTxOrTxHash: Address
 ) {
   try {
     const matchmakerApi = MATCHMAKER_API[chainId]
     const protocol = isERC721Intent(intent) ? 'erc721' : 'erc20'
     await axios.post(`${matchmakerApi}/${protocol}/intents/public`, {
       intent,
-      approvalTxOrTxHash: hash,
+      approvalTxOrTxHash,
     })
   } catch (e) {
     console.error('Error submitting intent to public matchmaker api:', e)
