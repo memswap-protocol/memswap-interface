@@ -132,7 +132,6 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       'uint16',
       'uint32',
       'uint32',
-      'uint256',
       'bool',
       'bool',
       ...(isERC721Intent(intent) ? ['bool', 'uint256'] : []),
@@ -154,7 +153,6 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       intent.surplusBps,
       intent.startTime,
       intent.endTime,
-      intent.nonce,
       intent.isPartiallyFillable,
       intent.isSmartOrder,
       ...('isCriteriaOrder' in intent

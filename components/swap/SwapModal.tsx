@@ -404,6 +404,7 @@ export const SwapModal: FC<SwapModalProps> = ({
             setTxHash(replacement?.transaction?.hash),
               console.log('Transaction replaced')
           },
+          confirmations: 0,
         })
 
         // For faster distribution, also submit tx to matchmaker's api
