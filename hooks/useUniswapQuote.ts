@@ -121,8 +121,16 @@ const useUniswapQuote = (
           route?.estimatedGasUsedQuoteToken.toExact()
         )
 
-        const totalEstimatedGasUsed =
-          Number(formatGwei(defaultGas, 'wei')) + fetchedEstimatedGasUsed
+        // UniswapGasUsed ...................... EstimatedGasUsedQuoteToken
+        // UniswapGasUsed + DefaultGasUsed ..... ? TotalEstimatedGasUsed ?
+        let totalEstimatedGasUsed =
+          ((Number(defaultGas) + route?.estimatedGasUsed.toNumber()) *
+            fetchedEstimatedGasUsed) /
+          route?.estimatedGasUsed.toNumber()
+
+        // Adjust the estimated gas used by 10% just in case
+        totalEstimatedGasUsed += totalEstimatedGasUsed / 10
+
         const totalQuote = Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
 
         if (!isCancelled) {
