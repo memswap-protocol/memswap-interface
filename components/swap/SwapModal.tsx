@@ -224,7 +224,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         sellToken: processedTokenInAddress,
         maker: address,
         solver: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
-        source: referrer ?? address,
+        source: referrer ?? zeroAddress,
         feeBps: 0,
         surplusBps: 0,
         startTime: now(),
