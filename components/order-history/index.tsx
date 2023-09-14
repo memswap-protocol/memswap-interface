@@ -93,6 +93,11 @@ const UserOrderHistory = () => {
   const loadMoreObserver = useIntersectionObserver(loadMoreRef, {})
   const [showOnlyMyIntents, setShowOnlyMyIntents] = useState(false)
 
+  // If wallet is connected, default to showing only wallet's intents
+  useEffect(() => {
+    setShowOnlyMyIntents(true)
+  }, [address])
+
   const getKey = (
     pageIndex: number,
     previousPageData: IntentHistoryResponse | null

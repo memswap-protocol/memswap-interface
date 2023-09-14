@@ -80,7 +80,7 @@ const useNftQuote = (
     }, 0)
   }, [data, tokenIn])
 
-  // Fetch
+  // Fetch eth conversion to calculate gas price
   useEffect(() => {
     const calculateTotalEstimatedFees = async () => {
       try {
