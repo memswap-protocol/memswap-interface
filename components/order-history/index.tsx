@@ -139,7 +139,7 @@ const UserOrderHistory = () => {
     >
       <Flex justify="between" align="center" css={{ px: 24 }}>
         <Text style="h5">Swap History</Text>
-        {address ? (
+        {isMounted && address ? (
           <Flex align="center" css={{ gap: '2' }}>
             <Text style="subtitle2">Only my history</Text>
             <Switch

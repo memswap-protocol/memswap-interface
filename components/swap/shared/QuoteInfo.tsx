@@ -2,19 +2,24 @@ import { FC } from 'react'
 import { Flex, Text } from '../../primitives'
 import { LoadingSpinner } from '../../common/LoadingSpinner'
 import { formatNumber } from '../../../lib/utils/numbers'
-import { Collection, Token } from '../../../lib/types'
+import { Protocol, Token } from '../../../lib/types'
 
 type QuoteInfoProps = {
+  isBuy: boolean
+  protocol: Protocol
   tokenIn?: Token
-  tokenOut?: Token | Collection
+  tokenOut?: Token
   amountIn: string
   amountOut: string
   totalEstimatedFees?: string
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
+  errorMessage?: string
 }
 
 export const QuoteInfo: FC<QuoteInfoProps> = ({
+  isBuy,
+  protocol,
   tokenIn,
   tokenOut,
   amountIn,
@@ -22,10 +27,11 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
   totalEstimatedFees,
   isFetchingQuote,
   errorFetchingQuote,
+  errorMessage,
 }) => {
   if (
     !tokenIn ||
-    !tokenOut ||
+    (!tokenOut && protocol === Protocol.ERC20) ||
     (!amountIn && !amountOut && (!isFetchingQuote || !errorFetchingQuote))
   ) {
     return
@@ -57,23 +63,23 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
 
       {!isFetchingQuote && errorFetchingQuote ? (
         <Text style="body2" color="error">
-          There was an error fetching the quote
+          {errorMessage ?? 'There was an error fetching the quote'}
         </Text>
       ) : null}
 
       {!isFetchingQuote && !errorFetchingQuote ? (
         <>
-          <Flex align="center" justify="between" css={{ gap: '4' }}>
-            <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
-              Best Price
-            </Text>
-            <Text style="body2" color="subtle" ellipsify>
-              1 {tokenIn?.symbol} = {bestPrice ? formatNumber(bestPrice, 8) : 0}{' '}
-              {tokenOut && 'symbol' in tokenOut
-                ? tokenOut?.symbol
-                : tokenOut?.name}
-            </Text>
-          </Flex>
+          {protocol === Protocol.ERC20 ? (
+            <Flex align="center" justify="between" css={{ gap: '4' }}>
+              <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
+                Best Price
+              </Text>
+              <Text style="body2" color="subtle" ellipsify>
+                1 {tokenIn?.symbol} ={' '}
+                {bestPrice ? formatNumber(bestPrice, 8) : 0} {tokenOut?.symbol}
+              </Text>
+            </Flex>
+          ) : null}
           {totalEstimatedFees ? (
             <Flex align="center" justify="between" css={{ gap: '4' }}>
               <Text style="body2" css={{ whiteSpace: 'nowrap' }}>
@@ -81,9 +87,7 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
               </Text>
               <Text style="body2" color="subtle" ellipsify>
                 ~ {totalEstimatedFees}{' '}
-                {tokenOut && 'symbol' in tokenOut
-                  ? tokenOut?.symbol
-                  : tokenOut?.name}
+                {isBuy ? tokenIn?.symbol : tokenOut?.symbol}
               </Text>
             </Flex>
           ) : null}

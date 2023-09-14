@@ -84,8 +84,10 @@ const NFTSwap: FC<NFTSwapProps> = ({
 
   const {
     quote: amountInQuote,
+    totalEstimatedFees,
     isLoading: isFetchingQuote,
-    isError: errorFetchingQuote,
+    isError: isErrorFetchingQuote,
+    error: nftQuoteError,
   } = useNftQuote(tokenIn, collection, Number(debouncedAmountOut))
 
   const amountIn = amountInQuote?.toString() || ''
@@ -287,12 +289,15 @@ const NFTSwap: FC<NFTSwapProps> = ({
         <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       </Flex>
       <QuoteInfo
-        errorFetchingQuote={errorFetchingQuote}
-        isFetchingQuote={isFetchingQuote}
+        isBuy={true}
+        protocol={Protocol.ERC721}
         tokenIn={tokenIn}
-        tokenOut={collection}
         amountIn={amountIn}
         amountOut={debouncedAmountOut}
+        totalEstimatedFees={totalEstimatedFees}
+        errorFetchingQuote={isErrorFetchingQuote}
+        isFetchingQuote={isFetchingQuote}
+        errorMessage={nftQuoteError?.response?.data?.message}
       />
       <SwapModal
         protocol={Protocol.ERC721}
@@ -307,7 +312,7 @@ const NFTSwap: FC<NFTSwapProps> = ({
         swapMode={swapMode}
         tokenInBalance={tokenInBalance}
         isFetchingQuote={isFetchingQuote}
-        errorFetchingQuote={errorFetchingQuote}
+        errorFetchingQuote={isErrorFetchingQuote}
       />
     </Flex>
   )

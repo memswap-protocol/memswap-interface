@@ -25,7 +25,6 @@ import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 import { HighFeesWarning } from './HighFeesWarning'
-import useQuote from '../../../hooks/useUniswapQuote'
 
 type TokenSwapProps = {
   slippagePercentage: string
@@ -103,7 +102,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
     isHighGasFee,
-  } = useQuote(
+  } = useUniswapQuote(
     alphaRouter,
     isBuy,
     Number(debouncedAmountIn),
@@ -122,7 +121,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     }
   }, [totalQuote])
 
-  const { rawQuote: tokenInUSD } = useQuote(
+  const { rawQuote: tokenInUSD } = useUniswapQuote(
     alphaRouter,
     false,
     Number(debouncedAmountIn),
@@ -131,7 +130,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     USDC_TOKENS[chain.id]
   )
 
-  const { rawQuote: tokenOutUSD } = useQuote(
+  const { rawQuote: tokenOutUSD } = useUniswapQuote(
     alphaRouter,
     false,
     Number(debouncedAmountOut),
@@ -388,13 +387,15 @@ const TokenSwap: FC<TokenSwapProps> = ({
         <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       </Flex>
       <QuoteInfo
-        errorFetchingQuote={errorFetchingQuote}
-        isFetchingQuote={isFetchingQuote}
+        isBuy={isBuy}
+        protocol={Protocol.ERC20}
         tokenIn={tokenIn}
         tokenOut={tokenOut}
         amountIn={amountIn}
         amountOut={amountOut}
         totalEstimatedFees={totalEstimatedFees}
+        errorFetchingQuote={errorFetchingQuote}
+        isFetchingQuote={isFetchingQuote}
       />
       {isHighGasFee ? <HighFeesWarning /> : null}
       <SwapModal

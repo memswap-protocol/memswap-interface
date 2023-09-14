@@ -2,9 +2,9 @@ import useSWR from 'swr'
 import { useReservoirBaseApiUrl } from '.'
 import { Collection, Token } from '../lib/types'
 import useSupportedNetwork from './useSupportedNetwork'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
-import { zeroAddress } from 'viem'
+import { formatGwei, zeroAddress } from 'viem'
 import axios from 'axios'
 import { paths } from '@reservoir0x/reservoir-sdk'
 
@@ -29,6 +29,9 @@ const useNftQuote = (
   const { address } = useAccount()
   const { chain } = useSupportedNetwork()
   const baseApiUrl = useReservoirBaseApiUrl(chain)
+  const [totalEstimatedFees, setTotalEstimatedFees] = useState<
+    string | undefined
+  >()
 
   const options = useMemo(() => {
     return {
@@ -65,7 +68,7 @@ const useNftQuote = (
     }
   )
 
-  const totalQuote = useMemo(() => {
+  const quote = useMemo(() => {
     if (!data) return 0
     return data?.path?.reduce((total, path) => {
       return (
@@ -75,12 +78,44 @@ const useNftQuote = (
         )
       )
     }, 0)
-  }, [data])
+  }, [data, tokenIn])
+
+  // Fetch
+  useEffect(() => {
+    const calculateTotalEstimatedFees = async () => {
+      try {
+        const currencyConversion = await axios
+          .get<
+            paths['/currencies/conversion/v1']['get']['responses']['200']['schema']
+          >(
+            `${baseApiUrl}/currencies/conversion/v1?from=${zeroAddress}&to=${tokenIn?.address}`
+          )
+          .then((response) => response.data.conversion)
+
+        const estimatedFees =
+          Number(currencyConversion ?? '1') *
+          Number(formatGwei(BigInt(gasUsed(amountOut ?? 1))))
+
+        setTotalEstimatedFees(estimatedFees.toString())
+      } catch (error) {
+        setTotalEstimatedFees(undefined)
+      }
+    }
+
+    calculateTotalEstimatedFees()
+  }, [amountOut, tokenIn?.address, baseApiUrl]) // Add any other dependencies if needed
+
+  const totalQuote = useMemo(() => {
+    // return Math.max((quote ?? 0) - totalEstimatedFees, 0)
+    return Math.max(quote ?? 0, 0)
+  }, [quote, totalEstimatedFees])
 
   return {
     quote: totalQuote,
+    totalEstimatedFees: totalEstimatedFees,
     isLoading,
     isError: Boolean(error),
+    error,
   }
 }
 
