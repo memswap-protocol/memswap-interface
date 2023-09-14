@@ -59,6 +59,7 @@ const useNftQuote = (
       return await axiosFetcher(url, options)
     },
     {
+      refreshInterval: 30000,
       revalidateIfStale: false,
       revalidateOnFocus: false,
     }

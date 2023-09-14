@@ -11,6 +11,8 @@ import { Token as UniswapToken } from '@uniswap/sdk-core'
 export enum Protocol {
   ERC20,
   ERC721,
+  V2,
+  V3,
 }
 
 type IntentERC20 = {

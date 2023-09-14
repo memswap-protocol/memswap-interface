@@ -25,6 +25,7 @@ import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 import { HighFeesWarning } from './HighFeesWarning'
+import useQuote from '../../../hooks/useUniswapQuote'
 
 type TokenSwapProps = {
   slippagePercentage: string
@@ -102,9 +103,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     isLoading: isFetchingQuote,
     isError: errorFetchingQuote,
     isHighGasFee,
-    setIsAutoUpdate,
-    setShouldRefresh,
-  } = useUniswapQuote(
+  } = useQuote(
     alphaRouter,
     isBuy,
     Number(debouncedAmountIn),
@@ -114,8 +113,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
   )
 
   useEffect(() => {
-    if (!isFetchingQuote && !errorFetchingQuote) {
-      setIsAutoUpdate(true)
+    if (!errorFetchingQuote) {
       if (isBuy) {
         setAmountIn(totalQuote ?? '')
       } else {
@@ -124,12 +122,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     }
   }, [totalQuote])
 
-  // Refresh quote when tokenIn or tokenOut changes
-  useEffect(() => {
-    setShouldRefresh(true)
-  }, [tokenIn, tokenOut])
-
-  const { rawQuote: tokenInUSD } = useUniswapQuote(
+  const { rawQuote: tokenInUSD } = useQuote(
     alphaRouter,
     false,
     Number(debouncedAmountIn),
@@ -138,7 +131,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
     USDC_TOKENS[chain.id]
   )
 
-  const { rawQuote: tokenOutUSD } = useUniswapQuote(
+  const { rawQuote: tokenOutUSD } = useQuote(
     alphaRouter,
     false,
     Number(debouncedAmountOut),
@@ -249,7 +242,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
                 const regex = /^[0-9]+(\.[0-9]*)?$/
 
                 if (regex.test(inputValue) || inputValue === '') {
-                  setIsAutoUpdate(false)
+                  // setIsAutoUpdate(false)
                   setAmountIn(inputValue)
                   setIsBuy(false)
                 }
@@ -339,7 +332,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
                 const regex = /^[0-9]+(\.[0-9]*)?$/
 
                 if (regex.test(inputValue) || inputValue === '') {
-                  setIsAutoUpdate(false)
+                  // setIsAutoUpdate(false)
                   setAmountOut(inputValue)
                   setIsBuy(true)
                 }
