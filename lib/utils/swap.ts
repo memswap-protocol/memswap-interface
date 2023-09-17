@@ -7,8 +7,6 @@ import {
   MEMSWAP_ERC20,
   MEMSWAP_ERC721,
 } from '../constants/contracts'
-import { MEMSWAP_ERC20_ABI } from '../constants/abis'
-import { defaultAbiCoder } from '@ethersproject/abi'
 
 const isERC721Intent = (intent: IntentERC20 | IntentERC721) =>
   'isCriteriaOrder' in intent
@@ -88,6 +86,10 @@ const getEIP712Types = (protocol: Protocol) => ({
       name: 'isSmartOrder',
       type: 'bool',
     },
+    {
+      name: 'isIncentivized',
+      type: 'bool',
+    },
     ...(protocol === Protocol.ERC721
       ? [
           {
@@ -134,6 +136,7 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       'uint32',
       'bool',
       'bool',
+      'bool',
       ...(isERC721Intent(intent) ? ['bool', 'uint256'] : []),
       'uint128',
       'uint128',
@@ -155,6 +158,7 @@ const encodeIntentAbiParameters = (intent: IntentERC20 | IntentERC721) => {
       intent.endTime,
       intent.isPartiallyFillable,
       intent.isSmartOrder,
+      intent.isIncentivized,
       ...('isCriteriaOrder' in intent
         ? [intent.isCriteriaOrder, intent.tokenIdOrCriteria]
         : []),

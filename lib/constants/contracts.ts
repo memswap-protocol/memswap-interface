@@ -5,13 +5,13 @@ export type ChainIdToAddress = { [chainId: number]: Address }
 
 // Protocol
 const MEMSWAP_ERC20: ChainIdToAddress = {
-  1: '0x19a1b89a83b2729c5c3920e5719b01f80af49621',
-  5: '0xa5005349b7dcd9536832d97235675ef5ae40f095',
+  1: '0xe493c1a47f63d93db966b827a496d2431395e030',
+  5: '0x8adda31fe63696ac64ded7d0ea208102b1358c44',
 }
 
 const MEMSWAP_ERC721: ChainIdToAddress = {
-  1: '0xdb4f0db998bc1d429499fb11638fd3705e8e60cc',
-  5: '0xafa58bbc787dcda022b698df78d613ea760727e2',
+  1: '0x6afc65c964267bd4c10a488df5810d32a6c35b6e',
+  5: '0x19a1b89a83b2729c5c3920e5719b01f80af49621',
 }
 
 const MEMSWAP_WETH: ChainIdToAddress = {

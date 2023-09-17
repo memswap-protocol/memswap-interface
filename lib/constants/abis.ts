@@ -1,21 +1,111 @@
 const MEMSWAP_ERC20_ABI = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  { inputs: [], name: 'AmountCheckFailed', type: 'error' },
-  { inputs: [], name: 'AuthorizationAmountMismatch', type: 'error' },
-  { inputs: [], name: 'AuthorizationIsExpired', type: 'error' },
-  { inputs: [], name: 'IntentCannotBePrevalidated', type: 'error' },
-  { inputs: [], name: 'IntentIsCancelled', type: 'error' },
-  { inputs: [], name: 'IntentIsExpired', type: 'error' },
-  { inputs: [], name: 'IntentIsFilled', type: 'error' },
-  { inputs: [], name: 'IntentIsNotPartiallyFillable', type: 'error' },
-  { inputs: [], name: 'IntentIsNotStarted', type: 'error' },
-  { inputs: [], name: 'InvalidFillAmount', type: 'error' },
-  { inputs: [], name: 'InvalidSignature', type: 'error' },
-  { inputs: [], name: 'InvalidSolution', type: 'error' },
-  { inputs: [], name: 'InvalidStartAndEndTimes', type: 'error' },
-  { inputs: [], name: 'MerkleTreeTooLarge', type: 'error' },
-  { inputs: [], name: 'Unauthorized', type: 'error' },
-  { inputs: [], name: 'UnsuccessfulCall', type: 'error' },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'memswapAlphaNft',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'AmountCheckFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AuthorizationAmountMismatch',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AuthorizationIsExpired',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentCannotBePrevalidated',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsCancelled',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsExpired',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsFilled',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsNotPartiallyFillable',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsNotStarted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidFillAmount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidPriorityFee',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidSignature',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidSolution',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidStartAndEndTimes',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidTip',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MerkleTreeTooLarge',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'Unauthorized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UnsuccessfulCall',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'IncentivizationParametersUpdated',
+    type: 'event',
+  },
   {
     anonymous: false,
     inputs: [
@@ -51,7 +141,12 @@ const MEMSWAP_ERC20_ABI = [
         name: 'intentHash',
         type: 'bytes32',
       },
-      { indexed: false, internalType: 'bool', name: 'isBuy', type: 'bool' },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: 'isBuy',
+        type: 'bool',
+      },
       {
         indexed: false,
         internalType: 'address',
@@ -92,7 +187,12 @@ const MEMSWAP_ERC20_ABI = [
     name: 'IntentSolved',
     type: 'event',
   },
-  { anonymous: false, inputs: [], name: 'IntentsPosted', type: 'event' },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'IntentsPosted',
+    type: 'event',
+  },
   {
     anonymous: false,
     inputs: [
@@ -113,37 +213,101 @@ const MEMSWAP_ERC20_ABI = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
     inputs: [],
     name: 'AUTHORIZATION_TYPEHASH',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'INTENT_TYPEHASH',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    inputs: [],
+    name: 'MEMSWAP_ALPHA_NFT',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     name: 'authorization',
     outputs: [
-      { internalType: 'uint128', name: 'fillAmountToCheck', type: 'uint128' },
+      {
+        internalType: 'uint128',
+        name: 'fillAmountToCheck',
+        type: 'uint128',
+      },
       {
         internalType: 'uint128',
         name: 'executeAmountToCheck',
         type: 'uint128',
       },
-      { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+      {
+        internalType: 'uint32',
+        name: 'blockDeadline',
+        type: 'uint32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -152,23 +316,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent[]',
         name: 'intents',
@@ -186,13 +423,21 @@ const MEMSWAP_ERC20_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC20.Authorization[]',
         name: 'auths',
         type: 'tuple[]',
       },
-      { internalType: 'address', name: 'solver', type: 'address' },
+      {
+        internalType: 'address',
+        name: 'solver',
+        type: 'address',
+      },
     ],
     name: 'authorize',
     outputs: [],
@@ -203,23 +448,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent[]',
         name: 'intents',
@@ -232,9 +550,30 @@ const MEMSWAP_ERC20_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'defaultSlippage',
+    outputs: [
+      {
+        internalType: 'uint16',
+        name: '',
+        type: 'uint16',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
-      { internalType: 'bytes32', name: 'intentHash', type: 'bytes32' },
-      { internalType: 'address', name: 'solver', type: 'address' },
+      {
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'solver',
+        type: 'address',
+      },
       {
         components: [
           {
@@ -247,7 +586,11 @@ const MEMSWAP_ERC20_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC20.Authorization',
         name: 'auth',
@@ -256,7 +599,11 @@ const MEMSWAP_ERC20_ABI = [
     ],
     name: 'getAuthorizationHash',
     outputs: [
-      { internalType: 'bytes32', name: 'authorizationHash', type: 'bytes32' },
+      {
+        internalType: 'bytes32',
+        name: 'authorizationHash',
+        type: 'bytes32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -265,23 +612,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent',
         name: 'intent',
@@ -289,7 +709,13 @@ const MEMSWAP_ERC20_ABI = [
       },
     ],
     name: 'getIntentHash',
-    outputs: [{ internalType: 'bytes32', name: 'intentHash', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -301,34 +727,134 @@ const MEMSWAP_ERC20_ABI = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     name: 'intentPrivateData',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    name: 'intentStatus',
     outputs: [
-      { internalType: 'bool', name: 'isPrevalidated', type: 'bool' },
-      { internalType: 'bool', name: 'isCancelled', type: 'bool' },
-      { internalType: 'uint128', name: 'amountFilled', type: 'uint128' },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    name: 'intentStatus',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'isPrevalidated',
+        type: 'bool',
+      },
+      {
+        internalType: 'bool',
+        name: 'isCancelled',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint128',
+        name: 'amountFilled',
+        type: 'uint128',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxTip',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'minTip',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'multiplier',
+    outputs: [
+      {
+        internalType: 'uint16',
+        name: '',
+        type: 'uint16',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     name: 'nonce',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'permit2',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -336,23 +862,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent[]',
         name: '',
@@ -368,23 +967,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent[]',
         name: 'intents',
@@ -397,26 +1069,119 @@ const MEMSWAP_ERC20_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'requiredPriorityFee',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent[]',
         name: 'intents',
@@ -432,23 +1197,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent',
         name: 'intent',
@@ -456,8 +1294,16 @@ const MEMSWAP_ERC20_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
-          { internalType: 'uint128', name: 'fillAmount', type: 'uint128' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+          {
+            internalType: 'uint128',
+            name: 'fillAmount',
+            type: 'uint128',
+          },
         ],
         internalType: 'struct MemswapERC20.Solution',
         name: 'solution',
@@ -470,7 +1316,11 @@ const MEMSWAP_ERC20_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -486,23 +1336,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent',
         name: 'intent',
@@ -510,8 +1433,16 @@ const MEMSWAP_ERC20_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
-          { internalType: 'uint128', name: 'fillAmount', type: 'uint128' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+          {
+            internalType: 'uint128',
+            name: 'fillAmount',
+            type: 'uint128',
+          },
         ],
         internalType: 'struct MemswapERC20.Solution',
         name: 'solution',
@@ -524,7 +1455,11 @@ const MEMSWAP_ERC20_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -540,23 +1475,96 @@ const MEMSWAP_ERC20_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC20.Intent',
         name: 'intent',
@@ -564,8 +1572,16 @@ const MEMSWAP_ERC20_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
-          { internalType: 'uint128', name: 'fillAmount', type: 'uint128' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+          {
+            internalType: 'uint128',
+            name: 'fillAmount',
+            type: 'uint128',
+          },
         ],
         internalType: 'struct MemswapERC20.Solution',
         name: 'solution',
@@ -583,13 +1599,21 @@ const MEMSWAP_ERC20_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC20.Authorization',
         name: 'auth',
         type: 'tuple',
       },
-      { internalType: 'bytes', name: 'authSignature', type: 'bytes' },
+      {
+        internalType: 'bytes',
+        name: 'authSignature',
+        type: 'bytes',
+      },
       {
         components: [
           {
@@ -597,7 +1621,11 @@ const MEMSWAP_ERC20_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -609,29 +1637,176 @@ const MEMSWAP_ERC20_ABI = [
     stateMutability: 'payable',
     type: 'function',
   },
-  { stateMutability: 'payable', type: 'receive' },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint16',
+        name: 'newDefaultSlippage',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint16',
+        name: 'newMultiplier',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newRequiredPriorityFee',
+        type: 'uint64',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newMinTip',
+        type: 'uint64',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newMaxTip',
+        type: 'uint64',
+      },
+    ],
+    name: 'updateIncentivizationParameters',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    stateMutability: 'payable',
+    type: 'receive',
+  },
 ] as const
 
 const MEMSWAP_ERC721_ABI = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  { inputs: [], name: 'AmountCheckFailed', type: 'error' },
-  { inputs: [], name: 'AuthorizationAmountMismatch', type: 'error' },
-  { inputs: [], name: 'AuthorizationIsExpired', type: 'error' },
-  { inputs: [], name: 'IntentCannotBePrevalidated', type: 'error' },
-  { inputs: [], name: 'IntentIsCancelled', type: 'error' },
-  { inputs: [], name: 'IntentIsExpired', type: 'error' },
-  { inputs: [], name: 'IntentIsFilled', type: 'error' },
-  { inputs: [], name: 'IntentIsNotPartiallyFillable', type: 'error' },
-  { inputs: [], name: 'IntentIsNotStarted', type: 'error' },
-  { inputs: [], name: 'InvalidCriteriaProof', type: 'error' },
-  { inputs: [], name: 'InvalidFillAmount', type: 'error' },
-  { inputs: [], name: 'InvalidSignature', type: 'error' },
-  { inputs: [], name: 'InvalidSolution', type: 'error' },
-  { inputs: [], name: 'InvalidStartAndEndTimes', type: 'error' },
-  { inputs: [], name: 'InvalidTokenId', type: 'error' },
-  { inputs: [], name: 'MerkleTreeTooLarge', type: 'error' },
-  { inputs: [], name: 'Unauthorized', type: 'error' },
-  { inputs: [], name: 'UnsuccessfulCall', type: 'error' },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'memswapAlphaNft',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'AmountCheckFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AuthorizationAmountMismatch',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AuthorizationIsExpired',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentCannotBePrevalidated',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsCancelled',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsExpired',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsFilled',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsNotPartiallyFillable',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IntentIsNotStarted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCriteriaProof',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidFillAmount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidPriorityFee',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidSignature',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidSolution',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidStartAndEndTimes',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidTip',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidTokenId',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MerkleTreeTooLarge',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'Unauthorized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UnsuccessfulCall',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'IncentivizationParametersUpdated',
+    type: 'event',
+  },
   {
     anonymous: false,
     inputs: [
@@ -667,7 +1842,12 @@ const MEMSWAP_ERC721_ABI = [
         name: 'intentHash',
         type: 'bytes32',
       },
-      { indexed: false, internalType: 'bool', name: 'isBuy', type: 'bool' },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: 'isBuy',
+        type: 'bool',
+      },
       {
         indexed: false,
         internalType: 'address',
@@ -708,7 +1888,12 @@ const MEMSWAP_ERC721_ABI = [
     name: 'IntentSolved',
     type: 'event',
   },
-  { anonymous: false, inputs: [], name: 'IntentsPosted', type: 'event' },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'IntentsPosted',
+    type: 'event',
+  },
   {
     anonymous: false,
     inputs: [
@@ -729,37 +1914,101 @@ const MEMSWAP_ERC721_ABI = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
     inputs: [],
     name: 'AUTHORIZATION_TYPEHASH',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'INTENT_TYPEHASH',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    inputs: [],
+    name: 'MEMSWAP_ALPHA_NFT',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     name: 'authorization',
     outputs: [
-      { internalType: 'uint128', name: 'fillAmountToCheck', type: 'uint128' },
+      {
+        internalType: 'uint128',
+        name: 'fillAmountToCheck',
+        type: 'uint128',
+      },
       {
         internalType: 'uint128',
         name: 'executeAmountToCheck',
         type: 'uint128',
       },
-      { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+      {
+        internalType: 'uint32',
+        name: 'blockDeadline',
+        type: 'uint32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -768,29 +2017,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent[]',
         name: 'intents',
@@ -808,13 +2134,21 @@ const MEMSWAP_ERC721_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC721.Authorization[]',
         name: 'auths',
         type: 'tuple[]',
       },
-      { internalType: 'address', name: 'solver', type: 'address' },
+      {
+        internalType: 'address',
+        name: 'solver',
+        type: 'address',
+      },
     ],
     name: 'authorize',
     outputs: [],
@@ -825,29 +2159,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent[]',
         name: 'intents',
@@ -860,9 +2271,30 @@ const MEMSWAP_ERC721_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'defaultSlippage',
+    outputs: [
+      {
+        internalType: 'uint16',
+        name: '',
+        type: 'uint16',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
-      { internalType: 'bytes32', name: 'intentHash', type: 'bytes32' },
-      { internalType: 'address', name: 'solver', type: 'address' },
+      {
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'solver',
+        type: 'address',
+      },
       {
         components: [
           {
@@ -875,7 +2307,11 @@ const MEMSWAP_ERC721_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC721.Authorization',
         name: 'auth',
@@ -884,7 +2320,11 @@ const MEMSWAP_ERC721_ABI = [
     ],
     name: 'getAuthorizationHash',
     outputs: [
-      { internalType: 'bytes32', name: 'authorizationHash', type: 'bytes32' },
+      {
+        internalType: 'bytes32',
+        name: 'authorizationHash',
+        type: 'bytes32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -893,29 +2333,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent',
         name: 'intent',
@@ -923,7 +2440,13 @@ const MEMSWAP_ERC721_ABI = [
       },
     ],
     name: 'getIntentHash',
-    outputs: [{ internalType: 'bytes32', name: 'intentHash', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: 'intentHash',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -935,34 +2458,134 @@ const MEMSWAP_ERC721_ABI = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     name: 'intentPrivateData',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    name: 'intentStatus',
     outputs: [
-      { internalType: 'bool', name: 'isPrevalidated', type: 'bool' },
-      { internalType: 'bool', name: 'isCancelled', type: 'bool' },
-      { internalType: 'uint128', name: 'amountFilled', type: 'uint128' },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    name: 'intentStatus',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'isPrevalidated',
+        type: 'bool',
+      },
+      {
+        internalType: 'bool',
+        name: 'isCancelled',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint128',
+        name: 'amountFilled',
+        type: 'uint128',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxTip',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'minTip',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'multiplier',
+    outputs: [
+      {
+        internalType: 'uint16',
+        name: '',
+        type: 'uint16',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     name: 'nonce',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'permit2',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -970,29 +2593,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent[]',
         name: '',
@@ -1008,29 +2708,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent[]',
         name: 'intents',
@@ -1043,32 +2820,129 @@ const MEMSWAP_ERC721_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'requiredPriorityFee',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent[]',
         name: 'intents',
@@ -1084,29 +2958,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent',
         name: 'intent',
@@ -1114,10 +3065,18 @@ const MEMSWAP_ERC721_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
           {
             components: [
-              { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
               {
                 internalType: 'bytes32[]',
                 name: 'criteriaProof',
@@ -1140,7 +3099,11 @@ const MEMSWAP_ERC721_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -1156,29 +3119,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent',
         name: 'intent',
@@ -1186,10 +3226,18 @@ const MEMSWAP_ERC721_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
           {
             components: [
-              { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
               {
                 internalType: 'bytes32[]',
                 name: 'criteriaProof',
@@ -1212,7 +3260,11 @@ const MEMSWAP_ERC721_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -1228,29 +3280,106 @@ const MEMSWAP_ERC721_ABI = [
     inputs: [
       {
         components: [
-          { internalType: 'bool', name: 'isBuy', type: 'bool' },
-          { internalType: 'address', name: 'buyToken', type: 'address' },
-          { internalType: 'address', name: 'sellToken', type: 'address' },
-          { internalType: 'address', name: 'maker', type: 'address' },
-          { internalType: 'address', name: 'solver', type: 'address' },
-          { internalType: 'address', name: 'source', type: 'address' },
-          { internalType: 'uint16', name: 'feeBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'surplusBps', type: 'uint16' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'bool', name: 'isPartiallyFillable', type: 'bool' },
-          { internalType: 'bool', name: 'isSmartOrder', type: 'bool' },
-          { internalType: 'bool', name: 'isCriteriaOrder', type: 'bool' },
+          {
+            internalType: 'bool',
+            name: 'isBuy',
+            type: 'bool',
+          },
+          {
+            internalType: 'address',
+            name: 'buyToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'sellToken',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'maker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'solver',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'source',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: 'feeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'surplusBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'endTime',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isPartiallyFillable',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isSmartOrder',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isIncentivized',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCriteriaOrder',
+            type: 'bool',
+          },
           {
             internalType: 'uint256',
             name: 'tokenIdOrCriteria',
             type: 'uint256',
           },
-          { internalType: 'uint128', name: 'amount', type: 'uint128' },
-          { internalType: 'uint128', name: 'endAmount', type: 'uint128' },
-          { internalType: 'uint16', name: 'startAmountBps', type: 'uint16' },
-          { internalType: 'uint16', name: 'expectedAmountBps', type: 'uint16' },
-          { internalType: 'bytes', name: 'signature', type: 'bytes' },
+          {
+            internalType: 'uint128',
+            name: 'amount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'endAmount',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint16',
+            name: 'startAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'expectedAmountBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'bytes',
+            name: 'signature',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct MemswapERC721.Intent',
         name: 'intent',
@@ -1258,10 +3387,18 @@ const MEMSWAP_ERC721_ABI = [
       },
       {
         components: [
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
           {
             components: [
-              { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
               {
                 internalType: 'bytes32[]',
                 name: 'criteriaProof',
@@ -1289,13 +3426,21 @@ const MEMSWAP_ERC721_ABI = [
             name: 'executeAmountToCheck',
             type: 'uint128',
           },
-          { internalType: 'uint32', name: 'blockDeadline', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'blockDeadline',
+            type: 'uint32',
+          },
         ],
         internalType: 'struct MemswapERC721.Authorization',
         name: 'auth',
         type: 'tuple',
       },
-      { internalType: 'bytes', name: 'authSignature', type: 'bytes' },
+      {
+        internalType: 'bytes',
+        name: 'authSignature',
+        type: 'bytes',
+      },
       {
         components: [
           {
@@ -1303,7 +3448,11 @@ const MEMSWAP_ERC721_ABI = [
             name: 'kind',
             type: 'uint8',
           },
-          { internalType: 'bytes', name: 'data', type: 'bytes' },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
         ],
         internalType: 'struct PermitExecutor.Permit[]',
         name: 'permits',
@@ -1315,7 +3464,56 @@ const MEMSWAP_ERC721_ABI = [
     stateMutability: 'payable',
     type: 'function',
   },
-  { stateMutability: 'payable', type: 'receive' },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint16',
+        name: 'newDefaultSlippage',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint16',
+        name: 'newMultiplier',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newRequiredPriorityFee',
+        type: 'uint64',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newMinTip',
+        type: 'uint64',
+      },
+      {
+        internalType: 'uint64',
+        name: 'newMaxTip',
+        type: 'uint64',
+      },
+    ],
+    name: 'updateIncentivizationParameters',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    stateMutability: 'payable',
+    type: 'receive',
+  },
 ] as const
 
 const WETH_ABI = [

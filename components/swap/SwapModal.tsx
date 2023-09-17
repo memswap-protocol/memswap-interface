@@ -234,6 +234,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         nonce: '0',
         isPartiallyFillable: false,
         isSmartOrder: false,
+        isIncentivized: false,
         ...(protocol === Protocol.ERC721
           ? { isCriteriaOrder: true, tokenIdOrCriteria: '0' }
           : {}),

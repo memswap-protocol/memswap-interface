@@ -29,6 +29,7 @@ type IntentERC20 = {
   nonce: string
   isPartiallyFillable: boolean
   isSmartOrder: boolean
+  isIncentivized: boolean
   amount: string
   endAmount: string
   startAmountBps: number
