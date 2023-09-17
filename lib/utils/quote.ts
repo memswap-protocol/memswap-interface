@@ -99,8 +99,8 @@ export const fetchQuote = async (
         fetchedEstimatedGasUsed) /
       route?.estimatedGasUsed.toNumber()
 
-    // Adjust the estimated gas used by 10% just in case
-    totalEstimatedGasUsed += totalEstimatedGasUsed / 10
+    // Adjust the estimated gas used by 20% just in case
+    totalEstimatedGasUsed += totalEstimatedGasUsed / 20
 
     const totalQuote = isBuy
       ? // For buy orders, adjust the quote up
