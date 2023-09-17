@@ -253,9 +253,18 @@ export const SwapModal: FC<SwapModalProps> = ({
         primaryType: 'Intent',
       })
 
+      // Fetch user's balance
+      const balance = await readContract({
+        address: processedTokenInAddress,
+        abi: erc20ABI,
+        functionName: 'balanceOf',
+        args: [address],
+      })
+
       // Encode approval and intent
       const approveMethod =
-        processedTokenInAddress === memswapWethContract
+        processedTokenInAddress === memswapWethContract &&
+        balance < parsedAmountIn
           ? 'depositAndApprove'
           : 'approve'
 
@@ -456,7 +465,10 @@ export const SwapModal: FC<SwapModalProps> = ({
           chainId: chain.id,
           to: processedTokenInAddress,
           account: address,
-          value: approveMethod === 'depositAndApprove' ? parsedAmountIn : 0n,
+          value:
+            approveMethod === 'depositAndApprove'
+              ? parsedAmountIn - balance
+              : 0n,
           data: combinedEndcodedData as Address,
         })
 
