@@ -385,34 +385,10 @@ export const SwapModal: FC<SwapModalProps> = ({
 
         setMetamaskApprovalHash(approvalHash)
 
-        await publicClient.waitForTransactionReceipt({
-          hash: approvalHash,
-          onReplaced: (replacement) => {
-            setTxHash(replacement?.transaction?.hash),
-              console.log('Transaction replaced')
-          },
-          confirmations: 0,
-        })
-
-        setSwapStep(SwapStep.Submit)
-
-        const { hash: intentTransactionHash } = await writeContract({
-          chainId: chain.id,
-          address: memswapContract,
-          // @ts-ignore @TODO
-          abi: memswapAbi,
-          functionName: 'post',
-          // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
-          args: [[intent]],
-          account: address,
-        })
-
-        setTxHash(intentTransactionHash)
-
         // For faster distribution, also submit tx to matchmaker's api
         try {
           const tx = await publicClient.getTransaction({
-            hash: intentTransactionHash,
+            hash: approvalHash,
           })
           const serializedTx = serializeTransaction(
             {
@@ -438,12 +414,32 @@ export const SwapModal: FC<SwapModalProps> = ({
           await postPublicIntentToMatchmaker(chain.id, intent, serializedTx)
         } catch {
           // If the above failed, only send the tx hash to the matchmaker
-          await postPublicIntentToMatchmaker(
-            chain.id,
-            intent,
-            intentTransactionHash
-          )
+          await postPublicIntentToMatchmaker(chain.id, intent, approvalHash)
         }
+
+        await publicClient.waitForTransactionReceipt({
+          hash: approvalHash,
+          onReplaced: (replacement) => {
+            setTxHash(replacement?.transaction?.hash),
+              console.log('Transaction replaced')
+          },
+          confirmations: 0,
+        })
+
+        setSwapStep(SwapStep.Submit)
+
+        const { hash: intentTransactionHash } = await writeContract({
+          chainId: chain.id,
+          address: memswapContract,
+          // @ts-ignore @TODO
+          abi: memswapAbi,
+          functionName: 'post',
+          // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
+          args: [[intent]],
+          account: address,
+        })
+
+        setTxHash(intentTransactionHash)
 
         await publicClient.waitForTransactionReceipt({
           hash: intentTransactionHash,
