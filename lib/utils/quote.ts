@@ -12,10 +12,8 @@ import {
 } from '@uniswap/sdk-core'
 import { AlphaRouter, SwapType } from '@uniswap/smart-order-router'
 
-// Approximation for gas used by memswap wrapping logic
-const memswapGas = 200000
-// Approximation for gas used by swap logic
-const defaultGas = 200000n
+// Approximation for gas used by memswap logic
+const defaultGas = 250000n
 
 /**
  * fetchQuote - A function for fetching quotes from uniswap's smart order router.
@@ -90,8 +88,9 @@ export const fetchQuote = async (
     }
 
     const fetchedQuote = Number(route?.quote?.toExact())
-    const fetchedEstimatedGasUsed =
-      Number(route?.estimatedGasUsedQuoteToken.toExact()) + memswapGas
+    const fetchedEstimatedGasUsed = Number(
+      route?.estimatedGasUsedQuoteToken.toExact()
+    )
 
     // UniswapGasUsed ...................... EstimatedGasUsedQuoteToken
     // UniswapGasUsed + DefaultGasUsed ..... ? TotalEstimatedGasUsed ?
@@ -100,8 +99,8 @@ export const fetchQuote = async (
         fetchedEstimatedGasUsed) /
       route?.estimatedGasUsed.toNumber()
 
-    // Adjust the estimated gas used by 10% just in case
-    totalEstimatedGasUsed += totalEstimatedGasUsed / 10
+    // Adjust the estimated gas used by 15% just in case
+    totalEstimatedGasUsed += totalEstimatedGasUsed / 15
 
     const totalQuote = isBuy
       ? // For buy orders, adjust the quote up
