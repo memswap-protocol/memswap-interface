@@ -10,7 +10,7 @@ import { paths } from '@reservoir0x/reservoir-sdk'
 
 // Approximation for gas used by buy logic
 const gasUsed = (quantity: number) =>
-  100000 + 75000 * quantity + 50000 * quantity
+  200000 + 75000 * quantity + 50000 * quantity
 
 const axiosFetcher = async (url: string, params: any) => {
   const { data } = await axios.post(url, params, {
