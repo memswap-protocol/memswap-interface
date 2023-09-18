@@ -9,6 +9,7 @@ const sentryWebpackPluginOptions = {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
+  output: 'export',
   sentry: {
     hideSourceMaps: false,
   },
