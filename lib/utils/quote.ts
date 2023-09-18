@@ -93,29 +93,29 @@ export const fetchQuote = async (
     )
 
     // UniswapGasUsed ...................... EstimatedGasUsedQuoteToken
-    // UniswapGasUsed + DefaultGasUsed ..... ? TotalEstimatedGasUsed ?
-    let totalEstimatedGasUsed =
+    // UniswapGasUsed + DefaultGasUsed ..... ? TotalEstimatedFees ?
+    let totalEstimatedFees =
       ((Number(defaultGas) + route?.estimatedGasUsed.toNumber()) *
         fetchedEstimatedGasUsed) /
       route?.estimatedGasUsed.toNumber()
 
-    // Adjust the estimated gas used by 15% just in case
-    totalEstimatedGasUsed += totalEstimatedGasUsed / 15
+    // Adjust the estimated fees used by 15% just in case
+    totalEstimatedFees += totalEstimatedFees / 15
 
     const totalQuote = isBuy
       ? // For buy orders, adjust the quote up
-        fetchedQuote + totalEstimatedGasUsed
+        fetchedQuote + totalEstimatedFees
       : // For sell orders, adjust the quote down
-        Math.max(fetchedQuote - totalEstimatedGasUsed, 0)
+        Math.max(fetchedQuote - totalEstimatedFees, 0)
 
     // Check if the gas fees exceed 30% of the total quote
-    const gasFeePercentage = (totalEstimatedGasUsed / totalQuote) * 100
+    const gasFeePercentage = (totalEstimatedFees / totalQuote) * 100
     const isHighGasFee = gasFeePercentage > 30
 
     return {
       totalQuote: totalQuote.toString(),
       rawQuote: fetchedQuote.toString(),
-      totalEstimatedFees: totalEstimatedGasUsed.toString(),
+      totalEstimatedFees,
       isError: false,
       isHighGasFee,
     }

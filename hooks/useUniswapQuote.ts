@@ -78,7 +78,7 @@ const useUniswapQuote = (
     } else {
       totalQuote = rawQuote = amountIn ? amountIn.toString() : undefined
     }
-    totalEstimatedFees = ''
+    totalEstimatedFees = 0
   }
 
   return {
