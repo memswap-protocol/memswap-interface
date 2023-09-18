@@ -2,11 +2,11 @@ import { Address } from 'viem'
 
 export const chainDefaultCollections: Record<number, Address[]> = {
   1: [
-    '0x76be3b62873462d2142405439777e971754e8e77', // parallel alpha
+    '0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42', // forgotten runes
     '0x34d85c9cdeb23fa97cb08333b511ac86e1c4e258', // otherdeed for otherside
-    '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e', // doodles
+    '0x2bd58a19c7e4abf17638c5ee6fa96ee5eb53aed9', // mannys game
     '0xd774557b647330c91bf44cfeab205095f7e6c367', // nakamigos
-    '0x7bd29408f11d2bfc23c34f18275bbf23bb716bc7', // meebits
+    '0x79fcdef22feed20eddacbb2587640e45491b757f', // mfers
     '0x4e1f41613c9084fdb9e34e11fae9412427480e56', // terraforms
   ],
   5: [

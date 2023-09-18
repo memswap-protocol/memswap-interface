@@ -23,7 +23,6 @@ import { buildQueryString } from '../../../lib/utils/params'
 import { isAddress } from 'viem'
 import { formatNumber } from '../../../lib/utils/numbers'
 import { paths } from '@reservoir0x/reservoir-sdk'
-import useDefaultCollections from '../../../hooks/useDefaultCollections'
 
 type SelectCollectionModalProps = {
   tokenIn?: Token
@@ -79,7 +78,9 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
   )
 
   const collectionsToDisplay =
-    results?.collections || (debouncedInput === '' ? defaultCollections : [])
+    results?.collections?.filter(
+      (collection) => collection?.contractKind === 'erc721'
+    ) || (debouncedInput === '' ? defaultCollections : [])
 
   return (
     <Modal
