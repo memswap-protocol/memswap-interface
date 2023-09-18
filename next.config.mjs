@@ -8,6 +8,7 @@ const sentryWebpackPluginOptions = {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  trailingSlash: true,
   sentry: {
     hideSourceMaps: false,
   },
