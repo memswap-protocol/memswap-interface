@@ -747,7 +747,7 @@ export const SwapModal: FC<SwapModalProps> = ({
           {error ? (
             <ErrorWell css={{ width: '100%' }} message={error?.message} />
           ) : null}
-          <Text style="h5">Confirm Swap</Text>
+          <Text style="h5">Complete Swap</Text>
 
           <IntentInfo
             tokenIn={tokenIn}
