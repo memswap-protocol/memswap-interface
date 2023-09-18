@@ -542,10 +542,7 @@ export const SwapModal: FC<SwapModalProps> = ({
     address: waitingForFulfillment ? memswapContract : undefined,
     abi: memswapAbi,
     eventName: 'IntentSolved',
-    // @TODO: add timeout
     listener(log) {
-      console.log(intentHash)
-      console.log(log)
       const eventIntentHash = log[0]?.args?.intentHash
       if (eventIntentHash === intentHash) {
         unwatch?.()
@@ -575,8 +572,11 @@ export const SwapModal: FC<SwapModalProps> = ({
     ) < Number(amountIn)
 
   function getButtonText() {
-    if (isDisconnected || isConnecting) {
+    if (isDisconnected) {
       return 'Connect Wallet'
+    }
+    if (isConnecting) {
+      return 'Connecting'
     }
     if (!tokenOut || !tokenIn) {
       return 'Select a token'
@@ -592,6 +592,9 @@ export const SwapModal: FC<SwapModalProps> = ({
     }
     if (tokenIn?.symbol === 'WETH' && tokenOut?.symbol === 'ETH') {
       return 'Unwrap'
+    }
+    if ((isBuy && amountIn === '0') || (!isBuy && amountOut === '0')) {
+      return 'Fees exceed amount'
     }
     return 'Swap'
   }
