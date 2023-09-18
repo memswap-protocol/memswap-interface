@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import { styled } from '../../styled-system/jsx'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 
 const DropdownMenuContent = styled(DropdownMenuPrimitive.DropdownMenuContent, {
   base: {
@@ -19,34 +19,6 @@ const DropdownMenuContent = styled(DropdownMenuPrimitive.DropdownMenuContent, {
     boxShadow: '0px 0px 50px 0px #0000001F',
   },
 })
-
-const AnimatedDropdownMenuContent = forwardRef<
-  ElementRef<typeof DropdownMenuContent>,
-  ComponentPropsWithoutRef<typeof DropdownMenuContent>
->(({ children, ...props }, forwardedRef) => (
-  <DropdownMenuContent asChild forceMount {...props}>
-    <motion.div
-      ref={forwardedRef}
-      initial={{ scale: 0.9, opacity: 0, y: -20 }}
-      animate={{
-        scale: 1,
-        opacity: 1,
-        y: 0,
-        transition: { mass: 0.05, type: 'spring', duration: 0.05 },
-      }}
-      exit={{
-        y: -20,
-        scale: 0.9,
-        opacity: 0,
-        transition: { duration: 0.05 },
-      }}
-    >
-      {children}
-    </motion.div>
-  </DropdownMenuContent>
-))
-
-AnimatedDropdownMenuContent.displayName = 'AnimatedDropdownMenuContent'
 
 const DropdownMenuItem = styled(DropdownMenuPrimitive.DropdownMenuItem, {
   base: {
@@ -84,9 +56,9 @@ const Dropdown = forwardRef<
       </DropdownMenuPrimitive.Trigger>
       <AnimatePresence>
         {open && (
-          <AnimatedDropdownMenuContent ref={forwardedRef} {...contentProps}>
+          <DropdownMenuContent ref={forwardedRef} {...contentProps}>
             {children}
-          </AnimatedDropdownMenuContent>
+          </DropdownMenuContent>
         )}
       </AnimatePresence>
     </DropdownMenuPrimitive.Root>
