@@ -11,7 +11,7 @@ type QuoteInfoProps = {
   tokenOut?: Token
   amountIn: string
   amountOut: string
-  totalEstimatedFees?: string
+  totalEstimatedFees?: number
   isFetchingQuote: boolean
   errorFetchingQuote: boolean
   errorMessage?: string

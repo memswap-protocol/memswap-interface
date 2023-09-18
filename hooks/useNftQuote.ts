@@ -3,14 +3,14 @@ import { useReservoirBaseApiUrl } from '.'
 import { Collection, Token } from '../lib/types'
 import useSupportedNetwork from './useSupportedNetwork'
 import { useEffect, useMemo, useState } from 'react'
-import { useAccount } from 'wagmi'
-import { formatGwei, zeroAddress } from 'viem'
+import { useAccount, usePublicClient } from 'wagmi'
+import { formatUnits, parseGwei, zeroAddress } from 'viem'
 import axios from 'axios'
 import { paths } from '@reservoir0x/reservoir-sdk'
 
 // Approximation for gas used by buy logic
 const gasUsed = (quantity: number) =>
-  200000 + 75000 * quantity + 50000 * quantity
+  250000n + 75000n * BigInt(quantity) + 50000n * BigInt(quantity)
 
 const axiosFetcher = async (url: string, params: any) => {
   const { data } = await axios.post(url, params, {
@@ -28,9 +28,10 @@ const useNftQuote = (
 ) => {
   const { address } = useAccount()
   const { chain } = useSupportedNetwork()
+  const publicClient = usePublicClient()
   const baseApiUrl = useReservoirBaseApiUrl(chain)
   const [totalEstimatedFees, setTotalEstimatedFees] = useState<
-    string | undefined
+    number | undefined
   >()
 
   const options = useMemo(() => {
@@ -92,27 +93,36 @@ const useNftQuote = (
           )
           .then((response) => response.data.conversion)
 
-        const estimatedFees =
-          Number(currencyConversion ?? '1') *
-          Number(formatGwei(BigInt(gasUsed(amountOut ?? 1))))
+        const gasFee = await publicClient
+          .getBlock({
+            blockTag: 'latest',
+          })
+          // 1 gwei + latest base fee adjusted up by 30%
+          .then(
+            (b) => parseGwei('1', 'wei') + (b.baseFeePerGas! * 13000n) / 10000n
+          )
 
-        setTotalEstimatedFees(estimatedFees.toString())
+        const estimatedFees = formatUnits(
+          BigInt(currencyConversion ?? '1') * gasUsed(amountOut ?? 1) * gasFee,
+          tokenIn?.decimals ?? 18
+        )
+
+        setTotalEstimatedFees(Number(estimatedFees))
       } catch (error) {
         setTotalEstimatedFees(undefined)
       }
     }
 
     calculateTotalEstimatedFees()
-  }, [amountOut, tokenIn?.address, baseApiUrl]) // Add any other dependencies if needed
+  }, [amountOut, tokenIn?.address, tokenIn?.decimals, baseApiUrl]) // Add any other dependencies if needed
 
   const totalQuote = useMemo(() => {
-    // return Math.max((quote ?? 0) - totalEstimatedFees, 0)
-    return Math.max(quote ?? 0, 0)
+    return (quote ?? 0) + (totalEstimatedFees ?? 0)
   }, [quote, totalEstimatedFees])
 
   return {
     quote: totalQuote,
-    totalEstimatedFees: totalEstimatedFees,
+    totalEstimatedFees,
     isLoading,
     isError: Boolean(error),
     error,
