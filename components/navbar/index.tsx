@@ -38,12 +38,12 @@ const Navbar = () => {
             {isSmallDevice ? (
               <Image
                 src="/mobile-logo.svg"
-                alt="MemSwap"
+                alt="Memswap"
                 width={50}
                 height={31}
               />
             ) : (
-              <Image src="/logo.svg" alt="MemSwap" width={144} height={22} />
+              <Image src="/logo.svg" alt="Memswap" width={144} height={22} />
             )}
           </Link>
           {!isSmallDevice ? (

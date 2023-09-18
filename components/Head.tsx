@@ -15,7 +15,7 @@ type Props = {
  */
 export const Head: FC<Props> = ({
   ogImage = 'og-image.png',
-  title = 'MemSwap',
+  title = 'Memswap',
   description = 'A Decentralized “Intents-based” Protocol for Efficient and Transparent Token Swaps Leveraging the Ethereum Mempool',
 }) => {
   return (

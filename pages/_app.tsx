@@ -39,7 +39,7 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-      coinbaseWallet({ appName: 'MemSwap', chains }),
+      coinbaseWallet({ appName: 'Memswap', chains }),
       phantomWallet({ chains }),
       walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
     ],
