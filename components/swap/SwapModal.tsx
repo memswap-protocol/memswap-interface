@@ -307,6 +307,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Scenario 1: Private order
       // For private orders, submit a signed tx directly to the matchmaker's api
       if (swapMode === 'Private') {
+        console.log('here')
         const provider = await connector?.getProvider()
 
         const privateTxSignature = await provider.request({
@@ -543,6 +544,8 @@ export const SwapModal: FC<SwapModalProps> = ({
     eventName: 'IntentSolved',
     // @TODO: add timeout
     listener(log) {
+      console.log(intentHash)
+      console.log(log)
       const eventIntentHash = log[0]?.args?.intentHash
       if (eventIntentHash === intentHash) {
         unwatch?.()
