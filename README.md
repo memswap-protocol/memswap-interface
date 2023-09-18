@@ -1,6 +1,9 @@
 ![memswap-banner](https://github.com/memswap-eth/memswap-dapp/assets/41527174/2688b12a-dd14-4081-ae3e-789234ce34af)
 
+## Contributing
 
+- Open a pull request
+- Report a bug
 
 ## Getting Started
 
@@ -17,7 +20,6 @@ yarn
 ```
 NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=
 NEXT_PUBLIC_ALCHEMY_API_KEY=
-NEXT_PUBLIC_MATCHMAKER_BASE_URL=
 NEXT_PUBLIC_SENTRY_DSN=
 SENTRY_ORG=
 ```
