@@ -4,7 +4,7 @@ import { Collection, Token } from '../lib/types'
 import useSupportedNetwork from './useSupportedNetwork'
 import { useEffect, useMemo, useState } from 'react'
 import { useAccount, usePublicClient } from 'wagmi'
-import { formatUnits, parseGwei, zeroAddress } from 'viem'
+import { formatUnits, parseGwei, parseUnits, zeroAddress } from 'viem'
 import axios from 'axios'
 import { paths } from '@reservoir0x/reservoir-sdk'
 
@@ -102,9 +102,13 @@ const useNftQuote = (
             (b) => parseGwei('1', 'wei') + (b.baseFeePerGas! * 13000n) / 10000n
           )
 
+        const tokenInDecimals = tokenIn?.decimals ?? 18
         const estimatedFees = formatUnits(
-          BigInt(currencyConversion ?? '1') * gasUsed(amountOut ?? 1) * gasFee,
-          tokenIn?.decimals ?? 18
+          (BigInt(parseUnits(currencyConversion ?? '1', tokenInDecimals)) *
+            gasUsed(amountOut ?? 1) *
+            gasFee) /
+            10n ** 18n,
+          tokenInDecimals
         )
 
         setTotalEstimatedFees(Number(estimatedFees))

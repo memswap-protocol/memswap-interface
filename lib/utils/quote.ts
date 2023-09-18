@@ -40,6 +40,20 @@ export const fetchQuote = async (
     const fromToken = createUniswapToken(tokenIn, chainId)
     const toToken = createUniswapToken(tokenOut, chainId)
 
+    if (fromToken.equals(toToken)) {
+      const quote = parseUnits(
+        amountIn.toString(),
+        tokenIn?.decimals ?? 18
+      ).toString()
+      return {
+        totalQuote: quote,
+        rawQuote: quote,
+        totalEstimatedFees: 0,
+        isError: false,
+        isHighGasFee: false,
+      }
+    }
+
     let route
 
     if (isBuy) {
