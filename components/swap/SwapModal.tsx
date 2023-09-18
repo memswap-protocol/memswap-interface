@@ -309,7 +309,6 @@ export const SwapModal: FC<SwapModalProps> = ({
       if (swapMode === 'Private') {
         const provider = await connector?.getProvider()
 
-        // @TODO: verify data and value are correct values
         const privateTxSignature = await provider.request({
           method: 'eth_signTransaction',
           params: [
@@ -347,7 +346,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         // Otherwise, call 'post' method on Memswap contract
         const { hash } = await writeContract({
           address: memswapContract,
-          // @ts-ignore @TODO
+          // @ts-ignore @TODO infer correct abi
           abi: memswapAbi,
           functionName: 'post',
           // @ts-ignore @TODO: intent type differs from abi - amount and endAmount should be bigints
