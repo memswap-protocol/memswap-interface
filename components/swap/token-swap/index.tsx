@@ -21,7 +21,6 @@ import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
 import { Protocol, SwapMode, Token } from '../../../lib/types'
-import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 import { HighFeesWarning } from './HighFeesWarning'
@@ -29,6 +28,7 @@ import { HighFeesWarning } from './HighFeesWarning'
 type TokenSwapProps = {
   slippagePercentage: string
   deadline: string
+  swapMode: SwapMode
   tokenList: Token[]
   loadingTokenList: boolean
   defaultTokens: Token[]
@@ -37,6 +37,7 @@ type TokenSwapProps = {
 const TokenSwap: FC<TokenSwapProps> = ({
   slippagePercentage,
   deadline,
+  swapMode,
   tokenList,
   loadingTokenList,
   defaultTokens,
@@ -75,7 +76,6 @@ const TokenSwap: FC<TokenSwapProps> = ({
   const [debouncedAmountIn] = useDebounce(amountIn, 500)
   const [amountOut, setAmountOut] = useState('')
   const [debouncedAmountOut] = useDebounce(amountOut, 500)
-  const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
   const [isBuy, setIsBuy] = useState(false)
 
   // Deep Link Query Parameters
@@ -371,20 +371,6 @@ const TokenSwap: FC<TokenSwapProps> = ({
             ) : null}
           </Flex>
         </Flex>
-      </Flex>
-
-      <Flex align="center" css={{ gap: '3', sm: { gap: '5' } }}>
-        <Anchor href="" target="_blank" color="gray">
-          <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
-            Swap Mode
-            <Box
-              css={{ color: 'primary9', _groupHover: { color: 'primary10' } }}
-            >
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </Box>
-          </Flex>
-        </Anchor>
-        <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       </Flex>
       <QuoteInfo
         isBuy={isBuy}

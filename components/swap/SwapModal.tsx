@@ -204,7 +204,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       const slippageAmountBps = Number(slippagePercentage) * 100
 
-      if (swapMode === 'Dutch') {
+      if (swapMode === 'Trustless') {
         startAmountBps = slippageAmountBps
         expectedAmountBps = slippageAmountBps
       } else {
@@ -223,7 +223,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         buyToken: tokenOut?.address,
         sellToken: processedTokenInAddress,
         maker: address,
-        solver: swapMode === 'Dutch' ? zeroAddress : MATCHMAKER[chain.id],
+        solver: swapMode === 'Trustless' ? zeroAddress : MATCHMAKER[chain.id],
         source: referrer ?? zeroAddress,
         feeBps: 0,
         surplusBps: 0,
@@ -234,7 +234,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         nonce: '0',
         isPartiallyFillable: false,
         isSmartOrder: false,
-        isIncentivized: swapMode === 'Rapid',
+        isIncentivized: swapMode === 'Best',
         ...(protocol === Protocol.ERC721
           ? { isCriteriaOrder: true, tokenIdOrCriteria: '0' }
           : {}),
@@ -762,7 +762,7 @@ export const SwapModal: FC<SwapModalProps> = ({
               }}
             >
               <Flex justify="between" align="center">
-                <Text style="subtitle1">Submit yor order</Text>
+                <Text style="subtitle1">Submit your order</Text>
 
                 {txSuccess ? (
                   <Box css={{ color: 'green10' }}>

@@ -90,7 +90,7 @@ type Collection = NonNullable<
   paths['/collections/v7']['get']['responses']['200']['schema']['collections']
 >[0]
 
-type SwapMode = 'Rapid' | 'Dutch' | 'Private'
+type SwapMode = 'Best' | 'Trustless' | 'Private'
 
 type FetchBalanceResult = {
   decimals: number

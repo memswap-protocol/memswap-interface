@@ -3,11 +3,8 @@ import { useBalance, useAccount } from 'wagmi'
 import { Address, formatUnits, zeroAddress } from 'viem'
 import { useDebounce } from 'use-debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faArrowUpRightFromSquare,
-  faChevronDown,
-} from '@fortawesome/free-solid-svg-icons'
-import { Button, Flex, Text, Input, Anchor, Box } from '../../primitives'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { Button, Flex, Text, Input } from '../../primitives'
 import { SwapModal } from '../SwapModal'
 import {
   useDeepLinkParams,
@@ -20,7 +17,6 @@ import { formatDollar, formatNumber } from '../../../lib/utils/numbers'
 import { QuoteInfo } from '../shared/QuoteInfo'
 import { USDC_TOKENS } from '../../../lib/constants/contracts'
 import { Collection, Protocol, SwapMode, Token } from '../../../lib/types'
-import { ModeToggle } from '../shared/ModeToggle'
 import { useEthersProvider } from '../../../lib/utils/ethersAdapter'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 import { SelectCollectionModal } from './SelectCollectionModal'
@@ -30,6 +26,7 @@ import Tooltip from '../../primitives/Tooltip'
 type NFTSwapProps = {
   slippagePercentage: string
   deadline: string
+  swapMode: SwapMode
   tokenList: Token[]
   loadingTokenList: boolean
   defaultTokens: Token[]
@@ -39,6 +36,7 @@ type NFTSwapProps = {
 const NFTSwap: FC<NFTSwapProps> = ({
   slippagePercentage,
   deadline,
+  swapMode,
   tokenList,
   loadingTokenList,
   defaultTokens,
@@ -64,7 +62,6 @@ const NFTSwap: FC<NFTSwapProps> = ({
   )
   const [amountOut, setAmountOut] = useState('1')
   const [debouncedAmountOut] = useDebounce(amountOut, 500)
-  const [swapMode, setSwapMode] = useState<SwapMode>('Rapid')
 
   // Deep Link Query Parameters
   const { referrer: deepLinkReferrer } = useDeepLinkParams(tokenList)
@@ -273,20 +270,6 @@ const NFTSwap: FC<NFTSwapProps> = ({
             />
           </Flex>
         </Flex>
-      </Flex>
-
-      <Flex align="center" css={{ gap: '3', sm: { gap: '5' } }}>
-        <Anchor href="" target="_blank" color="gray">
-          <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
-            Swap Mode
-            <Box
-              css={{ color: 'primary9', _groupHover: { color: 'primary10' } }}
-            >
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </Box>
-          </Flex>
-        </Anchor>
-        <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       </Flex>
       <QuoteInfo
         isBuy={true}

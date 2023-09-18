@@ -1,17 +1,23 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { Dropdown } from '../../primitives/Dropdown'
-import { Button, Flex } from '../../primitives'
+import { Anchor, Box, Button, Flex, Text } from '../../primitives'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowUpRightFromSquare,
+  faGear,
+} from '@fortawesome/free-solid-svg-icons'
 import { SlippageInput } from './SlippageInput'
 import { DeadlineInput } from './DeadlineInput'
 import { SwapMode } from '../../../lib/types'
+import { ModeToggle } from './ModeToggle'
 
 type SettingsDropdownProps = {
   slippagePercentage: string
   setSlippagePercentage: Dispatch<SetStateAction<string>>
   deadline: string
   setDeadline: Dispatch<SetStateAction<string>>
+  swapMode: SwapMode
+  setSwapMode: Dispatch<SetStateAction<SwapMode>>
 }
 
 export const SettingsDropdown: FC<SettingsDropdownProps> = ({
@@ -19,6 +25,8 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
   setSlippagePercentage,
   deadline,
   setDeadline,
+  swapMode,
+  setSwapMode,
 }) => {
   return (
     <Dropdown
@@ -40,6 +48,17 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
           setSlippagePercentage={setSlippagePercentage}
         />
         <DeadlineInput deadline={deadline} setDeadline={setDeadline} />
+        <Anchor href="https://docs.memswap.xyz/" target="_blank" color="gray">
+          <Flex align="center" css={{ gap: '2', whiteSpace: 'nowrap' }}>
+            <Text style="subtitle2">Swap Mode</Text>
+            <Box
+              css={{ color: 'primary9', _groupHover: { color: 'primary10' } }}
+            >
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </Box>
+          </Flex>
+        </Anchor>
+        <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
       </Flex>
     </Dropdown>
   )

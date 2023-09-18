@@ -8,6 +8,7 @@ import NFTSwap from './nft-swap'
 import { chainDefaultTokens } from '../../lib/constants/chainDefaultTokens'
 import { useSupportedNetwork, useTokenList } from '../../hooks'
 import useDefaultCollections from '../../hooks/useDefaultCollections'
+import { SwapMode } from '../../lib/types'
 
 const SwapWidget = () => {
   // Global configuration
@@ -20,6 +21,7 @@ const SwapWidget = () => {
   const [tabValue, setTabValue] = useState('tokens')
   const [slippagePercentage, setSlippagePercentage] = useState('0.5') // default 0.5%
   const [deadline, setDeadline] = useState('5') // default 5 mins
+  const [swapMode, setSwapMode] = useState<SwapMode>('Best')
 
   return (
     <Flex
@@ -45,12 +47,15 @@ const SwapWidget = () => {
             setSlippagePercentage={setSlippagePercentage}
             deadline={deadline}
             setDeadline={setDeadline}
+            swapMode={swapMode}
+            setSwapMode={setSwapMode}
           />
         </Flex>
         <TabsContent value="tokens">
           <TokenSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
+            swapMode={swapMode}
             tokenList={tokenList}
             loadingTokenList={loadingTokenList}
             defaultTokens={defaultTokens}
@@ -60,6 +65,7 @@ const SwapWidget = () => {
           <NFTSwap
             slippagePercentage={slippagePercentage}
             deadline={deadline}
+            swapMode={swapMode}
             tokenList={tokenList}
             loadingTokenList={loadingTokenList}
             defaultTokens={defaultTokens}

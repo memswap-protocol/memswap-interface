@@ -61,7 +61,6 @@ const Navbar = () => {
             </Text>
           ) : null}
         </Flex>
-        {/* @TODO: add links */}
         {!isSmallDevice ? (
           <Flex align="center" css={{ gap: '5' }}>
             <Anchor href="/" color="gray">
@@ -70,7 +69,11 @@ const Navbar = () => {
             <Anchor href="/history" color="gray">
               History
             </Anchor>
-            <Anchor href="" target="_blank" color="gray">
+            <Anchor
+              href="https://docs.memswap.xyz/"
+              target="_blank"
+              color="gray"
+            >
               <Flex align="center" css={{ gap: '2' }}>
                 Docs
                 <Box css={{ color: 'gray11' }}>
