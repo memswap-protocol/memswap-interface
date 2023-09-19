@@ -79,7 +79,7 @@ const Navbar = () => {
               <Flex align="center" css={{ gap: '2' }}>
                 Docs
                 <Box css={{ color: 'gray11' }}>
-                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} width={12} />
                 </Box>
               </Flex>
             </Anchor>
