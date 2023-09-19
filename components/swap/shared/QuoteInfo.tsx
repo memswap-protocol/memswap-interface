@@ -86,7 +86,7 @@ export const QuoteInfo: FC<QuoteInfoProps> = ({
                 Total Estimated Fees
               </Text>
               <Text style="body2" color="subtle" ellipsify>
-                ~ {totalEstimatedFees}{' '}
+                ~ {formatNumber(totalEstimatedFees, 6)}{' '}
                 {isBuy ? tokenIn?.symbol : tokenOut?.symbol}
               </Text>
             </Flex>

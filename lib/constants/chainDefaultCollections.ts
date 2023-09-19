@@ -11,10 +11,10 @@ export const chainDefaultCollections: Record<number, Address[]> = {
   ],
   5: [
     '0x140f70fccebf16fcdf700078b02aed0fb852ede9', // trolltownwtf
-    '0xd0754605d9840ba5a54fa1a82f29850c2e1a1bdd', // bored ape
     '0xdaa3812b8fd34d01711105a6dfb669c50ab8fee3', // v3coolnft
     '0xcaf58434feea266837f4f955f35276e593b39e38', // catdog
     '0x0d884092ca2d377529511b744cf1c550e46b0f99', // milady
     '0xbdcf4b6693e344115b951c4796e8622a66cdb728', // coolcats
+    '0x18c7a6ad9901b53cc65055a358172f104f044fc0', // poonbirds
   ],
 }
