@@ -32,7 +32,7 @@ const Navbar = () => {
         gap: '3',
       }}
     >
-      <Flex align="center" css={{ gap: '5' }}>
+      <Flex align="center" css={{ gap: '5', lg: { gap: '6' } }}>
         <Flex align="center" css={{ gap: '2' }}>
           <Link href="/">
             {isSmallDevice ? (
@@ -50,10 +50,12 @@ const Navbar = () => {
             <Text
               style="subtitle3"
               css={{
-                backgroundColor: 'primary9',
-                color: 'white',
-                py: '1',
-                px: '2',
+                backgroundColor: 'white',
+                borderColor: 'primary9',
+                border: '1px solid',
+                color: 'primary9',
+                px: '1',
+                py: '2px',
                 borderRadius: 100,
               }}
             >
