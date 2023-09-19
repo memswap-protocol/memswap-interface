@@ -150,7 +150,12 @@ const UserOrderHistory = () => {
         pt: 24,
       }}
     >
-      <Flex justify="between" align="center" css={{ px: 24 }}>
+      <Flex
+        direction="column"
+        justify="between"
+        align="start"
+        css={{ px: 24, gap: '2', sm: { flexDirection: 'row' } }}
+      >
         <Text style="h5">Swap History</Text>
         {isMounted && address ? (
           <Flex align="center" css={{ gap: '2' }}>
