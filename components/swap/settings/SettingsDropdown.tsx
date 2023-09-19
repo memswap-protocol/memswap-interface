@@ -59,6 +59,12 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
           </Flex>
         </Anchor>
         <ModeToggle swapMode={swapMode} setSwapMode={setSwapMode} />
+        {swapMode === 'Private' ? (
+          <Text style="body3" color="subtle">
+            Requires a wallet that supports eth_signTransaction. Eg. Coinbase
+            Wallet
+          </Text>
+        ) : null}
       </Flex>
     </Dropdown>
   )
