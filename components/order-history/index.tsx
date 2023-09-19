@@ -140,7 +140,7 @@ const UserOrderHistory = () => {
       direction="column"
       css={{
         width: '100%',
-        maxWidth: '940px',
+        maxWidth: 1200,
         boxShadow: '0px 0px 50px 0px rgba(0, 0, 0, 0.12)',
         borderRadius: 16,
         backgroundColor: 'white',
@@ -171,7 +171,8 @@ const UserOrderHistory = () => {
       >
         <Grid
           css={{
-            gridTemplateColumns: 'repeat(4, minmax(200px, 1fr))',
+            gridTemplateColumns:
+              'minmax(300px, 2fr) repeat(3, minmax(200px, 1fr))',
             width: 'min-content',
             md: { width: '100%' },
             borderBottom: '1px solid',
@@ -212,7 +213,8 @@ const UserOrderHistory = () => {
                 <Grid
                   key={idx}
                   css={{
-                    gridTemplateColumns: 'repeat(4, minmax(200px, 1fr))',
+                    gridTemplateColumns:
+                      'minmax(300px, 2fr) repeat(3, minmax(200px, 1fr))',
                     width: 'min-content',
                     md: { width: '100%' },
                     borderBottom: '1px solid',
