@@ -560,6 +560,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         const eventFulfilledHash = log[0]?.transactionHash
         setFulfilledHash(eventFulfilledHash)
         setFulfilledSuccess(true)
+        setTxSuccess(true)
         setWaitingForFulfillment(false)
       }
     },
