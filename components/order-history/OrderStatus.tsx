@@ -19,7 +19,7 @@ const statusToUI = {
     text: 'Pending',
     icon: (
       <Box css={{ color: 'yellow10' }}>
-        <FontAwesomeIcon icon={faClock} />
+        <FontAwesomeIcon icon={faClock} width={16} />
       </Box>
     ),
   },
@@ -27,7 +27,7 @@ const statusToUI = {
     text: 'Cancelled',
     icon: (
       <Box css={{ color: 'red10' }}>
-        <FontAwesomeIcon icon={faCircleXmark} />
+        <FontAwesomeIcon icon={faCircleXmark} width={16} />
       </Box>
     ),
   },
@@ -35,7 +35,7 @@ const statusToUI = {
     text: 'Expired',
     icon: (
       <Box css={{ color: 'gray9' }}>
-        <FontAwesomeIcon icon={faClock} />
+        <FontAwesomeIcon icon={faClock} width={16} />
       </Box>
     ),
   },
@@ -43,7 +43,7 @@ const statusToUI = {
     text: 'Completed',
     icon: (
       <Box css={{ color: 'green10' }}>
-        <FontAwesomeIcon icon={faCircleCheck} />
+        <FontAwesomeIcon icon={faCircleCheck} width={16} />
       </Box>
     ),
   },
