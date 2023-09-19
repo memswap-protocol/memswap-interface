@@ -213,7 +213,7 @@ const NFTSwap: FC<NFTSwapProps> = ({
               backgroundColor: 'gray2',
             }}
           >
-            <FontAwesomeIcon icon={faChevronDown} />
+            <FontAwesomeIcon icon={faChevronDown} width={16} />
           </Button>
         </Tooltip>
       </Flex>

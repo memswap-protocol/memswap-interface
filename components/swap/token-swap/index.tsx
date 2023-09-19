@@ -290,7 +290,7 @@ const TokenSwap: FC<TokenSwapProps> = ({
           }}
           onClick={switchTokens}
         >
-          <FontAwesomeIcon icon={faChevronDown} />
+          <FontAwesomeIcon icon={faChevronDown} width={16} />
         </Button>
       </Flex>
       <Flex

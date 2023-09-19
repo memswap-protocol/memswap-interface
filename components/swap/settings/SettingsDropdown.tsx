@@ -37,7 +37,7 @@ export const SettingsDropdown: FC<SettingsDropdownProps> = ({
           size="small"
           css={{ color: 'gray9' }}
         >
-          <FontAwesomeIcon icon={faGear} />
+          <FontAwesomeIcon icon={faGear} width={16} />
         </Button>
       }
       contentProps={{ sideOffset: 12, style: { maxWidth: 248 }, align: 'end' }}
