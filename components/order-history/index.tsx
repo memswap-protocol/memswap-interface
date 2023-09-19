@@ -2,14 +2,17 @@ import useSWRInfinite from 'swr/infinite'
 import { request, gql } from 'graphql-request'
 import { useAccount } from 'wagmi'
 import { ApiIntent } from '../../lib/types'
-import { Box, Flex, Text, Img, Switch } from '../primitives'
+import { Box, Flex, Text, Img, Switch, Anchor } from '../primitives'
 import { Grid, GridItem } from '../primitives/Grid'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { OrderStatus } from './OrderStatus'
 import { Deadline } from './Deadline'
 import { useMounted, useSupportedNetwork } from '../../hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowRight,
+  faArrowUpRightFromSquare,
+} from '@fortawesome/free-solid-svg-icons'
 import { formatUnits } from 'viem'
 import { formatNumber } from '../../lib/utils/numbers'
 import { useEffect, useRef, useState } from 'react'
@@ -267,6 +270,19 @@ const UserOrderHistory = () => {
                       ) : (
                         <Text style="subtitle2">{intent.buyToken.symbol}</Text>
                       )}
+                      {intent?.isPreValidated && intent?.events[1] ? (
+                        <Anchor
+                          target="_blank"
+                          href={`${chain.blockExplorers?.default?.url}/tx/${intent?.events[1]}`}
+                        >
+                          <Box css={{ color: 'gray9' }}>
+                            <FontAwesomeIcon
+                              icon={faArrowUpRightFromSquare}
+                              width={12}
+                            />
+                          </Box>
+                        </Anchor>
+                      ) : null}
                     </Flex>
                   </GridItem>
                   <GridItem>
