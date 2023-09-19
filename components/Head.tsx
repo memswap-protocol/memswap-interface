@@ -23,6 +23,12 @@ export const Head: FC<Props> = ({
       {/* Title */}
       <title>{title}</title>
 
+      <link
+        rel="shortcut icon"
+        type="image/svg"
+        href="https://memswap.xyz/favicon.ico"
+      ></link>
+
       {/* Meta tags */}
       <meta name="description" content={description} />
 

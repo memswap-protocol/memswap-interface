@@ -74,7 +74,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <RainbowKitProvider
           chains={chains}
           modalSize="compact"
-          appInfo={{ disclaimer: Disclaimer }}
+          appInfo={{
+            disclaimer: Disclaimer,
+          }}
         >
           <Tooltip.Provider>
             <Component {...pageProps} />
