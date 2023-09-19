@@ -151,7 +151,9 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
                   borderRadius: '50%',
                 }}
               />{' '}
-              <Text ellipsify>{token?.symbol}</Text>
+              <Text ellipsify css={{ lineHeight: '20px' }}>
+                {token?.symbol}
+              </Text>
             </>
           ) : (
             <Text css={{ color: 'white' }} ellipsify>
