@@ -307,6 +307,8 @@ export const SwapModal: FC<SwapModalProps> = ({
       // Scenario 1: Private order
       // For private orders, submit a signed tx directly to the matchmaker's api
       if (swapMode === 'Private') {
+        setSwapStep(SwapStep.Submit)
+
         const provider = await connector?.getProvider()
 
         const privateTxSignature = await provider.request({
