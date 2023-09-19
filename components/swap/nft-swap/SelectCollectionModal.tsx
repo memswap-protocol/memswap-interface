@@ -20,9 +20,9 @@ import { useReservoirBaseApiUrl, useSupportedNetwork } from '../../../hooks'
 import useSWR from 'swr'
 import fetcher from '../../../lib/utils/fetcher'
 import { buildQueryString } from '../../../lib/utils/params'
-import { isAddress } from 'viem'
+import { isAddress, zeroAddress } from 'viem'
 import { formatNumber } from '../../../lib/utils/numbers'
-import { paths } from '@reservoir0x/reservoir-sdk'
+import { axios, paths } from '@reservoir0x/reservoir-sdk'
 
 type SelectCollectionModalProps = {
   tokenIn?: Token
@@ -76,11 +76,16 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
         'x-api-key': process.env.NEXT_PUBLIC_RESERVOIR_API_KEY || '',
       })
   )
-
-  const collectionsToDisplay =
-    results?.collections?.filter(
-      (collection) => collection?.contractKind === 'erc721'
-    ) || (debouncedInput === '' ? defaultCollections : [])
+  const collectionsToDisplay = useMemo(() => {
+    return (
+      results?.collections?.filter(
+        (collection) =>
+          collection?.contractKind === 'erc721' &&
+          collection?.floorAsk?.price?.amount?.native &&
+          collection?.floorAsk?.price?.amount?.native <= 1
+      ) || (debouncedInput === '' ? defaultCollections : [])
+    )
+  }, [debouncedInput, defaultCollections, results?.collections])
 
   return (
     <Modal
