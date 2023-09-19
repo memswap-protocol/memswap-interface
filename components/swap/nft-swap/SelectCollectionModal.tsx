@@ -147,8 +147,12 @@ export const SelectCollectionModal: FC<SelectCollectionModalProps> = ({
         <Input
           placeholder="Search collection name or address"
           icon={
-            <Box css={{ color: 'gray9' }}>
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            <Box css={{ color: 'gray9', pt: '1' }}>
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                width={16}
+                height={16}
+              />
             </Box>
           }
           css={{
