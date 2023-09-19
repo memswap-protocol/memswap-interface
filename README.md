@@ -1,4 +1,5 @@
-![memswap-banner](https://github.com/memswap-eth/memswap-dapp/assets/41527174/2688b12a-dd14-4081-ae3e-789234ce34af)
+![memswap-banner](https://github.com/memswap-protocol/memswap-interface/assets/41527174/1c5b8ecf-c73e-4274-9a5b-7456dd14db58)
+
 
 ## Contributing
 
