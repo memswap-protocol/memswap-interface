@@ -239,9 +239,9 @@ const TokenSwap: FC<TokenSwapProps> = ({
               onChange={(e) => {
                 const inputValue = e.target.value
                 const regex = /^[0-9]+(\.[0-9]*)?$/
-
-                if (regex.test(inputValue) || inputValue === '') {
-                  // setIsAutoUpdate(false)
+                if (inputValue === '.') {
+                  setAmountIn('0.')
+                } else if (regex.test(inputValue) || inputValue === '') {
                   setAmountIn(inputValue)
                   setIsBuy(false)
                 }
@@ -330,8 +330,9 @@ const TokenSwap: FC<TokenSwapProps> = ({
                 const inputValue = e.target.value
                 const regex = /^[0-9]+(\.[0-9]*)?$/
 
-                if (regex.test(inputValue) || inputValue === '') {
-                  // setIsAutoUpdate(false)
+                if (inputValue === '.') {
+                  setAmountOut('0.')
+                } else if (regex.test(inputValue) || inputValue === '') {
                   setAmountOut(inputValue)
                   setIsBuy(true)
                 }
