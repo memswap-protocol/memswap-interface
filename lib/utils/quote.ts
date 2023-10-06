@@ -13,7 +13,7 @@ import {
 import { AlphaRouter, SwapType } from '@uniswap/smart-order-router'
 
 // Approximation for gas used by memswap logic
-const defaultGas = 250000n
+const defaultGas = 350000n
 
 /**
  * fetchQuote - A function for fetching quotes from uniswap's smart order router.
