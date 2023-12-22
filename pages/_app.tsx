@@ -19,7 +19,6 @@ import {
   rainbowWallet,
   walletConnectWallet,
   phantomWallet,
-  ledgerWallet,
 } from '@rainbow-me/rainbowkit/wallets'
 
 const WALLET_CONNECT_PROJECT_ID =
@@ -41,7 +40,6 @@ const connectors = connectorsForWallets([
       rainbowWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
       coinbaseWallet({ appName: 'Memswap', chains }),
       phantomWallet({ chains }),
-      ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       walletConnectWallet({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
     ],
   },
